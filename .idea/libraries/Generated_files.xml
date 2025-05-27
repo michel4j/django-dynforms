@@ -1,0 +1,20 @@
+<component name="libraryTable">
+  <library name="Generated files" type="javaScript">
+    <properties>
+      <sourceFilesUrls>
+        <item url="file://$PROJECT_DIR$/dynforms/static/dynforms/dynforms.min.js" />
+        <item url="file://$PROJECT_DIR$/dynforms/static/dynforms/dynforms.min.min.js" />
+        <item url="file://$PROJECT_DIR$/dynforms/static/dynforms/trumbowyg.mathjax.min.js" />
+        <item url="file://$PROJECT_DIR$/dynforms/static/dynforms/trumbowyg.mathjax.min.min.js" />
+      </sourceFilesUrls>
+    </properties>
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/dynforms/static/dynforms/dynforms.min.js" />
+      <root url="file://$PROJECT_DIR$/dynforms/static/dynforms/dynforms.min.min.js" />
+      <root url="file://$PROJECT_DIR$/dynforms/static/dynforms/trumbowyg.mathjax.min.js" />
+      <root url="file://$PROJECT_DIR$/dynforms/static/dynforms/trumbowyg.mathjax.min.min.js" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,5 +1,5 @@
 {% load markup %}
-{% load dynforms_tags %}
+{% load dynforms %}
 
 <div class="controls controls-inline {{repeatable}} id="{{field.name}}-controls">
 	{% for choice in field|group_choices:data|randomize_choices:field %}

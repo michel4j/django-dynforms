@@ -1,4 +1,4 @@
-{% load dynforms_tags %}
+{% load dynforms %}
 {% load markup %}
 <div id="{{field.name}}-group" class="form-group {% if 'hide' in field.options %}df-hide {% endif %}{% if field.width == 'third'%}col-xs-4{% elif field.width == 'half' %}col-xs-6{% else %}col-xs-12{% endif %}  {{field.tags}}">
     {% if field.field_type != 'newsection' %}

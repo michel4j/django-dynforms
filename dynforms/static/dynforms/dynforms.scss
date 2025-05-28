@@ -36,22 +36,27 @@ i {
 svg {
   &.icon-xs {
     width: 1em;
+    aspect-ratio: 1;
   }
 
   &.icon-sm {
     width: 1.25em;
+    aspect-ratio: 1;
   }
 
   &.icon-md {
     width: 1.5em;
+    aspect-ratio: 1;
   }
 
   &.icon-lg {
     width: 2em;
+    aspect-ratio: 1;
   }
 
   &.icon-xl {
     width: 3em;
+    aspect-ratio: 1;
   }
 }
 

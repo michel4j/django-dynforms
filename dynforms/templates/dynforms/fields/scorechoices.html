@@ -1,5 +1,5 @@
 {% load markup %}
-{% load dynforms_tags %}
+{% load dynforms %}
 <div class="controls" id="{{ field.name }}-controls">
     {% for choice in field|group_scores:data %}
         <div class="score-choice media {% if 'inline' in field.options %}radio-inline {% else %}radio{% endif %}">

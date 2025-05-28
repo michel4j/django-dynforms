@@ -1,4 +1,4 @@
 TODO
 ====
 
-
+- Move icons.py template tags to a separate reusable app.

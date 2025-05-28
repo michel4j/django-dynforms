@@ -1,6 +1,8 @@
 {% load static %}
 {% load settings %}
+{% load icons %}
 {% get_setting "SITE_THEME" as site_theme %}
+
 <!doctype html>
 <html lang="en" class="{% block html_class %}{% endblock %}">
 <head>
@@ -102,6 +104,7 @@
     </div>
 </div>
 <div id="modal-target"></div>
+{% block page-sprites %}{% svg_sprites %}{% endblock %}
 {% block post_js %}{% endblock %}
 {% if site_theme == 'tabler' %}
     <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.1.1/dist/js/tabler.min.js"></script>

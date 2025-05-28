@@ -186,7 +186,7 @@ class FieldSettingsForm(forms.Form):
         _fieldset.append('tags')
         _fieldset.append(PrependedText(
             'name',
-            mark_safe('<i class="bi-lightning text-danger"></i>'),
+            mark_safe('🗲'),
             title="This is the internal reference name for the field. Change with caution!"
         ))
 
@@ -200,12 +200,12 @@ class FieldSettingsForm(forms.Form):
                 Div(
                     HTML('<hr class="hr-xs"/>'),
                     StrictButton(
-                        '<i class="bi-box-arrow-in-left icon-fw"></i> Move to Prev Page', name='move-prev',
+                        'Move to Prev Page', name='move-prev',
                         value="move-prev", id='move-prev', title="Move to Prev Page",
                         css_class="btn btn-sm btn-light border pull-left"
                     ),
                     StrictButton(
-                        'Move to Next Page <i class="bi-box-arrow-in-right icon-fw"></i>',
+                        'Move to Next Page',
                         name='move-next', id='move-next', value="move-next",
                         title="Move to Next Page", css_class="btn btn-sm btn-light border pull-right"
                     ),
@@ -273,7 +273,7 @@ class FormSettingsForm(forms.ModelForm):
                         Submit('apply-form', 'Apply', css_class="btn-sm"),
                         HTML(
                             f'<a class="btn btn-sm btn-danger ms-auto" title="Delete Form" '
-                            f'data-modal-url="{delete_url}"><i class="bi-trash"></i> Delete</a>'
+                            f'data-modal-url="{delete_url}">Delete</a>'
                         ),
                         css_class="d-flex flex-row"
                     )

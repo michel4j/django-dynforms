@@ -16,6 +16,7 @@ dependencies = [
     "numpy (>=2.2.4,<3.0.0)",
     "pycryptodome (>=3.23.0,<4.0.0)",
     "py-dateutil (>=2.2,<3.0)",
+    "markdown (>=3.8,<4.0)",
 ]
 classifiers = [
     "Environment :: Web Environment",

@@ -2,11 +2,10 @@
 {% load static %}
 {% load dynforms_tags %}
 {% block extra_css %}
-    <link href="{% static 'css/datetimepicker.css' %}" rel="stylesheet"/>
-    <link href="{% static 'css/datepicker.css' %}" rel="stylesheet"/>
+    <link href="{% static 'dynforms/datetimepicker.css' %}" rel="stylesheet"/>
+    <link href="{% static 'dynforms/datepicker.css' %}" rel="stylesheet"/>
     <link href="{% static 'dynforms/dynforms.min.css' %}" rel="stylesheet" media="screen"/>
     <link href="{% static 'dynforms/builder.min.css' %}" rel="stylesheet" media="screen"/>
-    <link href="{% static 'samples/sample.min.css' %}" rel="stylesheet" media="screen"/>
     {% endblock %}
 {% block pre_js %}
     {{ block.super }}

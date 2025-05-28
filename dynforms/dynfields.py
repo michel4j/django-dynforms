@@ -1,11 +1,6 @@
-import uuid
-from datetime import datetime, timedelta
 from collections import OrderedDict
-
-
-
+from datetime import datetime, timedelta
 from dateutil import parser
-from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 

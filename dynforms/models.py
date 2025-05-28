@@ -5,7 +5,6 @@ from datetime import timedelta
 from django.db import models
 from django.utils.safestring import mark_safe
 
-
 from .fields import FieldType, ValidationError
 from .utils import Queryable, build_Q, FormPage
 
@@ -21,12 +20,14 @@ def default_actions():
         ('submit', 'Submit'),
     ]
 
+
 class TimeStampedModel(models.Model):
     created = models.DateTimeField(auto_now_add=True, editable=False)
     modified = models.DateTimeField(auto_now=True, editable=False)
 
     class Meta:
         abstract = True
+
 
 class FormType(TimeStampedModel):
     name = models.CharField(max_length=100)
@@ -81,7 +82,6 @@ class FormType(TimeStampedModel):
     def get_page(self, page):
         if page < len(self.pages):
             return self.pages[page]
-        return None
 
     def page_names(self):
         return [p['name'] for p in self.pages]
@@ -122,7 +122,7 @@ class FormType(TimeStampedModel):
 
     def get_pages(self):
         pprint.pprint(self.pages)
-        return [FormPage(**page, number=(i+1)) for i, page in enumerate(self.pages)]
+        return [FormPage(**page, number=(i + 1)) for i, page in enumerate(self.pages)]
 
     def __str__(self):
         return self.name

@@ -1,5 +1,5 @@
 {% load dynforms_tags %}
-{% load markup %}
+
 <div id="{{ field.name }}-group"
      class="form-group {{ field.hide_styles }} {{ field.width_styles }} {{ field.extra_styles }}">
     {% if field.field_type != 'newsection' %}
@@ -21,19 +21,24 @@
         </div>
         <hr class="hr-xs"/>
         <span class="fg-help">
-            {{ field.instructions|markdown }}
+            {{ field.instructions }}
         </span>
     </span>
         {% endif %}
     {% endif %}
-    {% if field.is_repeatable %}
-        {% show_builder_field field repeatable=True %}
-        <button data-repeat-add=".{{ field.name }}-repeatable"
-                class="btn btn-success btn-sm pull-right" title="Add {{ field.label }}"
-                name="add" type="button"><i class="bi-plus-lg"></i>
-        </button>
+    {% if field.type %}
+        {% if field.is_repeatable %}
+            {% show_builder_field field repeatable=True %}
+            <button data-repeat-add=".{{ field.name }}-repeatable"
+                    class="btn btn-success btn-sm pull-right" title="Add {{ field.label }}"
+                    name="add" type="button"><i class="bi-plus-lg"></i>
+            </button>
+        {% else %}
+            {% show_builder_field field %}
+        {% endif %}
     {% else %}
-        {% show_builder_field field %}
+
+        <div>{{ field.field_type }} not implemented yet.</div>
     {% endif %}
 </div>
 {% if "repeat" in field.options %}

@@ -50,7 +50,7 @@ class MultipleChoice(FieldType, StandardMixin):
 
 
 class ScoreChoices(FieldType, StandardMixin):
-    name = _("Score Choices")
+    name = _("Scores")
     icon = "ui-radios"
     options = ['required', 'inline', 'hide']
     settings = ['label', 'options', 'choices']
@@ -146,6 +146,30 @@ class MultiplePhoneNumber(FieldType, FancyMixin):
     settings = ['label', 'options', ]
 
 
+
+
+class Equipment(FieldType, FancyMixin):
+    name = _("Equipment")
+    icon = "plug"
+    options = ['required', 'hide', 'repeat']
+    settings = ['label', 'options']
+
+
+class ContactInfo(FullName):
+    name = _("Contact")
+    icon = "person-vcard"
+    options = ['required', 'hide', 'repeat']
+    settings = ['label', 'options', ]
+    required_subfields = ['email', 'phone']
+
+
+class NameAffiliation(FullName):
+    name = _("Name/Affiliation")
+    icon = "person-vcard"
+    options = ['required', 'hide', 'repeat']
+    settings = ['label', 'options', ]
+    required_subfields = ['first_name', 'last_name', 'affiliation']
+
 class NameEmail(FullName):
     name = _("Name/Email")
     icon = "person-vcard"
@@ -174,30 +198,6 @@ class NameEmail(FullName):
             raise ValidationError("Must provide {} for all entries".format(', '.join(invalid_fields)))
 
         return val
-
-
-class Equipment(FieldType, FancyMixin):
-    name = _("Equipment")
-    icon = "plug"
-    options = ['required', 'hide', 'repeat']
-    settings = ['label', 'options']
-
-
-class ContactInfo(FullName):
-    name = _("Contact Info")
-    icon = "person-vcard"
-    options = ['required', 'hide', 'repeat']
-    settings = ['label', 'options', ]
-    required_subfields = ['email', 'phone']
-
-
-class NameAffiliation(FullName):
-    name = _("Name/Affiliation")
-    icon = "person-vcard"
-    options = ['required', 'hide', 'repeat']
-    settings = ['label', 'options', ]
-    required_subfields = ['first_name', 'last_name', 'affiliation']
-
 
 class Email(FieldType, FancyMixin):
     name = _("Email")
@@ -228,18 +228,13 @@ class Time(FieldType, FancyMixin):
 
 
 class WebsiteURL(FieldType, FancyMixin):
-    name = _("Website URL")
+    name = _("URL")
     icon = "link"
     options = ['required', 'unique', 'hide', 'repeat']
     units = ['chars', 'words']
     settings = ['label', 'width', 'options', 'minimum', 'maximum', 'units', 'default']
 
 
-# class GridField(FieldType, FancyMixin):
-#     name = _("Grid")
-#     icon = "table"
-#     settings = ['label', 'options',]
-#  
 class Likert(FieldType, FancyMixin):
     name = _("Likert")
     icon = "ui-radios-grid"

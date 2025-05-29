@@ -6,6 +6,7 @@ from .views import HomeView
 urlpatterns = [
     path("", HomeView.as_view(), name="home"),
     path('people/', views.FancyPersonList.as_view(), name='person-list'),
+    path('test/', views.TemplateView.as_view(template_name='example/test.html'), name='test-view'),
     path('institutions/', views.FancyInstitutionList.as_view(), name='institution-list'),
     path('subjects/', views.FancySubjectList.as_view(), name='subject-list'),
     path('people/<int:pk>/edit/', views.EditPerson.as_view(), name='person-edit'),

@@ -58,6 +58,7 @@ class FormType(TimeStampedModel):
     def get_field(self, page, pos):
         if page < len(self.pages) and pos < len(self.pages[page]['fields']):
             return self.pages[page]['fields'][pos]
+        return None
 
     def add_page(self, page_title):
         self.pages.append({'name': page_title, 'fields': []})

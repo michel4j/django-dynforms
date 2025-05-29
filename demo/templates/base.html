@@ -28,21 +28,21 @@
         {% if site_theme == 'tabler' %}
             --tblr-font-sans-serif: "Fira Sans";
             --tblr-font-monospace: "Fira Code";
-            --tblr-border-radius: 4px;
-            --tblr-border-radius-sm: 3px;
-            --tblr-border-radius-lg: 6px;
-            --tblr-border-radius-xl: 0.75rem;
-            --tblr-border-radius-xxl: 1.25rem;
-            --tblr-border-radius-2xl: var(--tblr-border-radius-xxl);
-            --tblr-border-radius-pill: 100rem;
+            {#--tblr-border-radius: 4px;#}
+            {#--tblr-border-radius-sm: 3px;#}
+            {#--tblr-border-radius-lg: 6px;#}
+            {#--tblr-border-radius-xl: 0.75rem;#}
+            {#--tblr-border-radius-xxl: 1.25rem;#}
+            {#--tblr-border-radius-2xl: var(--tblr-border-radius-xxl);#}
+            {#--tblr-border-radius-pill: 100rem;#}
 
         {% else %}
-            --bs-border-radius: 0.1875rem;
-            --bs-border-radius-sm: 0.125rem;
-            --bs-border-radius-lg: 0.25rem;
-            --bs-border-radius-xl: 0.5rem;
-            --bs-border-radius-xxl: 1rem;
-            --bs-border-radius-2xl: var(--bs-border-radius-xxl);
+            {#--bs-border-radius: 0.1875rem;#}
+            {#--bs-border-radius-sm: 0.125rem;#}
+            {#--bs-border-radius-lg: 0.25rem;#}
+            {#--bs-border-radius-xl: 0.5rem;#}
+            {#--bs-border-radius-xxl: 1rem;#}
+            {#--bs-border-radius-2xl: var(--bs-border-radius-xxl);#}
             --bs-border-radius-pill: 50rem;
             --bs-font-sans-serif: "Fira Sans";
             --bs-font-monospace: "Fira Code";
@@ -61,19 +61,18 @@
     </style>
     <link rel="stylesheet" href="{% static 'example/demo.min.css' %}" type="text/css"/>
     <link rel="stylesheet" href="{% static 'dynforms/dynforms.min.css' %}" type="text/css"/>
-    {% block site_css %}{% endblock %}
+    {% block page-styles %}{% endblock %}
     {% block extra_css %}{% endblock %}
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     {% block pre_js %}{% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %} bg-light">
-<div class="container-fluid bg-white">
-    {% block body %}
+{% block body %}
+    <div class="container-fluid bg-white">
         {% block content-header %}
             <nav class="mb-5" aria-label="breadcrumb">
                 {% block bread-crumbs %}{% endblock %}
             </nav>
-            <div class="page-header">
             <div class="row align-items-center">
                 <div class="col">
                     <div class="page-pretitle">{% block page-pretitle %}{% endblock %}</div>
@@ -100,9 +99,8 @@
                 {% block page-content %}{% block content %}{% endblock %}{% endblock %}
             </div>
         </div>
-    {% endblock %}
     </div>
-</div>
+{% endblock %}
 <div id="modal-target"></div>
 {% block page-sprites %}{% svg_sprites %}{% endblock %}
 {% block post_js %}{% endblock %}

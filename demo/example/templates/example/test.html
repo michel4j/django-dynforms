@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        #df-main {
+            height: 100%;
+            display: inline-grid;
+            grid-template-columns: 200px auto;
+            grid-template-rows: 50px auto 5em;
+            grid-template-areas:
+                "header header"
+                "sidebar work-area"
+                "sidebar work-footer";
+            background-color: pink;
+        }
+
+        #df-header {
+            grid-area: header;
+            background-color: lightgreen;
+        }
+
+        #df-sidebar {
+            grid-area: sidebar;
+            background-color: lightblue;
+            padding: 1em 0.5em;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        #df-work-content {
+            grid-area: work-area;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        #df-work-footer {
+            grid-area: work-footer;
+            background-color: lightcoral;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div id="df-main">
+    <div id="df-header">
+        <h4>Header Area</h4>
+    </div>
+
+    <div id="df-sidebar">
+        <h2>Sidebar</h2>
+        <p>This is the sidebar area.</p>
+        <p>You can add links, navigation, or any other content here.</p>
+    </div>
+
+    <div id="df-work-content">
+        <h2>Work Area</h2>
+        <p>This is where the main content will be displayed.</p>
+        <p>It can include forms, text, images, or any other content you need.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore
+            magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+            commodo consequat.</p>
+        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
+            laborum.</p>
+        <p>More content can be added here as needed. This area is flexible and can grow as you add more content.</p>
+        <p>Feel free to customize the layout and styles to fit your needs.</p>
+        <p>Remember to keep the user experience in mind when designing the content area.</p>
+        <p>Use headings, paragraphs, lists, and other HTML elements to structure your content effectively.</p>
+        <p>Consider adding images, videos, or other media to enhance the visual appeal of the work area.</p>
+        <p>Make sure the content is accessible and easy to read for all users.</p>
+        <p>Test the layout on different screen sizes to ensure it is responsive and looks good on all devices.</p>
+        <p>Use CSS to style the content area, adjusting colors, fonts, and spacing as needed.</p>
+        <p>Keep the design consistent with the overall theme of your application or website.</p>
+        <p>Remember to include any necessary scripts or stylesheets to enhance functionality.</p>
+        <p>Finally, ensure that the content is well-organized and easy to navigate for users.</p>
+    </div>
+    <div id="df-work-footer">
+        <p>Work Footer</p>
+    </div>
+
+</div>
+</body>
+</html>

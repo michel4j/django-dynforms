@@ -2,33 +2,40 @@
 {% load static %}
 {% load dynforms %}
 {% load icons %}
-{% block extra_css %}
+{% block page-styles %}
     <link href="{% static 'dynforms/datetimepicker.css' %}" rel="stylesheet"/>
     <link href="{% static 'dynforms/datepicker.css' %}" rel="stylesheet"/>
     <link href="{% static 'dynforms/dynforms.min.css' %}" rel="stylesheet" media="screen"/>
     <link href="{% static 'dynforms/builder.min.css' %}" rel="stylesheet" media="screen"/>
-    {% endblock %}
-{% block pre_js %}
-    {{ block.super }}
 {% endblock %}
 
-{% block page-title %}<span class="text-muted">{{ form_spec.name }}</span>{% endblock %}
-{% block content %}
-    <div class="row">
-        <div id="df-sidebar" class="p-0"><!-- Start Side bar toolbox -->
-            <!-- Nav tabs -->
+
+{% block body %}
+    <div id="df-builder">
+        <div id="df-header" class="border-bottom d-flex align-items-center px-2">
+            <h5><span class="text-secondary">Dynamic Forms</span> &mdash; {{ form_spec.name }}</h5>
+            <a class="ms-auto border" href="{% url 'dynforms-list' %}">
+                {% tool_icon icon="list" tooltip="Forms" size="sm" stroke="1" %}
+            </a>
+        </div>
+
+        <div id="df-sidebar" class="border-end bg-white">
             <ul class="nav nav-tabs">
                 <li class="nav-item">
                     <a href="#add-field" class="nav-link active" data-bs-toggle="tab" aria-current="page">
                         {% svg_icon "plus" size="xs" %}&nbsp;Add
                     </a>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="#field-settings" data-bs-toggle="tab"><i class="bi-pencil-square"></i>&nbsp;Field</a></li>
-                <li class="nav-item"><a class="nav-link" href="#form-settings" data-bs-toggle="tab"><i class="bi-layout-window"></i>&nbsp;Form</a></li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#field-settings" data-bs-toggle="tab">
+                        {% svg_icon "pencil" size="xs" %}&nbsp;Field</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#form-settings" data-bs-toggle="tab">
+                        {% svg_icon "pencil" size="xs" %}&nbsp;Form</a>
+                </li>
             </ul>
-
-            <!-- Tab panes -->
-            <div class="tab-content">
+            <div class="tab-content p-2">
                 <div class="tab-pane active" id="add-field">
                     {% include "dynforms/field-menu.html" with fieldtypes=fieldtypes %}
                 </div>
@@ -39,15 +46,12 @@
                     {% include "dynforms/edit-settings.html" with form=form_settings_form %}
                 </div>
             </div>
-        </div><!-- End Side bar toolbox -->
-        <div id="df-main"><!-- Start Content area for editing -->
-            {% include "dynforms/preview.html" %}
-        </div> <!-- End Content area for editing -->
+        </div>
+        {% include "dynforms/preview.html" %}
     </div>
 {% endblock %}
-{% block extra_js %}
+{% block page-scripts %}
     <script>
         doBuilderLoad();
     </script>
-
 {% endblock %}

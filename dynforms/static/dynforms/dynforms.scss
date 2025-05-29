@@ -30,7 +30,6 @@ i {
   &.icon-xl {
     font-size: 3em;
   }
-
 }
 
 svg {
@@ -59,7 +58,6 @@ svg {
     aspect-ratio: 1;
   }
 }
-
 
 .toolbox, .page-tools {
   display: flex;
@@ -105,87 +103,6 @@ svg {
   }
 }
 
-.no-space {
-  margin: 0;
-
-  > [class*="col-"] {
-    margin: 0;
-    padding-left: 0;
-    padding-right: 0;
-  }
-}
-
-.no-left-space {
-  margin-left: 0;
-
-  > [class*="col-"] {
-    margin-left: 0;
-    padding-left: 0;
-  }
-}
-
-.no-right-space {
-  margin-right: 0;
-
-  > [class*="col-"] {
-    margin-right: 0;
-    padding-right: 0;
-  }
-}
-
-.btn-secondary.disabled {
-  color: $color_1;
-}
-
-.input-inline {
-  width: 220px;
-
-  + {
-    .checkbox-inline {
-      margin-left: 10px;
-    }
-
-    .radio-inline {
-      margin-left: 10px;
-    }
-  }
-}
-
-.checkbox {
-  label {
-    font-weight: 400 !important;
-  }
-}
-
-.radio {
-  label {
-    font-weight: 400 !important;
-  }
-}
-
-.checkbox-inline {
-  label {
-    font-weight: 400 !important;
-  }
-
-  + {
-    .input-inline {
-      margin-left: 10px;
-    }
-  }
-}
-
-.radio-inline {
-  label {
-    font-weight: 400 !important;
-  }
-
-  + {
-    .input-inline {
-      margin-left: 10px;
-    }
-  }
-}
 
 legend {
   font-size: 150%;
@@ -202,110 +119,11 @@ legend {
   padding: 0;
 }
 
-.form-group {
-  margin-bottom: 0.25em;
-
-  + {
-    button[data-repeat] {
-      margin-top: 2px;
-    }
-  }
-}
-
-div.form-group {
-  + {
-    button {
-      margin-top: -0.5em;
-      margin-bottom: 0.5em;
-    }
-  }
-}
-
-label.select {
-  position: relative;
-  width: 100%;
-  margin-bottom: 0;
-
-  &:after {
-    content: '\f0d7';
-    right: 0.75em;
-    top: 0.4em;
-    position: absolute;
-    pointer-events: none;
-  }
-
-  &:before {
-    content: '';
-    right: 1em;
-    top: 0px;
-    width: 2em;
-    height: 27px;
-    background: inherit;
-    position: absolute;
-    pointer-events: none;
-    display: block;
-  }
-}
-
-.nopadding {
-  padding: 0 !important;
-  margin: 0 !important;
-}
-
 .df-field-runtime {
   padding: 0;
   width: 100%;
   margin: 0;
   border: 1px solid transparent;
-
-  > .form-group {
-    padding: 0.25em;
-    margin-bottom: 0.25em;
-  }
-
-  .table {
-    > thead {
-      > tr {
-        > th {
-          line-height: 1.5;
-          vertical-align: middle;
-        }
-
-        > td {
-          line-height: 1.5;
-          vertical-align: middle;
-        }
-      }
-    }
-
-    > tbody {
-      > tr {
-        > th {
-          line-height: 1.5;
-          vertical-align: middle;
-        }
-
-        > td {
-          line-height: 1.5;
-          vertical-align: middle;
-        }
-      }
-    }
-
-    > tfoot {
-      > tr {
-        > th {
-          line-height: 1.5;
-          vertical-align: middle;
-        }
-
-        > td {
-          line-height: 1.5;
-          vertical-align: middle;
-        }
-      }
-    }
-  }
 
   &:hover {
     .df-info {
@@ -314,23 +132,13 @@ label.select {
   }
 
   .controls-inline {
-    //display: flex;
     flex-direction: row;
     flex-wrap: wrap;
   }
-
-  .controls {
-    padding: 0.25em;
-    margin-bottom: 0.5em;
-
-    + {
-      .controls {
-        margin-top: 0;
-      }
-    }
-  }
 }
-
+.controls .row, .controls.row {
+  --bs-gutter-x: 0.75em;
+}
 .df-field-runtime.error {
   label {
     color: $color_3 !important;
@@ -345,82 +153,8 @@ div {
   }
 }
 
-.field-group-item {
-  + {
-    .field-group-item {
-      padding-left: 6px;
-    }
-  }
-
-  label {
-    &:last-child {
-      color: $color_4;
-      line-height: 1;
-    }
-
-    &:first-child {
-      color: $color_4;
-      line-height: 1.6;
-    }
-
-    font-weight: 600;
-    color: $color_6;
-    font-size: 95%;
-  }
-
-  .df-info {
-    font-size: 12px;
-  }
-
-  &:hover {
-    label {
-      color: $color_5;
-    }
-  }
-}
-
-.form-actions {
-  button {
-    + {
-      button {
-        margin-left: 0.5em;
-      }
-
-      input {
-        margin-left: 0.5em;
-      }
-    }
-  }
-
-  input {
-    + {
-      input {
-        margin-left: 0.5em;
-      }
-
-      button {
-        margin-left: 0.5em;
-      }
-    }
-  }
-}
-
 .df-form-content {
-  padding: 1.5em;
-  margin: -1.5em;
 
-  .tab-content {
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
-  }
-
-  .no-tabs {
-    + {
-      .tab-content {
-        border-top: 1px solid #ddd;
-      }
-    }
-  }
 }
 
 .df-form-body {
@@ -429,25 +163,12 @@ div {
 }
 
 .df-form {
-
   display: flex;
   flex-flow: column;
   align-items: stretch;
-  padding-top: 1em;
-
-  .nav-tabs {
-    > li {
-      > a {
-        margin-right: 2px;
-        line-height: 1.3;
-        font-weight: 600;
-      }
-    }
-  }
 
   .form-actions {
-    padding: 15px;
-    background: #fafafa;
+    padding: 1em;
   }
 
   .df-hide {
@@ -460,27 +181,6 @@ div {
 
   .tab-pane {
     padding-top: 0.5em;
-  }
-}
-
-#df-main {
-  label {
-    margin: 0;
-  }
-}
-
-.controls {
-  .row {
-    + {
-      .row {
-        margin-top: 0.5em;
-      }
-    }
-  }
-
-  .controls {
-    padding-left: 0px !important;
-    padding-right: 0px !important;
   }
 }
 
@@ -501,20 +201,10 @@ input[type=number] {
   line-height: 1.48;
 }
 
-#df-form-preview {
-  ul.nav-tabs {
-    padding-top: 1.5em;
-  }
-}
-
-.df-form-footer {
-  background: #f8f8f8;
-}
-
 #df-footer-content {
   display: flex;
+  padding: 1em;
   flex-direction: row;
-  padding: 8px 15px;
   overflow: hidden;
   color: $color_4;
 
@@ -529,10 +219,6 @@ input[type=number] {
   }
 }
 
-#df-form-preview.pagelet {
-  margin-bottom: 100px !important;
-}
-
 .df-info {
   display: none;
 }
@@ -542,29 +228,6 @@ input[type=number] {
     .df-info {
       display: inline-block;
     }
-  }
-}
-
-.controls-inline {
-  .checkbox-inline {
-    align-self: center;
-    margin-bottom: 0;
-  }
-
-  .radio-inline {
-    align-self: center;
-    margin-bottom: 0;
-  }
-
-  .input-inline {
-    align-self: center;
-    margin-bottom: 0;
-  }
-}
-
-.df-form-preview {
-  .page-tools {
-    z-index: 9000;
   }
 }
 
@@ -620,12 +283,6 @@ ul.nav-tabs.small-tabs {
   }
 }
 
-.narrow-sidebar.extended-help {
-  .control-instructions {
-    padding-top: 65px;
-  }
-}
-
 .word-counter {
   padding: 4px;
   line-height: 1;
@@ -654,7 +311,6 @@ ul.nav-tabs.small-tabs {
     vertical-align: middle;
     min-width: 120px;
     font-size: 0.95em;
-    //line-height: 1.1;
 
     span {
       padding: 0 0.5em;
@@ -671,10 +327,11 @@ ul.nav-tabs.small-tabs {
 }
 
 .nav-tabs {
+  margin-top: 1em;
   .nav-item {
     margin-left: 0.25em;
     &:first-child {
-        margin-left: 1.5em;
+        margin-left: 1em;
     }
   }
 }

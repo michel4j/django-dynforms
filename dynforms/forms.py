@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from crisp_modals.forms import ModalModelForm, Row, FullWidth, ModalForm
-from crispy_forms.bootstrap import PrependedText, InlineCheckboxes
+from crispy_forms.bootstrap import PrependedText, InlineCheckboxes, AppendedText
 from crispy_forms.bootstrap import StrictButton, FormActions
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Submit, Div, Field, HTML
@@ -106,11 +106,14 @@ class FieldSettingsForm(forms.Form):
             )
         else:
             self.helper.layout = Layout(
-                HTML("""<div class="no-field panel panel-warning">
-                <div class="panel-heading"><strong>No Field Selected</strong></div>
-                <div class="panel-body">Please select a field on the form 
-                preview to edit its settings.</div>
-                </div>""")
+                HTML(
+                    '<div class="alert alert-info">'
+                    '   <div class="panel-body">'
+                    '       <h4>No Field Selected</h4>'
+                    '       <p>Please select a field on the form preview to edit its settings.</p>'
+                    '   </div>'
+                    '</div>'
+                )
             )
 
     def clean(self):
@@ -130,9 +133,8 @@ class FieldSettingsForm(forms.Form):
         for nm in ['name', 'tags', 'label', 'instructions']:
             self.add_custom_field(nm)
 
-        _fieldset = Fieldset(
-            f"{field_type.name} - {_('Settings')}",
-            'label',
+        _fieldset = Div(
+            AppendedText('label', mark_safe(f"<small>{field_type.name}</small>")),
             Field('instructions', rows=2)
         )
 
@@ -147,7 +149,7 @@ class FieldSettingsForm(forms.Form):
         _fieldset.append(row)
 
         if 'options' in field_type.settings:
-            _fieldset.append(Div(Div(InlineCheckboxes('options'), css_class='col-12'), css_class="row"))
+            _fieldset.append(InlineCheckboxes('options'))
 
         if 'minimum' in field_type.settings or 'maximum' in field_type.settings or 'units' in field_type.settings:
             self.add_custom_field('minimum')
@@ -262,28 +264,25 @@ class FormSettingsForm(forms.ModelForm):
         self.helper.form_class = 'df-menu-form'
         delete_url = reverse_lazy('dynforms-delete-type', kwargs={'pk': self.instance.pk})
         self.helper.layout = Layout(
-            Fieldset(
-                _("Form Settings"),
+            Div(
+                Div('code', css_class='col-12'),
+                Div("name", css_class='col-12'),
+                Div("description", css_class='col-12'),
+                css_class="row"
+            ),
+            HTML(PAGES_TEMPLATE),
+            HTML(ACTIONS_TEMPLATE),
+            FormActions(
+                HTML('<hr class="hr-xs mt-5"/>'),
                 Div(
-                    Div('code', css_class='col-12'),
-                    Div("name", css_class='col-12'),
-                    Div("description", css_class='col-12'),
-                    css_class="row"
-                ),
-                HTML(PAGES_TEMPLATE),
-                HTML(ACTIONS_TEMPLATE),
-                FormActions(
-                    HTML('<hr class="hr-xs mt-5"/>'),
-                    Div(
-                        Submit('apply-form', 'Apply', css_class="btn btn-primary"),
-                        HTML(
-                            f'<a class="btn btn-danger ms-auto" title="Delete Form" '
-                            f'data-modal-url="{delete_url}">Delete</a>'
-                        ),
-                        css_class="d-flex flex-row"
-                    )
-                ),
-            )
+                    Submit('apply-form', 'Apply', css_class="btn btn-primary"),
+                    HTML(
+                        f'<a class="btn btn-danger ms-auto" title="Delete Form" '
+                        f'data-modal-url="{delete_url}">Delete</a>'
+                    ),
+                    css_class="d-flex flex-row"
+                )
+            ),
         )
 
     def clean(self):

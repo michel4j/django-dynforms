@@ -1,6 +1,5 @@
 from datetime import datetime
 
-import yaml
 from crisp_modals.forms import ModalModelForm, Row, FullWidth, ModalForm
 from crispy_forms.bootstrap import PrependedText, InlineCheckboxes
 from crispy_forms.bootstrap import StrictButton, FormActions
@@ -8,17 +7,16 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Submit, Div, Field, HTML
 from django import forms
 from django.core.exceptions import ValidationError
+from django.db.models import TextChoices
 from django.http import QueryDict
 from django.urls import reverse_lazy
 from django.utils.datastructures import MultiValueDict
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
-from django.db.models import TextChoices
 
 from . import models
 from .fields import FieldType
 from .utils import Queryable, DotExpandedDict, build_Q, Crypt
-
 
 
 class SizeType(TextChoices):
@@ -26,14 +24,16 @@ class SizeType(TextChoices):
     SMALL = 'small', _('Small')
     LARGE = 'large', _('Large')
 
+
 class LayoutType(TextChoices):
     FULL = ('full', _('Full'))
     HALF = ('half', _('Half'))
     THIRD = ('third', _('Third'))
     QUARTER = ('quarter', _('Quarter'))
     TWO_THIRDS = ('two_thirds', _('Two Thirds'))
-    THREE_QUARTERS =('three_quarters', _('Three Quarters'))
-    AUTO =('auto', _('Auto'))
+    THREE_QUARTERS = ('three_quarters', _('Three Quarters'))
+    AUTO = ('auto', _('Auto'))
+
 
 class UnitType(TextChoices):
     CHARS = ('chars', _('Characters'))
@@ -46,7 +46,6 @@ class OptionType(TextChoices):
     UNIQUE = ('unique', _('Unique'))
     RANDOMIZE = ('randomize', _('Randomize'))
     OTHER = ('other', _('Add Other'))
-
 
 
 class MultipleTextInput(forms.TextInput):
@@ -148,7 +147,7 @@ class FieldSettingsForm(forms.Form):
         _fieldset.append(row)
 
         if 'options' in field_type.settings:
-            _fieldset.append(Div(Div(InlineCheckboxes('options'), css_class='col-xs-12'), css_class="row"))
+            _fieldset.append(Div(Div(InlineCheckboxes('options'), css_class='col-12'), css_class="row"))
 
         if 'minimum' in field_type.settings or 'maximum' in field_type.settings or 'units' in field_type.settings:
             self.add_custom_field('minimum')
@@ -156,9 +155,9 @@ class FieldSettingsForm(forms.Form):
             self.add_custom_field('units', choices=field_type.get_choices('units'))
             _fieldset.append(
                 Div(
-                    Div('minimum', css_class='col-xs-3'),
-                    Div('maximum', css_class='col-xs-3'),
-                    Div('units', css_class='col-xs-6'),
+                    Div('minimum', css_class='col-3'),
+                    Div('maximum', css_class='col-3'),
+                    Div('units', css_class='col-6'),
                     css_class="row"
                 )
             )
@@ -196,33 +195,42 @@ class FieldSettingsForm(forms.Form):
             RULE_HTML = "Rules"
 
         _fieldset.append(
+
             FormActions(
+                HTML('<hr class="hr-xs"/>'),
                 Div(
-                    HTML('<hr class="hr-xs"/>'),
                     StrictButton(
                         'Move to Prev Page', name='move-prev',
                         value="move-prev", id='move-prev', title="Move to Prev Page",
-                        css_class="btn btn-sm btn-light border pull-left"
+                        css_class="btn btn-light border"
                     ),
                     StrictButton(
                         'Move to Next Page',
                         name='move-next', id='move-next', value="move-next",
-                        title="Move to Next Page", css_class="btn btn-sm btn-light border pull-right"
+                        title="Move to Next Page", css_class="btn btn-light border"
                     ),
-                    css_class="col-xs-12 text-condensed"),
+                    css_class="col-12 text-condensed d-flex flex-row justify-content-between"
+                ),
                 css_class="row")
         )
-        _fieldset.append(FormActions(
-            HTML('<hr class="hr-xs"/>'),
-            StrictButton(
-                'Apply', name='apply-field', id='apply-field', value="apply-field", css_class="btn btn-sm btn-primary"
-            ),
-            StrictButton(RULE_HTML, css_class='btn btn-sm btn-light border', id='edit-rules', value="edit-rules"),
-            StrictButton(
-                'Delete', name='delete-field', value="delete-field", id="delete-field",
-                css_class="btn btn-sm btn-danger pull-right"
-            ),
-        ))
+        _fieldset.append(
+            FormActions(
+                HTML('<hr class="hr-xs"/>'),
+                Div(
+                    StrictButton(
+                        'Apply', name='apply-field', id='apply-field', value="apply-field",
+                        css_class="btn btn-primary"
+                    ),
+                    StrictButton(RULE_HTML, css_class='btn btn-light border', id='edit-rules',
+                                 value="edit-rules"),
+                    StrictButton(
+                        'Delete', name='delete-field', value="delete-field", id="delete-field",
+                        css_class="btn btn-danger pull-right"
+                    ),
+                    css_class="col-12 text-condensed d-flex flex-row justify-content-between"
+                )
+            )
+        )
         return _fieldset
 
 
@@ -257,12 +265,9 @@ class FormSettingsForm(forms.ModelForm):
             Fieldset(
                 _("Form Settings"),
                 Div(
-                    Div('code', css_class='col-xs-12'),
-                    css_class="row"
-                ),
-                Div(
-                    Div("name", css_class='col-xs-12'),
-                    Div("description", css_class='col-xs-12'),
+                    Div('code', css_class='col-12'),
+                    Div("name", css_class='col-12'),
+                    Div("description", css_class='col-12'),
                     css_class="row"
                 ),
                 HTML(PAGES_TEMPLATE),
@@ -270,9 +275,9 @@ class FormSettingsForm(forms.ModelForm):
                 FormActions(
                     HTML('<hr class="hr-xs mt-5"/>'),
                     Div(
-                        Submit('apply-form', 'Apply', css_class="btn-sm"),
+                        Submit('apply-form', 'Apply', css_class="btn btn-primary"),
                         HTML(
-                            f'<a class="btn btn-sm btn-danger ms-auto" title="Delete Form" '
+                            f'<a class="btn btn-danger ms-auto" title="Delete Form" '
                             f'data-modal-url="{delete_url}">Delete</a>'
                         ),
                         css_class="d-flex flex-row"

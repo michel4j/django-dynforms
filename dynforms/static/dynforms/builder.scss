@@ -34,9 +34,6 @@ body {
 	ul.nav-tabs {
 		margin-top: 15px;
 		margin-bottom: 1em;
-		li {
-			margin-right: 0.5em;
-		}
 	}
 	.tab-content {
 		.tab-pane {
@@ -138,7 +135,6 @@ body {
 	border: 1px solid #ddd;
 }
 .df-menu-section {
-	font-family: "Fira Sans Condensed", sans-serif;
 	width: 100%;
 	margin: 0;
 	padding: 0 0.5em;
@@ -176,23 +172,19 @@ body {
 		}
 	}
 }
+
 .df-menu-form {
-	padding: 0;
+	*.row {
+		--bs-gutter-x: 0.75em;
+	}
+
 	width: 100%;
 	label {
 		margin-bottom: 0;
 	}
-	div[class*='col-'] {
-		+ {
-			div[class*='col-'] {
-				padding-left: 0;
-			}
-		}
-	}
 	.form-actions {
 		border-top: 1px #eee solid;
 		margin: 1em 0;
-		padding: 1em 0;
 	}
 	.checkbox-inline {
 		min-width: 40%;

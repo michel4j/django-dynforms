@@ -1,14 +1,17 @@
+{% load icons %}
+
 {% for section_name, fieldlist in fieldtypes.items %}
-<div class="df-menu-section row">
-	<h5 class="mt-2 mb-0">{{section_name}}</h5>
-	<hr class="hr-xs"/>
+<div class="df-menu-section">
+	<h5 class="border-bottom my-2">{{section_name}}</h5>
+    <div class="row p-3">
 	{% for field in fieldlist %}
-	<div class="field-btn-holder pull-left">
-		<div class="field-btn btn btn-outline-secondary btn-sm" title="{{field.name}}"
+	<div class="field-btn-holder">
+		<div class="btn btn-outline-secondary" title="{{field.name}}"
 		     data-fieldtype="{{field.key}}">
-		     <i class="{{field.icon}}"></i><div>{{field.name}}</div>
+		     {% svg_icon field.icon size="sm" %}<small>{{field.name}}</small>
 		</div>
 	</div>
 	{% endfor %}
+    </div>
 </div>
 {% endfor %}

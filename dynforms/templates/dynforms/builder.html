@@ -1,6 +1,7 @@
 {% extends "dynforms/base.html" %}
 {% load static %}
 {% load dynforms %}
+{% load icons %}
 {% block extra_css %}
     <link href="{% static 'dynforms/datetimepicker.css' %}" rel="stylesheet"/>
     <link href="{% static 'dynforms/datepicker.css' %}" rel="stylesheet"/>
@@ -19,7 +20,7 @@
             <ul class="nav nav-tabs">
                 <li class="nav-item">
                     <a href="#add-field" class="nav-link active" data-bs-toggle="tab" aria-current="page">
-                        <i class="bi-plus-lg icon-fw"></i>&nbsp;Add
+                        {% svg_icon "plus" size="xs" %}&nbsp;Add
                     </a>
                 </li>
                 <li class="nav-item"><a class="nav-link" href="#field-settings" data-bs-toggle="tab"><i class="bi-pencil-square"></i>&nbsp;Field</a></li>

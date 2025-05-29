@@ -16,7 +16,7 @@ class StandardMixin(object):
 
 class SingleLineText(FieldType, StandardMixin):
     name = _("Single Line")
-    icon = "bi-input-cursor-text"
+    icon = "input-cursor-text"
     options = ['hide', 'required', 'unique', 'repeat']
     units = ['chars', 'words']
     settings = ['label', 'width', 'options', 'minimum', 'maximum', 'units', 'default']
@@ -30,20 +30,20 @@ class SingleLineText(FieldType, StandardMixin):
 
 class ParagraphText(SingleLineText):
     name = _("Paragraph")
-    icon = "bi-justify-left"
+    icon = "justify-left"
     options = ['hide', 'required', 'unique', 'repeat', 'counter']
     settings = ['label', 'size', 'options', 'minimum', 'maximum', 'units', 'default']
 
 
 class RichText(ParagraphText):
     name = _("Rich Text")
-    icon = "bi-text-indent-left"
+    icon = "text-indent-left"
     settings = ['label', 'size', 'options', 'minimum', 'maximum', 'units', 'default']
 
 
 class MultipleChoice(FieldType, StandardMixin):
     name = _("Choices")
-    icon = "bi-ui-radios"
+    icon = "ui-radios"
     options = ['required', 'randomize', 'inline', 'hide', 'other']
     settings = ['label', 'options', 'choices']
     choices_type = 'radio'
@@ -51,7 +51,7 @@ class MultipleChoice(FieldType, StandardMixin):
 
 class ScoreChoices(FieldType, StandardMixin):
     name = _("Score Choices")
-    icon = "bi-ui-radios"
+    icon = "ui-radios"
     options = ['required', 'inline', 'hide']
     settings = ['label', 'options', 'choices']
     choices_type = 'radio'
@@ -66,7 +66,7 @@ class ScoreChoices(FieldType, StandardMixin):
 
 class Number(SingleLineText):
     name = _("Number")
-    icon = "bi-5-square"
+    icon = "5-square"
     units = ['digits', 'value']
     settings = ['label', 'width', 'options', 'minimum', 'maximum', 'units', 'default']
 
@@ -80,7 +80,7 @@ class Number(SingleLineText):
 
 class CheckBoxes(FieldType, StandardMixin):
     name = _("Checkboxes")
-    icon = "bi-check2-square"
+    icon = "check2-square"
     options = ['required', 'randomize', 'inline', 'hide', 'other']
     settings = ['label', 'options', 'choices']
     choices_type = 'checkbox'
@@ -89,7 +89,7 @@ class CheckBoxes(FieldType, StandardMixin):
 
 class DropDown(MultipleChoice):
     name = _("Dropdown")
-    icon = "bi-chevron-down"
+    icon = "chevron-down"
     options = ['required', 'randomize', 'inline', 'hide', 'multiple']
     settings = ['label', 'options', 'width', 'choices']
 
@@ -97,7 +97,7 @@ class DropDown(MultipleChoice):
 class NewSection(FieldType, StandardMixin):
     input_type = None
     name = _("Section")
-    icon = "bi-dash-lg"
+    icon = "dash-lg"
     options = ['hide', 'nolabel']
     settings = ['label', 'options']
 
@@ -110,7 +110,7 @@ class FancyMixin(object):
 
 class FullName(FieldType, FancyMixin):
     name = _("Full Name")
-    icon = "bi-person-vcard"
+    icon = "person-vcard"
     options = ['required', 'hide', 'repeat']
     settings = ['label', 'options', ]
     required_subfields = ['first_name', 'last_name']
@@ -118,7 +118,7 @@ class FullName(FieldType, FancyMixin):
 
 class Address(FullName):
     name = _("Address")
-    icon = "bi-house"
+    icon = "house"
     options = ['required', 'hide', 'department', 'labels']
     settings = ['label', 'options', ]
     required_subfields = ['street', 'city', 'region', 'country', 'code']
@@ -141,14 +141,14 @@ class Address(FullName):
 
 class MultiplePhoneNumber(FieldType, FancyMixin):
     name = _("Phone #s")
-    icon = "bi-telephone"
+    icon = "telephone"
     options = ['required', 'hide', 'repeat']
     settings = ['label', 'options', ]
 
 
 class NameEmail(FullName):
     name = _("Name/Email")
-    icon = "bi-person-vcard"
+    icon = "person-vcard"
     options = ['required', 'hide', 'repeat']
     settings = ['label', 'options', ]
     required_subfields = ['first_name', 'last_name', 'email']
@@ -178,14 +178,14 @@ class NameEmail(FullName):
 
 class Equipment(FieldType, FancyMixin):
     name = _("Equipment")
-    icon = "bi-plug"
+    icon = "plug"
     options = ['required', 'hide', 'repeat']
     settings = ['label', 'options']
 
 
 class ContactInfo(FullName):
     name = _("Contact Info")
-    icon = "bi-person-vcard"
+    icon = "person-vcard"
     options = ['required', 'hide', 'repeat']
     settings = ['label', 'options', ]
     required_subfields = ['email', 'phone']
@@ -193,7 +193,7 @@ class ContactInfo(FullName):
 
 class NameAffiliation(FullName):
     name = _("Name/Affiliation")
-    icon = "bi-person-vcard"
+    icon = "person-vcard"
     options = ['required', 'hide', 'repeat']
     settings = ['label', 'options', ]
     required_subfields = ['first_name', 'last_name', 'affiliation']
@@ -201,7 +201,7 @@ class NameAffiliation(FullName):
 
 class Email(FieldType, FancyMixin):
     name = _("Email")
-    icon = "bi-envelope-at"
+    icon = "envelope-at"
     options = ['required', 'unique', 'hide', 'repeat']
     units = ['chars']
     settings = ['label', 'width', 'options', 'minimum', 'maximum', 'units', 'default']
@@ -209,27 +209,27 @@ class Email(FieldType, FancyMixin):
 
 class Date(FieldType, FancyMixin):
     name = _("Date")
-    icon = "bi-calendar-date"
+    icon = "calendar-date"
     options = ['required', 'unique', 'hide', 'multiple']
     settings = ['label', 'options']
 
 
 class DatePreference(FieldType, FancyMixin):
     name = _("Date Preferences")
-    icon = "bi-calendar-heart"
+    icon = "calendar-heart"
     options = ['required', 'unique', 'hide', 'multiple']
     settings = ['label', 'options']
 
 
 class Time(FieldType, FancyMixin):
     name = _("Time")
-    icon = "bi-clock"
+    icon = "clock"
     settings = ['label']
 
 
 class WebsiteURL(FieldType, FancyMixin):
     name = _("Website URL")
-    icon = "bi-link"
+    icon = "link"
     options = ['required', 'unique', 'hide', 'repeat']
     units = ['chars', 'words']
     settings = ['label', 'width', 'options', 'minimum', 'maximum', 'units', 'default']
@@ -237,12 +237,12 @@ class WebsiteURL(FieldType, FancyMixin):
 
 # class GridField(FieldType, FancyMixin):
 #     name = _("Grid")
-#     icon = "bi-table"
+#     icon = "table"
 #     settings = ['label', 'options',]
 #  
 class Likert(FieldType, FancyMixin):
     name = _("Likert")
-    icon = "bi-ui-radios-grid"
+    icon = "ui-radios-grid"
     options = ['required', 'hide']
     settings = ['label', 'options', 'choices']
 
@@ -271,21 +271,21 @@ class Likert(FieldType, FancyMixin):
 
 class File(FieldType, FancyMixin):
     name = _("File")
-    icon = "bi-file"
+    icon = "file"
     options = ['required', 'hide', 'repeat']
     settings = ['label', 'options', ]
 
 
 class PhoneNumber(FieldType, FancyMixin):
     name = _("Phone #")
-    icon = "bi-telephone"
+    icon = "telephone"
     options = ['required', 'hide', 'repeat']
     settings = ['label', 'width', 'options', ]
 
 
 class Throttle(FieldType, FancyMixin):
     name = _("Throttle")
-    icon = "bi-stoplights"
+    icon = "stoplights"
     options = ['hide']
     settings = ['label', 'options']
 

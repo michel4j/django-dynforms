@@ -1,4 +1,4 @@
-import pprint
+
 from collections import defaultdict
 from datetime import timedelta
 
@@ -122,7 +122,6 @@ class FormType(TimeStampedModel):
         return warnings
 
     def get_pages(self):
-        pprint.pprint(self.pages)
         return [FormPage(**page, number=(i + 1)) for i, page in enumerate(self.pages)]
 
     def __str__(self):

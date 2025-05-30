@@ -1,11 +1,11 @@
 {% load icons %}
 
-{% for section_name, fieldlist in fieldtypes.items %}
+{% for section_name, field_list in field_types.items %}
 <div class="df-menu-section px-2">
 	<h5 class="border-bottom my-2">{{section_name}}</h5>
     <div class="d-flex flex-row flex-wrap justify-content-start">
-	{% for field in fieldlist %}
-		<div class="field-btn btn btn-outline-secondary flex-grow-1" title="{{field.name}}" data-fieldtype="{{field.key}}">
+	{% for field in field_list %}
+		<div class="field-btn btn btn-outline-secondary flex-grow-1" title="{{field.name}}" data-field-type="{{field.key}}">
 		     {% svg_icon field.icon size="sm" %}&nbsp;<small class="field-btn-label">{{field.name}}</small>
 		</div>
 	{% endfor %}

@@ -4,10 +4,9 @@ from crisp_modals.forms import ModalModelForm, Row, FullWidth, ModalForm
 from crispy_forms.bootstrap import PrependedText, InlineCheckboxes, AppendedText
 from crispy_forms.bootstrap import StrictButton, FormActions
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Submit, Div, Field, HTML
+from crispy_forms.layout import Layout, Submit, Div, Field, HTML
 from django import forms
 from django.core.exceptions import ValidationError
-from django.db.models import TextChoices
 from django.http import QueryDict
 from django.urls import reverse_lazy
 from django.utils.datastructures import MultiValueDict
@@ -17,35 +16,6 @@ from django.utils.translation import gettext as _
 from . import models
 from .fields import FieldType
 from .utils import Queryable, DotExpandedDict, build_Q, Crypt
-
-
-class SizeType(TextChoices):
-    MEDIUM = 'medium', _('Medium')
-    SMALL = 'small', _('Small')
-    LARGE = 'large', _('Large')
-
-
-class LayoutType(TextChoices):
-    FULL = ('full', _('Full'))
-    HALF = ('half', _('Half'))
-    THIRD = ('third', _('Third'))
-    QUARTER = ('quarter', _('Quarter'))
-    TWO_THIRDS = ('two_thirds', _('Two Thirds'))
-    THREE_QUARTERS = ('three_quarters', _('Three Quarters'))
-    AUTO = ('auto', _('Auto'))
-
-
-class UnitType(TextChoices):
-    CHARS = ('chars', _('Characters'))
-    WORDS = ('words', _('Words'))
-    VALUE = ('value', _('Value'))
-
-
-class OptionType(TextChoices):
-    REQUIRED = ('required', _('Required'))
-    UNIQUE = ('unique', _('Unique'))
-    RANDOMIZE = ('randomize', _('Randomize'))
-    OTHER = ('other', _('Add Other'))
 
 
 class MultipleTextInput(forms.TextInput):
@@ -80,8 +50,8 @@ FIELD_SETTINGS = {
     'size': (forms.ChoiceField, {'label': _("Size")}),
     'width': (forms.ChoiceField, {'label': _("Width")}),
     'options': (forms.MultipleChoiceField, {'label': _("Options"), 'widget': forms.CheckboxSelectMultiple}),
-    'minimum': (forms.FloatField, {'label': _("Min"), }),
-    'maximum': (forms.FloatField, {'label': _("Max"), }),
+    'minimum': (forms.IntegerField, {'label': _("Min")}),
+    'maximum': (forms.IntegerField, {'label': _("Max"), }),
     'units': (forms.ChoiceField, {'label': _("Units"), }),
     'default': (forms.CharField, {'label': _("Default value"), }),
     'choices': (RepeatableCharField, {'label': _("Choices"), 'required': True}),
@@ -133,25 +103,28 @@ class FieldSettingsForm(forms.Form):
         for nm in ['name', 'tags', 'label', 'instructions']:
             self.add_custom_field(nm)
 
+        for field_name in ['size', 'options', 'width']:
+            if field_name == 'width' or field_name in field_type.settings:
+                self.add_custom_field(field_name, choices=field_type.get_choices(field_name))
+
         _fieldset = Div(
             AppendedText('label', mark_safe(f"<small>{field_type.name}</small>")),
             Field('instructions', rows=2)
         )
 
-        for field_name in ['size', 'width', 'options']:
-            if field_name in field_type.settings:
-                self.add_custom_field(field_name, choices=field_type.get_choices(field_name))
+        row = Div(
+            Div(Field('width', css_class='select'), css_class='col'),
+            css_class="row"
+        )
+        if 'size' in field_type.settings:
+            row.append(Div(Field('size', css_class='select'), css_class='col'))
 
-        row = Div(css_class="row")
-        for field_name in ['size', 'width']:
-            if field_name in field_type.settings:
-                row.append(Field(field_name, css_class='select col'))
         _fieldset.append(row)
 
         if 'options' in field_type.settings:
             _fieldset.append(InlineCheckboxes('options'))
 
-        if 'minimum' in field_type.settings or 'maximum' in field_type.settings or 'units' in field_type.settings:
+        if {'minimum', 'maximum', 'units'} & set(field_type.settings):
             self.add_custom_field('minimum')
             self.add_custom_field('maximum')
             self.add_custom_field('units', choices=field_type.get_choices('units'))
@@ -192,9 +165,9 @@ class FieldSettingsForm(forms.Form):
         ))
 
         if self.initial.get('rules', []):
-            RULE_HTML = "Rules <span class='badge bg-info'>%d</span>" % (len(self.initial['rules']))
+            rule_html = "Rules <span class='badge bg-info'>%d</span>" % (len(self.initial['rules']))
         else:
-            RULE_HTML = "Rules"
+            rule_html = "Rules"
 
         _fieldset.append(
 
@@ -223,7 +196,7 @@ class FieldSettingsForm(forms.Form):
                         'Apply', name='apply-field', id='apply-field', value="apply-field",
                         css_class="btn btn-primary"
                     ),
-                    StrictButton(RULE_HTML, css_class='btn btn-light border', id='edit-rules',
+                    StrictButton(rule_html, css_class='btn btn-light border', id='edit-rules',
                                  value="edit-rules"),
                     StrictButton(
                         'Delete', name='delete-field', value="delete-field", id="delete-field",
@@ -337,6 +310,11 @@ class DynFormMixin:
             self.type_code = self.form_type.code
 
         self.field_specs = self.form_type.field_specs()
+
+    def get_validation(self):
+        if self.instance:
+            return self.instance.validate()
+        return {}
 
     def clean(self):
         super().clean()

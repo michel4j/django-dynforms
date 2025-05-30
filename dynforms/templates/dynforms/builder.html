@@ -12,14 +12,14 @@
 
 {% block body %}
     <div id="df-builder">
-        <div id="df-header" class="border-bottom d-flex align-items-center px-2">
+        <div id="df-header" class="border-bottom d-flex align-items-center px-3">
             <h5><span class="text-secondary">Dynamic Forms</span> &mdash; {{ form_spec.name }}</h5>
             <a class="ms-auto border" href="{% url 'dynforms-list' %}">
                 {% tool_icon icon="list" tooltip="Forms" size="sm" stroke="1" %}
             </a>
         </div>
 
-        <div id="df-sidebar" class="border-end bg-white">
+        <div id="df-sidebar" class="border-end">
             <ul class="nav nav-tabs">
                 <li class="nav-item">
                     <a href="#add-field" class="nav-link active" data-bs-toggle="tab" aria-current="page">
@@ -37,7 +37,7 @@
             </ul>
             <div class="tab-content p-2">
                 <div class="tab-pane active" id="add-field">
-                    {% include "dynforms/field-menu.html" with fieldtypes=fieldtypes %}
+                    {% include "dynforms/field-menu.html" with field_types=field_types %}
                 </div>
                 <div class="tab-pane" id="field-settings">
                     {% include "dynforms/edit-settings.html" with form=field_settings_form %}
@@ -48,6 +48,8 @@
             </div>
         </div>
         {% include "dynforms/preview.html" %}
+        <div class="position-fixed bottom-0 end-0 p-3" id="toast-container"></div>
+        <script defer src="{% static 'dynforms/df-toasts.min.js' %}"></script>
     </div>
 {% endblock %}
 {% block page-scripts %}

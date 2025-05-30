@@ -8,14 +8,16 @@
             <input type="{{form.initial.choices_type}}"
                 value="{{forloop.counter}}"
                 name="default_choices"
+                   aria-placeholder="Default"
+                   aria-label="Default"
                 {% if forloop.counter in form.initial.default_choices %}checked="checked"{% endif %}
                 class="form-check-input repeat-value-index">
         </span>
-        <input type="text" value="{{choice.label}}" aria-label="Choice" placeholder="choice label"
+        <input type="text" value="{{choice.label}}" aria-label="Choice" placeholder="Label"
             name="choices"
             class="form-control">
 
-        <input type="text" value="{{choice.value}}" aria-label="Value" placeholder="choice value"
+        <input type="text" value="{{choice.value}}" aria-label="Value" placeholder="Value"
             name="values"
             class="form-control">
 

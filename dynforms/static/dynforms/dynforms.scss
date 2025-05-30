@@ -1,14 +1,58 @@
-$color_1: #999999;
-$color_2: #FFFFFF;
-$color_3: #b92c28;
-$color_4: #777;
-$color_5: #000;
-$color_6: #999;
-$color_7: #1f77b4;
-$font-family_1: bootstrap-icons;
-$background-color_1: #707070;
-$background-color_2: rgba(0, 0, 0, 0.08);
 
+*::placeholder {
+  opacity: 0.5 !important;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-size: 11pt;
+}
+
+.df-form {
+  display: grid;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: var(--bs-body-bg);
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+        "form-tabs"
+		"form-content"
+		"form-footer";
+}
+
+.df-form-tabs {
+    grid-area: form-tabs;
+}
+
+.df-form-body {
+  grid-area: form-content;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--bs-tertiary-bg);
+  .tab-content {
+    background: var(--bs-body-bg);
+    overflow-y: auto;
+    padding: 1em;
+  }
+}
+
+.df-form-footer {
+  grid-area: form-footer;
+  padding: 1em;
+  background: var(--bs-secondary-bg-subtle);
+
+  .footer-progress {
+    flex: 1;
+    padding-right: 15px;
+  }
+
+  .progress {
+    margin-top: 0.25em;
+    border: 1px solid var(--bs-border-color-translucent);
+  }
+}
 
 i {
   &.icon-xs {
@@ -94,7 +138,7 @@ svg {
     display: inline-block;
     align-self: stretch;
     width: 1px;
-    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    border-left: 1px solid var(--bs-border-color);
     margin: 0 0.25em;
 
     & + .separator, &:last-child {
@@ -112,7 +156,7 @@ legend {
 .section-heading {
   font-size: 150%;
   margin-bottom: 0.25em;
-  border-bottom: 1px solid #e5e5e5;
+  border-bottom: 1px solid var(--bs-border-color);
   display: block;
   line-height: inherit;
   width: 100%;
@@ -121,7 +165,6 @@ legend {
 
 .df-field-runtime {
   padding: 0;
-  width: 100%;
   margin: 0;
   border: 1px solid transparent;
 
@@ -136,51 +179,22 @@ legend {
     flex-wrap: wrap;
   }
 }
+
 .controls .row, .controls.row {
   --bs-gutter-x: 0.75em;
 }
+
 .df-field-runtime.error {
   label {
-    color: $color_3 !important;
+    color: var(--bs-danger) !important;
   }
 }
 
 div {
   &:not(.no-hover).df-field-runtime {
     &:hover {
-      border: 1px dotted rgba(0, 0, 0, 0.12);
+      border: 1px dotted var(--bs-border-color);
     }
-  }
-}
-
-.df-form-content {
-
-}
-
-.df-form-body {
-  width: 100%;
-  padding: 0 0.5em;
-}
-
-.df-form {
-  display: flex;
-  flex-flow: column;
-  align-items: stretch;
-
-  .form-actions {
-    padding: 1em;
-  }
-
-  .df-hide {
-    display: none !important;
-  }
-
-  label {
-    margin: 0;
-  }
-
-  .tab-pane {
-    padding-top: 0.5em;
   }
 }
 
@@ -191,32 +205,13 @@ input[type=number] {
 }
 
 .control-label {
-  font-weight: 600 !important;
+  font-weight: 500;
   margin-top: 0.35em;
-  padding-left: 0.2em;
 }
 
 .control-description {
-  font-size: 14px;
+  font-size: small;
   line-height: 1.48;
-}
-
-#df-footer-content {
-  display: flex;
-  padding: 1em;
-  flex-direction: row;
-  overflow: hidden;
-  color: $color_4;
-
-  .footer-progress {
-    flex: 1;
-    padding-right: 15px;
-  }
-
-  .progress {
-    margin-top: 0.25em;
-    border: 1px solid rgba(0, 0, 0, 0.15);
-  }
 }
 
 .df-info {
@@ -235,7 +230,7 @@ div[class$="-repeatable"] {
   border: 1px solid transparent;
 
   &:hover {
-    background: rgba(0, 0, 0, 0.025);
+    background: var(--bs-border-color);
   }
 }
 
@@ -246,7 +241,6 @@ span.twitter-typeahead {
 ul.nav-tabs.small-tabs {
   li {
     > a {
-      font-weight: 600;
       margin-right: 2px;
       line-height: 1.3;
     }
@@ -284,14 +278,12 @@ ul.nav-tabs.small-tabs {
 }
 
 .word-counter {
-  padding: 4px;
-  line-height: 1;
+  padding: 0.5em;
   text-align: right;
-  font-size: 80%;
-  font-weight: 700;
+  font-size: small;
   width: 100%;
-  background-color: $background-color_2;
-  color: $color_7;
+  background-color: var(--bs-tertiary-bg);
+  color: var(--bs-secondary-text);
 }
 
 .trumbowyg-editor-box {
@@ -306,6 +298,7 @@ ul.nav-tabs.small-tabs {
 
 .score-choice {
   margin-bottom: 0.25em;
+
   .score-pill {
     display: inline-block;
     vertical-align: middle;
@@ -318,7 +311,7 @@ ul.nav-tabs.small-tabs {
       + span {
         text-align: left;
         font-weight: normal;
-        border-left: 1px solid rgba(255, 255, 255, 0.25);
+        border-left: 1px solid var(--bs-border-color);
       }
 
     }
@@ -328,10 +321,12 @@ ul.nav-tabs.small-tabs {
 
 .nav-tabs {
   margin-top: 1em;
+
   .nav-item {
     margin-left: 0.25em;
+
     &:first-child {
-        margin-left: 1em;
+      margin-left: 1em;
     }
   }
 }

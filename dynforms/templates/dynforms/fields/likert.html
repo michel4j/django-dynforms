@@ -17,13 +17,13 @@
         <tbody>
         {% for choice in field|group_choices:data %}
             <tr>
-                <td class="text-left">{{ choice.value }}</td>
-                <td class="text-center"><input type="radio" name="{{ field.name }}__{{ choice.label }}" value="5"/></td>
-                <td class="text-center"><input type="radio" name="{{ field.name }}__{{ choice.label }}" value="4"/></td>
-                <td class="text-center"><input type="radio" name="{{ field.name }}__{{ choice.label }}" value="3"/></td>
-                <td class="text-center"><input type="radio" name="{{ field.name }}__{{ choice.label }}" value="2"/></td>
-                <td class="text-center"><input type="radio" name="{{ field.name }}__{{ choice.label }}" value="1"/></td>
-                <td class="text-center"><input type="radio" name="{{ field.name }}__{{ choice.label }}"/></td>
+                <td class="text-left">{{ choice.label }}</td>
+                <td class="text-center"><input type="radio" name="{{ field.name }}__{{ choice.value }}" value="5"/></td>
+                <td class="text-center"><input type="radio" name="{{ field.name }}__{{ choice.value }}" value="4"/></td>
+                <td class="text-center"><input type="radio" name="{{ field.name }}__{{ choice.value }}" value="3"/></td>
+                <td class="text-center"><input type="radio" name="{{ field.name }}__{{ choice.value }}" value="2"/></td>
+                <td class="text-center"><input type="radio" name="{{ field.name }}__{{ choice.value }}" value="1"/></td>
+                <td class="text-center"><input type="radio" name="{{ field.name }}__{{ choice.value }}"/></td>
             </tr>
         {% endfor %}
         </tbody>

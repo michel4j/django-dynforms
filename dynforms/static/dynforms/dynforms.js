@@ -58,10 +58,10 @@
         }
 
         $(ctl).click(function (e) {
-            var rp_el = all_rp.last();
-            var field_cnt = $(ctl).closest(".df-field-runtime");
+            let rp_el = all_rp.last();
+            let field_cnt = $(ctl).closest(".df-field-runtime");
 
-            var cloned = rp_el.clone(true);
+            let cloned = rp_el.clone(true);
             cloned.insertAfter(rp_el);
             if (options.clearNew) {
 
@@ -77,8 +77,8 @@
 
         all_rp_rm.each(function () {
             $(this).click(function (e) {
-                var del_el = $(this).closest(rp_sel);
-                var others = del_el.siblings(rp_sel);
+                let del_el = $(this).closest(rp_sel);
+                let others = del_el.siblings(rp_sel);
                 if (others.length > 0) {
                     del_el.slideUp('fast', function () {
                         del_el.remove();
@@ -129,8 +129,8 @@ function setupField() {
     let prev_field = $('div.df-field.selected');
     let active_field = $(this);
     let active_page = $('.df-container.active');
-    let rules_url = `${document.URL}${active_page.index()}/rules/${active_field.data('fieldpos')}/`;
-    let put_url = `${document.URL}${active_page.index()}/put/${active_field.data('fieldpos')}/`;
+    let rules_url = `${document.URL}${active_page.index()}/rules/${active_field.data('field-pos')}/`;
+    let put_url = `${document.URL}${active_page.index()}/put/${active_field.data('field-pos')}/`;
     // remove selected class from all fields
     prev_field.toggleClass("selected", false);
     active_field.toggleClass("selected", true);
@@ -164,6 +164,7 @@ function setupMenuForm(form_id) {
             success: function (result) {
                 $("#field-settings").html(result);
                 setupMenuForm("#field-settings .df-menu-form");
+                adjustFieldWidth(active_field);
                 active_field.load(get_url);
             }
         });
@@ -175,10 +176,19 @@ function setupMenuForm(form_id) {
     });
 }
 
+function adjustFieldWidth(selector) {
+    console.log('Adjusting field width for:', selector);
+    const element = $(selector);
+    let child = $(element).children('.form-group');
+    element.removeClass(element.data('field-width')).addClass(child.data('field-width'));
+    element.data('field-width', child.data('field-width'));
+}
+
+// Load the form builder
 function doBuilderLoad() {
     if (!$('#df-form-preview').is('.loaded')) {
         $('div.field-btn').draggable({
-            connectToSortable: '#df-main .df-container.active',
+            connectToSortable: '.df-container.active',
             revert: "invalid",
             appendTo: '.df-container.active',
             cursorAt: {left: 5, top: 5},
@@ -196,20 +206,20 @@ function doBuilderLoad() {
             if ($(this).is('.ui-draggable-dragging')) {
                 return;
             }
-            var new_el = $('<div class="df-field container no-space"></div>');
-            var cur_pg = $('.df-container.active');
+            const new_el = $('<div class="df-field"></div>');
+            const cur_pg = $('.df-container.active');
             cur_pg.append(new_el);
-            new_el.data('fieldtype', $(this).data('fieldtype'));
-            new_el.data('fieldpos', new_el.index());
+            new_el.data('field-type', $(this).data('field-type'));
+            new_el.data('field-pos', new_el.index());
             new_el.click(setupField);
             // Ajax Add Field
-            var loadUrl = `${document.URL + cur_pg.index()}/add/${new_el.data('fieldtype')}/${new_el.index()}/`;
-            new_el.load(loadUrl, function () {
+            let field_url = `${document.URL + cur_pg.index()}/add/${new_el.data('field-type')}/${new_el.index()}/`;
+            new_el.load(field_url, function () {
                 $(this).click();
             });
         }).disableSelection();
 
-        $('#df-main .df-container').sortable({
+        $('.df-container.sortable').sortable({
             items: '.df-field',
             revert: false,
             forcePlaceholderSize: true,
@@ -220,21 +230,21 @@ function doBuilderLoad() {
                     ui.item.html("");
                     ui.item.click(setupField);
                     // Ajax Add Field
-                    var loadUrl = `${document.URL + $('.df-container.active').index()}/add/${ui.item.data('fieldtype')}/${ui.item.index()}/`;
-                    ui.item.load(loadUrl, function () {
-                        $(this).click();
+                    let add_url = `${document.URL + $('.df-container.active').index()}/add/${ui.item.data('field-type')}/${ui.item.index()}/`;
+                    ui.item.load(add_url, function () {
                         // renumber all fields on active page
                         $('.df-container.active .df-field').each(function () {
-                            $(this).data('fieldpos', $(this).index());
+                            $(this).data('field-pos', $(this).index());
                         });
+                        $(this).click();
                     });
                 } else {
                     // move dropped field to new position on server
-                    var loadUrl = `${document.URL + $('.df-container.active').index()}/mov/${ui.item.data('fieldpos')}-${ui.item.index()}/`;
-                    $('<div class="ajax"></div>').load(loadUrl);
+                    let move_url = `${document.URL + $('.df-container.active').index()}/mov/${ui.item.data('field-pos')}-${ui.item.index()}/`;
+                    $('<div class="ajax"></div>').load(move_url);
                     // renumber all fields on active page
                     $('.df-container.active .df-field').each(function () {
-                        $(this).data('fieldpos', $(this).index());
+                        $(this).data('field-pos', $(this).index());
                     });
                 }
             }
@@ -256,15 +266,34 @@ function doBuilderLoad() {
         $(document).on('click', '#field-settings #delete-field', function (e) {
             e.preventDefault();
             // handle deleting fields
-            let active_field = $('div.df-field.selected');
-            let active_page = $('.df-container.active');
+            const active_field = $('div.df-field.selected');
+            const active_page = $('.df-container.active');
             let del_url = `${document.URL}${active_page.index()}/del/${active_field.index()}/`;
-            active_field.remove()
-            $("#field-settings").load(del_url);
 
-            // renumber all fields on active page
-            $('.df-container.active .df-field').each(function () {
-                $(this).data('fieldpos', $(this).index());
+            $.ajax({
+                type: 'POST',
+                url: del_url,
+                data: {
+                    'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val(),
+                },
+                dataType: 'json',
+                success: function (response) {
+                    dfToasts.success({
+                        message: `Field: ${active_field.data('field-type')} deleted!`
+                    });
+                    active_field.remove();
+                    // renumber all fields on active page
+                    $('.df-container.active .df-field').each(function () {
+                        $(this).data('field-pos', $(this).index());
+                    });
+                    $("#field-settings").html(response);
+                },
+                error: function (xhr, status, error) {
+                    dfToasts.error({
+                        message: error,
+                        title: "Error deleting field!"
+                    });
+                }
             });
         });
 
@@ -275,8 +304,16 @@ function doBuilderLoad() {
             let active_page = $('.df-container.active');
             let next_page = Math.min(active_page.index() + 1, $('.df-container').last().index());
             let move_url = `${document.URL}${active_page.index()}/mov/${active_field.index()}/${next_page}/`;
-            $('<div class="ajax"></div>').load(move_url, function () {
-                window.location.reload();
+            $.ajax({
+                type: 'POST',
+                url: move_url,
+                data: {
+                    'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val(),
+                },
+                dataType: 'json',
+                success: function () {
+                    window.location.reload();
+                }
             });
         });
 
@@ -285,9 +322,17 @@ function doBuilderLoad() {
             e.preventDefault();
             let cur_fld = $('div.df-field.selected');
             let page_no = $('.df-container.active').index();
-            let loadUrl = `${document.URL + page_no}/mov/${cur_fld.index()}/${Math.max(page_no - 1, 0)}/`;
-            $('<div class="ajax"></div>').load(loadUrl, function () {
-                window.location.reload();
+            let move_url = `${document.URL + page_no}/mov/${cur_fld.index()}/${Math.max(page_no - 1, 0)}/`;
+            $.ajax({
+                type: 'POST',
+                url: move_url,
+                data: {
+                    'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val(),
+                },
+                dataType: 'json',
+                success: function () {
+                    window.location.reload();
+                }
             });
         });
 
@@ -337,11 +382,11 @@ function testRule(first, operator, second) {
 }
 
 function valuesOnly(va) {
-    var value = [];
-    if (va.length == 1) {
+    let value = [];
+    if (va.length === 1) {
         return va[0].value;
     }
-    if (va.length == 0) {
+    if (va.length === 0) {
         return null;
     }
     $(va).each(function () {
@@ -351,5 +396,5 @@ function valuesOnly(va) {
 }
 
 $(document).on("keypress", ":input:not(textarea):not([type=submit])", function (event) {
-    return event.keyCode != 13;
+    return event.keyCode !== 13;
 });

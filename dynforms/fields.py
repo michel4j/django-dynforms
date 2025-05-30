@@ -44,12 +44,6 @@ class FieldTypeMeta(type):
 
 
 CHOICE_INFO = {
-    'medium': _('Medium'),
-    'small': _('Small'),
-    'large': _('Large'),
-    'full': _('Full'),
-    'half': _('Half'),
-    'third': _('Third'),
     'chars': _('Characters'),
     'words': _('Words'),
     'value': _('Value'),
@@ -90,6 +84,27 @@ def _val_to_list(value):
         return value
     else:
         return []
+
+
+class SizeType(TextChoices):
+    MEDIUM = 'medium', _('Medium')
+    SMALL = 'small', _('Small')
+    LARGE = 'large', _('Large')
+
+
+class LayoutType(TextChoices):
+    FULL = ('full', _('Full'))
+    HALF = ('half', _('Half'))
+    THIRD = ('third', _('Third'))
+    QUARTER = ('quarter', _('Quarter'))
+    TWO_THIRDS = ('two_thirds', _('Two Thirds'))
+    THREE_QUARTERS = ('three_quarters', _('Three Quarters'))
+
+
+class UnitType(TextChoices):
+    CHARS = ('chars', _('Characters'))
+    WORDS = ('words', _('Words'))
+    VALUE = ('value', _('Value'))
 
 
 class FieldType(object, metaclass=FieldTypeMeta):
@@ -183,9 +198,10 @@ class FieldType(object, metaclass=FieldTypeMeta):
 
     def get_choices(self, field_name):
         return {
-            'options': _build_choices('OptionType', self.options),
-            'size': _build_choices('SizeType', self.sizes),
-            'width': _build_choices('WidthType', self.widths),
-            'units': _build_choices('UnitType', self.units)
-
+            'options': _build_choices(f'{self.__class__.__name__}Option', self.options),
+            'size': SizeType,
+            'width': LayoutType,
+            'units': _build_choices(f'{self.__class__.__name__}Unit', self.units)
         }.get(field_name, [])
+
+

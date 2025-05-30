@@ -1,5 +1,5 @@
 {% load dynforms %}
-<div id="df-form-preview" class="bg-white">
+<div id="df-form-preview" class="bg-light-subtle">
     {% with form_spec.get_pages as form_pages %}
         <!-- Nav tabs -->
         <ul class="nav nav-tabs">
@@ -19,8 +19,9 @@
                 <div class="tab-pane {% if page.number == active_page %}active{% endif %} df-container sortable grid"
                      id="page{{ page.number }}" data-page-number="{page.number}}">
                     {% for field in page.fields %}
-                        <div class="df-field" data-fieldtype="{{ field.field_type }}"
-                             data-fieldpos="{{ field.index }}">
+                        <div class="df-field {{ field.width_styles }}"
+                             data-field-width="{{ field.width_styles }}"
+                             data-field-type="{{ field.field_type }}" data-field-pos="{{ field.index }}">
                             {% include "dynforms/builder-field.html" %}
                         </div>
                     {% endfor %}
@@ -35,17 +36,17 @@
     <div id="df-footer-content" class="d-flex flex-row align-items-center justify-content-start w-100">
         <button type="button" id="test-form"
                 onclick="window.location.href='{% url 'dynforms-run' pk=form_spec.pk %}'"
-                class="btn btn-sm btn-success">Test
+                class="btn btn-success">Test
         </button>
         <button type="button" id="check-form"
-                class="btn btn-sm btn-primary">Check
+                class="btn btn-primary">Check
         </button>
         <div id="footer-warnings" class="ms-1">
             {% include 'dynforms/warnings.html' %}
         </div>
         <div class="vr ms-auto"></div>
         {% for name, label in form_spec.actions %}
-            <button type="button" id="{{ name }}-action" disabled class="btn btn-sm btn-secondary disabled"
+            <button type="button" id="{{ name }}-action" disabled class="btn btn-outline-secondary disabled"
                     name="{{ name }}">{{ label }}
             </button>
         {% endfor %}

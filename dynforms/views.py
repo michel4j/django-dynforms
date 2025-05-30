@@ -1,31 +1,29 @@
 from crisp_modals.views import ModalUpdateView, ModalDeleteView, ModalCreateView, AjaxFormMixin
 from django.conf import settings
-from django.contrib import messages
-from django.contrib.admin.utils import NestedObjects
 from django.contrib.messages.views import SuccessMessageMixin
-from django.db import DEFAULT_DB_ALIAS
 from django.forms.models import model_to_dict
 from django.http import JsonResponse, HttpResponseRedirect
+from django.template.response import TemplateResponse
 from django.urls import reverse_lazy, reverse
-
-from django.views.generic import TemplateView, View, detail
+from django.utils.module_loading import import_string
+from django.views import View
+from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import TemplateView, detail
 from django.views.generic import edit
 from django.views.generic.edit import FormView, UpdateView
 from itemlist.views import ItemListView
-from django.utils.module_loading import import_string
+
 from dynforms.fields import FieldType
 from dynforms.models import FormType
-
 from . import utils, forms
 from .forms import FieldSettingsForm, FormSettingsForm, RulesForm, DynForm
 from .models import DynEntry
-
+from .utils import FormField
 
 MIXINS = getattr(settings, 'DYNFORMS_MIXINS', {})
 
-VIEW_MIXINS = [import_string(mixin) for mixin in MIXINS.get('VIEW',[])]
+VIEW_MIXINS = [import_string(mixin) for mixin in MIXINS.get('VIEW', [])]
 EDIT_MIXINS = [import_string(mixin) for mixin in MIXINS.get('EDIT', [])]
-
 
 utils.load('dynfields')
 
@@ -57,7 +55,16 @@ class DynFormView(DynCreateView):
         kwargs = super().get_form_kwargs()
         form_type = FormType.objects.get(pk=self.kwargs.get('pk'))
         kwargs['form_type'] = form_type
+        print("Form Type:", form_type)
         return kwargs
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        form_type = FormType.objects.get(pk=self.kwargs.get('pk'))
+        context['form_type'] = form_type
+        context['active_page'] = self.request.GET.get('page', 1)
+        context['active_form'] = self.request.GET.get('form', 1)
+        return context
 
     def form_valid(self, form):
         return HttpResponseRedirect(self.get_success_url())
@@ -67,7 +74,7 @@ class DynFormView(DynCreateView):
 
 
 class AddFieldView(*EDIT_MIXINS, TemplateView):
-    template_name = "dynforms/field.html"
+    template_name = "dynforms/builder-field.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -78,12 +85,12 @@ class AddFieldView(*EDIT_MIXINS, TemplateView):
         num = len(form.get_page(page)['fields'])
         field = field_type.get_default(page, num)
         form.add_field(page, pos, field)
-        context['field'] = field
+        context['field'] = FormField(**field, index=pos)
         return context
 
 
 class GetFieldView(*EDIT_MIXINS, TemplateView):
-    template_name = "dynforms/field.html"
+    template_name = "dynforms/builder-field.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -95,30 +102,37 @@ class GetFieldView(*EDIT_MIXINS, TemplateView):
         return context
 
 
-class MoveFieldView(*EDIT_MIXINS, TemplateView):
-    template_name = 'dynforms/blank.html'
+class MoveFieldView(*EDIT_MIXINS, View):
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def post(self, request, **kwargs):
         page = int(self.kwargs.get('page'))
         pos = int(self.kwargs.get('pos'))
         src = int(self.kwargs.get('from_pos'))
         form = FormType.objects.get(pk=self.kwargs.get('pk'))
         form.move_field(page, src, pos)
-        return context
+        return JsonResponse({})
 
 
-class PageFieldView(*VIEW_MIXINS, TemplateView):
-    template_name = 'dynforms/blank.html'
+class PageFieldView(*VIEW_MIXINS, View):
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def post(self, request, **kwargs):
         page = int(self.kwargs.get('page'))
         next_page = int(self.kwargs.get('to'))
         src = int(self.kwargs.get('pos'))
         form = FormType.objects.get(pk=self.kwargs.get('pk'))
         form.move_field(page, src, src, next_page)
-        return context
+        return JsonResponse({})
+
+
+class DeleteFieldView(*EDIT_MIXINS, View):
+    template_name = "dynforms/edit-settings.html"
+
+    def post(self, request, **kwargs):
+        page = int(self.kwargs.get('page'))
+        pos = int(self.kwargs.get('pos'))
+        form = FormType.objects.get(pk=self.kwargs.get('pk'))
+        form.remove_field(page, pos)
+        return TemplateResponse(request, self.template_name, {})
 
 
 RULE_ACTIONS = [
@@ -181,18 +195,6 @@ class FieldRulesView(*EDIT_MIXINS, ModalFormView):
         return self.request.get_full_path()
 
 
-class DeleteFieldView(*EDIT_MIXINS, TemplateView):
-    template_name = "dynforms/edit-settings.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        page = int(self.kwargs.get('page'))
-        pos = int(self.kwargs.get('pos'))
-        form = FormType.objects.get(pk=self.kwargs.get('pk'))
-        form.remove_field(page, pos)
-        return context
-
-
 class EditFieldView(*EDIT_MIXINS, FormView):
     template_name = "dynforms/edit-settings.html"
     form_class = FieldSettingsForm
@@ -221,7 +223,7 @@ class EditFieldView(*EDIT_MIXINS, FormView):
         return self.request.get_full_path()
 
 
-class EditFormView(*EDIT_MIXINS, UpdateView):
+class FormBuilder(*EDIT_MIXINS, UpdateView):
     template_name = 'dynforms/builder.html'
     form_class = FormSettingsForm
     queryset = FormType.objects.all()
@@ -238,7 +240,7 @@ class EditFormView(*EDIT_MIXINS, UpdateView):
         initial.pop('actions')
         initial['page_names'] = form.page_names()
         context['form_settings_form'] = FormSettingsForm(initial=initial, instance=form)
-        context['fieldtypes'] = FieldType.get_all()
+        context['field_types'] = FieldType.get_all()
         context['form_spec'] = form
         context['warnings'] = form.check_form()
         context['active_page'] = self.request.GET.get('page', 1)
@@ -286,10 +288,12 @@ class CreateFormType(SuccessMessageMixin, *EDIT_MIXINS, ModalCreateView):
 
     def form_valid(self, form):
         super().form_valid(form)
-        return JsonResponse({
-            'pk': self.object.pk,
-            'name': str(self.object),
-        })
+        return JsonResponse(
+            {
+                'pk': self.object.pk,
+                'name': str(self.object),
+            }
+        )
 
 
 class EditTemplate(SuccessMessageMixin, *EDIT_MIXINS, ModalUpdateView):
@@ -306,15 +310,17 @@ class EditTemplate(SuccessMessageMixin, *EDIT_MIXINS, ModalUpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['submit_url'] = reverse_lazy('dynforms-edit-type', kwargs={'pk': self.object.pk})
+        context['submit_url'] = reverse_lazy('dynforms-builder', kwargs={'pk': self.object.pk})
         return context
 
     def form_valid(self, form):
         super().form_valid(form)
-        return JsonResponse({
-            'pk': self.object.pk,
-            'name': str(self.object),
-        })
+        return JsonResponse(
+            {
+                'pk': self.object.pk,
+                'name': str(self.object),
+            }
+        )
 
 
 class DeleteFormType(*EDIT_MIXINS, ModalDeleteView):

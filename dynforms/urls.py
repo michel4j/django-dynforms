@@ -8,11 +8,11 @@ from dynforms import views
 urlpatterns = [
     path('forms/', views.FormTypeList.as_view(), name='dynforms-list'),
     path('forms/new/', views.CreateFormType.as_view(), name='dynforms-create-type'),
-    path('forms/<int:pk>/', views.EditFormView.as_view(), name='dynforms-builder'),
+    path('forms/<int:pk>/', views.FormBuilder.as_view(), name='dynforms-builder'),
     path('forms/<int:pk>/run/', views.DynFormView.as_view(), name='dynforms-run'),
     path('forms/<int:pk>/check/', views.CheckFormAPI.as_view(), name='dynforms-check'),
     path('forms/<int:pk>/edit/', views.EditTemplate.as_view(), name='dynforms-edit-template'),
-    path('forms/<int:pk>/put/', views.DeleteFormType.as_view(), name='dynforms-delete-type'),
+    path('forms/<int:pk>/delete/', views.DeleteFormType.as_view(), name='dynforms-delete-type'),
 
 
     # field urls
@@ -25,7 +25,4 @@ urlpatterns = [
     path('forms/<int:pk>/<int:page>/mov/<int:pos>/<int:to>/', views.PageFieldView.as_view(), name='dynforms-page-field'),
     path('forms/<int:pk>/<int:page>/rules/<int:pos>/', views.FieldRulesView.as_view(), name='dynforms-field-rules'),
 
-    # form urls
-    path('forms/<int:pk>/put/', views.EditFormView.as_view(), name='dynforms-edit-form'),
-    path('forms/<int:pk>/put/', views.EditFormView.as_view(), name='dynforms-edit-type'),
 ]

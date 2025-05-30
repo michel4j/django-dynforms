@@ -6,7 +6,7 @@ from django.db import models
 from django.utils.safestring import mark_safe
 
 from .fields import FieldType, ValidationError
-from .utils import Queryable, build_Q, FormPage
+from .utils import Queryable, build_Q, FormPage, FormField
 
 
 def default_pages():
@@ -40,7 +40,7 @@ class FormType(TimeStampedModel):
     class Meta:
         ordering = ['-modified']
 
-    def add_field(self, page, pos, field):
+    def add_field(self, page: int, pos: int, field: dict):
         if page < len(self.pages):
             self.pages[page]['fields'].insert(pos, field)
             self.save()
@@ -83,6 +83,7 @@ class FormType(TimeStampedModel):
     def get_page(self, page):
         if page < len(self.pages):
             return self.pages[page]
+        return None
 
     def page_names(self):
         return [p['name'] for p in self.pages]
@@ -154,7 +155,7 @@ class DynEntryMixin(TimeStampedModel):
             data = self.details
 
         # Do not validate if review has not been modified since creation
-        if (self.modified - self.created) < timedelta(seconds=1):
+        if not all((self.modified, self.created)) or (self.modified - self.created) < timedelta(seconds=1):
             return {'progress': 0.0}
 
         field_specs = {

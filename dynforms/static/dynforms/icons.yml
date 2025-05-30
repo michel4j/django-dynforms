@@ -126,3 +126,84 @@
 "x": >-
   <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path
   d="M6 6l12 12" />
+"phone": >-
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M5 4h4l2 5l-2.5 1.5a11
+  11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2" />
+"email": >-
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M12 12m-4 0a4 4 0 1
+  0 8 0a4 4 0 1 0 -8 0" /> <path d="M16 12v1.5a2.5 2.5 0 0 0 5 0v-1.5a9 9 0 1 0 -5.5
+  8.28" />
+"calendar": >-
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M4 7a2 2 0 0 1 2 -2h12a2
+  2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" /> <path d="M16 3v4" />
+  <path d="M8 3v4" /> <path d="M4 11h16" /> <path d="M11 15h1" /> <path d="M12 15v3"
+  />
+"calendar-heart": >-
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M11.5 21h-5.5a2 2 0
+  0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" /> <path d="M16 3v4" /> <path d="M8
+  3v4" /> <path d="M4 11h16" /> <path d="M18 22l3.35 -3.284a2.143 2.143 0 0 0 .005
+  -3.071a2.242 2.242 0 0 0 -3.129 -.006l-.224 .22l-.223 -.22a2.242 2.242 0 0 0 -3.128
+  -.006a2.143 2.143 0 0 0 -.006 3.071l3.355 3.296z" />
+"clock": >-
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M3 12a9 9 0 1 0 18
+  0a9 9 0 0 0 -18 0" /> <path d="M12 7v5l3 3" />
+"link": >-
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M9 15l6 -6" /> <path
+  d="M11 6l.463 -.536a5 5 0 0 1 7.071 7.072l-.534 .464" /> <path d="M13 18l-.397 .534a5.068
+  5.068 0 0 1 -7.127 0a4.972 4.972 0 0 1 0 -7.071l.524 -.463" />
+"forms": >-
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M12 3a3 3 0 0 0 -3
+  3v12a3 3 0 0 0 3 3" /> <path d="M6 3a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3" /> <path d="M13
+  7h7a1 1 0 0 1 1 1v8a1 1 0 0 1 -1 1h-7" /> <path d="M5 7h-1a1 1 0 0 0 -1 1v8a1 1
+  0 0 0 1 1h1" /> <path d="M17 12h.01" /> <path d="M13 12h.01" />
+"paragraph": >-
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M13 4v16" /> <path
+  d="M17 4v16" /> <path d="M19 4h-9.5a4.5 4.5 0 0 0 0 9h3.5" />
+"rich-text": >-
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M4 4v16" /> <path d="M8
+  6h12" /> <path d="M8 12h6" /> <path d="M8 18h10" />
+"file": >-
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M14 3v4a1 1 0 0 0 1
+  1h4" /> <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0
+  1 -2 2z" />
+"address": >-
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M5 12l-2 0l9 -9l9 9l-2
+  0" /> <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" /> <path d="M9 21v-6a2
+  2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+"user": >-
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M8 7a4 4 0 1 0 8 0a4
+  4 0 0 0 -8 0" /> <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+"dropdown": >-
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M6 10l6 6l6 -6h-12"
+  />
+"check-square": >-
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M3 3m0 2a2 2 0 0 1
+  2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" /> <path d="M9 12l2
+  2l4 -4" />
+"check-circle": >-
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M12 12m-9 0a9 9 0 1
+  0 18 0a9 9 0 1 0 -18 0" /> <path d="M9 12l2 2l4 -4" />
+"number-4": >-
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M3 3m0 2a2 2 0 0 1
+  2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" /> <path d="M10 8v3a1
+  1 0 0 0 1 1h3" /> <path d="M14 8v8" />
+"section": >-
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M20 20h.01" /> <path
+  d="M4 20h.01" /> <path d="M8 20h.01" /> <path d="M12 20h.01" /> <path d="M16 20h.01"
+  /> <path d="M20 4h.01" /> <path d="M4 4h.01" /> <path d="M8 4h.01" /> <path d="M12
+  4h.01" /> <path d="M16 4l0 .01" /> <path d="M4 8m0 1a1 1 0 0 1 1 -1h14a1 1 0 0 1
+  1 1v6a1 1 0 0 1 -1 1h-14a1 1 0 0 1 -1 -1z" />
+"plug": >-
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M9.785 6l8.215 8.215l-2.054
+  2.054a5.81 5.81 0 1 1 -8.215 -8.215l2.054 -2.054z" /> <path d="M4 20l3.5 -3.5" />
+  <path d="M15 4l-3.5 3.5" /> <path d="M20 9l-3.5 3.5" />
+"id-badge": >-
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M7 12h3v4h-3z" /> <path
+  d="M10 6h-6a1 1 0 0 0 -1 1v12a1 1 0 0 0 1 1h16a1 1 0 0 0 1 -1v-12a1 1 0 0 0 -1 -1h-6"
+  /> <path d="M10 3m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v3a1 1 0 0 1 -1 1h-2a1 1 0 0
+  1 -1 -1z" /> <path d="M14 16h2" /> <path d="M14 12h4" />
+"stoplights": >-
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M7 2m0 5a5 5 0 0 1
+  5 -5h0a5 5 0 0 1 5 5v10a5 5 0 0 1 -5 5h0a5 5 0 0 1 -5 -5z" /> <path d="M12 7m-1
+  0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /> <path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0
+  -2 0" /> <path d="M12 17m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />

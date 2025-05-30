@@ -16,7 +16,7 @@ class StandardMixin(object):
 
 class SingleLineText(FieldType, StandardMixin):
     name = _("Single Line")
-    icon = "input-cursor-text"
+    icon = "forms"
     options = ['hide', 'required', 'unique', 'repeat']
     units = ['chars', 'words']
     settings = ['label', 'width', 'options', 'minimum', 'maximum', 'units', 'default']
@@ -30,20 +30,20 @@ class SingleLineText(FieldType, StandardMixin):
 
 class ParagraphText(SingleLineText):
     name = _("Paragraph")
-    icon = "justify-left"
+    icon = "paragraph"
     options = ['hide', 'required', 'unique', 'repeat', 'counter']
     settings = ['label', 'size', 'options', 'minimum', 'maximum', 'units', 'default']
 
 
 class RichText(ParagraphText):
     name = _("Rich Text")
-    icon = "text-indent-left"
+    icon = "rich-text"
     settings = ['label', 'size', 'options', 'minimum', 'maximum', 'units', 'default']
 
 
 class MultipleChoice(FieldType, StandardMixin):
     name = _("Choices")
-    icon = "ui-radios"
+    icon = "check-circle"
     options = ['required', 'randomize', 'inline', 'hide', 'other']
     settings = ['label', 'options', 'choices']
     choices_type = 'radio'
@@ -51,7 +51,7 @@ class MultipleChoice(FieldType, StandardMixin):
 
 class ScoreChoices(FieldType, StandardMixin):
     name = _("Scores")
-    icon = "ui-radios"
+    icon = "check-circle"
     options = ['required', 'inline', 'hide']
     settings = ['label', 'options', 'choices']
     choices_type = 'radio'
@@ -66,7 +66,7 @@ class ScoreChoices(FieldType, StandardMixin):
 
 class Number(SingleLineText):
     name = _("Number")
-    icon = "5-square"
+    icon = "number-4"
     units = ['digits', 'value']
     settings = ['label', 'width', 'options', 'minimum', 'maximum', 'units', 'default']
 
@@ -80,7 +80,7 @@ class Number(SingleLineText):
 
 class CheckBoxes(FieldType, StandardMixin):
     name = _("Checkboxes")
-    icon = "check2-square"
+    icon = "check-square"
     options = ['required', 'randomize', 'inline', 'hide', 'other']
     settings = ['label', 'options', 'choices']
     choices_type = 'checkbox'
@@ -89,7 +89,7 @@ class CheckBoxes(FieldType, StandardMixin):
 
 class DropDown(MultipleChoice):
     name = _("Dropdown")
-    icon = "chevron-down"
+    icon = "dropdown"
     options = ['required', 'randomize', 'inline', 'hide', 'multiple']
     settings = ['label', 'options', 'width', 'choices']
 
@@ -97,7 +97,7 @@ class DropDown(MultipleChoice):
 class NewSection(FieldType, StandardMixin):
     input_type = None
     name = _("Section")
-    icon = "dash-lg"
+    icon = "section"
     options = ['hide', 'nolabel']
     settings = ['label', 'options']
 
@@ -110,7 +110,7 @@ class FancyMixin(object):
 
 class FullName(FieldType, FancyMixin):
     name = _("Full Name")
-    icon = "person-vcard"
+    icon = "user"
     options = ['required', 'hide', 'repeat']
     settings = ['label', 'options', ]
     required_subfields = ['first_name', 'last_name']
@@ -118,7 +118,7 @@ class FullName(FieldType, FancyMixin):
 
 class Address(FullName):
     name = _("Address")
-    icon = "house"
+    icon = "address"
     options = ['required', 'hide', 'department', 'labels']
     settings = ['label', 'options', ]
     required_subfields = ['street', 'city', 'region', 'country', 'code']
@@ -141,11 +141,9 @@ class Address(FullName):
 
 class MultiplePhoneNumber(FieldType, FancyMixin):
     name = _("Phone #s")
-    icon = "telephone"
+    icon = "phone"
     options = ['required', 'hide', 'repeat']
     settings = ['label', 'options', ]
-
-
 
 
 class Equipment(FieldType, FancyMixin):
@@ -165,14 +163,15 @@ class ContactInfo(FullName):
 
 class NameAffiliation(FullName):
     name = _("Name/Affiliation")
-    icon = "person-vcard"
+    icon = "id-badge"
     options = ['required', 'hide', 'repeat']
     settings = ['label', 'options', ]
     required_subfields = ['first_name', 'last_name', 'affiliation']
 
+
 class NameEmail(FullName):
     name = _("Name/Email")
-    icon = "person-vcard"
+    icon = "id-badge"
     options = ['required', 'hide', 'repeat']
     settings = ['label', 'options', ]
     required_subfields = ['first_name', 'last_name', 'email']
@@ -199,9 +198,10 @@ class NameEmail(FullName):
 
         return val
 
+
 class Email(FieldType, FancyMixin):
     name = _("Email")
-    icon = "envelope-at"
+    icon = "email"
     options = ['required', 'unique', 'hide', 'repeat']
     units = ['chars']
     settings = ['label', 'width', 'options', 'minimum', 'maximum', 'units', 'default']
@@ -209,7 +209,7 @@ class Email(FieldType, FancyMixin):
 
 class Date(FieldType, FancyMixin):
     name = _("Date")
-    icon = "calendar-date"
+    icon = "calendar"
     options = ['required', 'unique', 'hide', 'multiple']
     settings = ['label', 'options']
 
@@ -237,7 +237,7 @@ class WebsiteURL(FieldType, FancyMixin):
 
 class Likert(FieldType, FancyMixin):
     name = _("Likert")
-    icon = "ui-radios-grid"
+    icon = "list-details"
     options = ['required', 'hide']
     settings = ['label', 'options', 'choices']
 
@@ -273,7 +273,7 @@ class File(FieldType, FancyMixin):
 
 class PhoneNumber(FieldType, FancyMixin):
     name = _("Phone #")
-    icon = "telephone"
+    icon = "phone"
     options = ['required', 'hide', 'repeat']
     settings = ['label', 'width', 'options', ]
 

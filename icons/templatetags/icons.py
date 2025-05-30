@@ -1,14 +1,13 @@
 import yaml
-
 from django import template
-from django.utils.safestring import mark_safe
-from django.contrib.staticfiles import finders
-
 from django.apps import apps
+from django.contrib.staticfiles import finders
+from django.utils.safestring import mark_safe
 
 register = template.Library()
 
 ICONS = {}
+
 
 def load_icons():
     """
@@ -22,6 +21,8 @@ def load_icons():
             with open(result, 'r') as file:
                 icons = yaml.safe_load(file)
                 ICONS.update(icons)
+
+
 load_icons()
 
 DEFAULT_ICON = ICONS.get(
@@ -53,6 +54,7 @@ class SpriteRegistry:
     This is used to render the SVG sprite definitions in the template.
     """
     registry = {}
+
     @classmethod
     def get_sprites(cls, path: str) -> set[str]:
         """
@@ -80,8 +82,10 @@ def svg_icon(context, name, size=None, stroke=None):
     SpriteRegistry.add_sprite(context.request.path, name)
     size = 'md' if not size else size
     stroke = 2 if not stroke else stroke
-    svg = SVG_USE_SPRITE.format(name=name, stroke=stroke, drawing=ICONS.get(name, DEFAULT_ICON), css_class=f"icon-{size}")
+    svg = SVG_USE_SPRITE.format(name=name, stroke=stroke, drawing=ICONS.get(name, DEFAULT_ICON),
+                                css_class=f"icon-{size}")
     return mark_safe(svg)
+
 
 @register.simple_tag(takes_context=True)
 def svg_sprites(context):
@@ -96,10 +100,12 @@ def svg_sprites(context):
     ])
     return mark_safe(SVG_SPRITES.format(sprites=sprites_content))
 
+
 @register.simple_tag
 def font_icon(name, size=None):
     size = 'md' if not size else size
     return mark_safe(f'<i class="ti-{name} icon-{size}"></i>')
+
 
 @register.simple_tag(takes_context=True)
 def tool_icon(context, **kwargs):

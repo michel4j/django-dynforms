@@ -162,10 +162,12 @@ function setupMenuForm(form_id) {
             type: 'post',
             url: put_url,
             success: function (result) {
+                active_field.load(get_url, function() {
+                    adjustFieldWidth(active_field);
+                });
+                console.log('Field settings applied successfully');
                 $("#field-settings").html(result);
                 setupMenuForm("#field-settings .df-menu-form");
-                adjustFieldWidth(active_field);
-                active_field.load(get_url);
             }
         });
     }
@@ -276,7 +278,6 @@ function doBuilderLoad() {
                 data: {
                     'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val(),
                 },
-                dataType: 'json',
                 success: function (response) {
                     dfToasts.success({
                         message: `Field: ${active_field.data('field-type')} deleted!`

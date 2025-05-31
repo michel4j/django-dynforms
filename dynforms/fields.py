@@ -43,6 +43,7 @@ class FieldTypeMeta(type):
             return ft()
 
 
+
 CHOICE_INFO = {
     'chars': _('Characters'),
     'words': _('Words'),

@@ -67,10 +67,12 @@ def show_field(context, field, repeatable=False):
 @register.simple_tag(takes_context=True)
 def show_builder_field(context, field, repeatable=False):
     all_data = field.get_data(context)
-
-    t = template.loader.get_template(field.type.templates[0])
-    if field.type.multi_valued:
-        all_data = [] if all_data == '' else all_data
+    if field.type:
+        t = template.loader.get_template(field.type.templates[0])
+        if field.type.multi_valued:
+            all_data = [] if all_data == '' else all_data
+    else:
+        t = template.loader.get_template('dynforms/fields/nofield.html')
 
     if not (repeatable and isinstance(all_data, list)):
         all_data = [all_data]

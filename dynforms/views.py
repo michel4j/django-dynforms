@@ -98,7 +98,7 @@ class GetFieldView(*EDIT_MIXINS, TemplateView):
         pos = int(self.kwargs.get('pos'))
         form = FormType.objects.get(pk=self.kwargs.get('pk'))
         field = form.get_field(page, pos)
-        context['field'] = field
+        context['field'] = FormField(**field, index=pos)
         return context
 
 

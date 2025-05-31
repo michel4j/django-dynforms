@@ -28,7 +28,7 @@
     </span>
         {% endif %}
     {% endif %}
-    {% if field.type %}
+
         {% if field.is_repeatable %}
             {% show_builder_field field repeatable=True %}
             <button data-repeat-add=".{{ field.name }}-repeatable"
@@ -38,10 +38,7 @@
         {% else %}
             {% show_builder_field field %}
         {% endif %}
-    {% else %}
 
-        <div>{{ field.field_type }} not implemented yet.</div>
-    {% endif %}
 </div>
 <script>
     {% if "repeat" in field.options %}

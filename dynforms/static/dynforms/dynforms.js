@@ -123,18 +123,21 @@
 
 // field preview customizer
 function setupField() {
+
     if ($(this).is(".selected")) {
         return;
     }
-    let prev_field = $('div.df-field.selected');
+    let prev_field = $('.df-field.selected');
     let active_field = $(this);
-    let active_page = $('.df-container.active');
+    let active_page = $('.df-page.active');
     let rules_url = `${document.URL}${active_page.index()}/rules/${active_field.data('field-pos')}/`;
     let put_url = `${document.URL}${active_page.index()}/put/${active_field.data('field-pos')}/`;
+
     // remove selected class from all fields
     prev_field.toggleClass("selected", false);
     active_field.toggleClass("selected", true);
 
+    // load field settings
     $('#df-sidebar a[href="#field-settings"]').tab('show');
 
     // Ajax Update form
@@ -148,16 +151,15 @@ function setupField() {
 function setupMenuForm(form_id) {
 
     // Setup Repeatable Fields
-    $(form_id + ' button[data-repeat-add]').repeatable({clearIfLast: false});
+    $(`${form_id } button[data-repeat-add]`).repeatable({clearIfLast: false});
 
 
     // handle applying field settings
     function submitHandler(event) {
-        let active_page = $('.df-container.active');
+        let active_page = $('.df-page.active');
         let active_field = $('div.df-field.selected');
         let put_url = `${document.URL}${active_page.index()}/put/${active_field.index()}/`;
         let get_url = `${document.URL}${active_page.index()}/get/${active_field.index()}/`;
-
         $(form_id).ajaxSubmit({
             type: 'post',
             url: put_url,
@@ -165,7 +167,6 @@ function setupMenuForm(form_id) {
                 active_field.load(get_url, function() {
                     adjustFieldWidth(active_field);
                 });
-                console.log('Field settings applied successfully');
                 $("#field-settings").html(result);
                 setupMenuForm("#field-settings .df-menu-form");
             }
@@ -179,7 +180,6 @@ function setupMenuForm(form_id) {
 }
 
 function adjustFieldWidth(selector) {
-    console.log('Adjusting field width for:', selector);
     const element = $(selector);
     let child = $(element).children('.form-group');
     element.removeClass(element.data('field-width')).addClass(child.data('field-width'));
@@ -189,15 +189,15 @@ function adjustFieldWidth(selector) {
 // Load the form builder
 function doBuilderLoad() {
     if (!$('#df-form-preview').is('.loaded')) {
-        $('div.field-btn').draggable({
-            connectToSortable: '.df-container.active',
+        $('.field-btn').draggable({
+            connectToSortable: '.df-page.active > .df-container',
             revert: "invalid",
-            appendTo: '.df-container.active',
+            appendTo: '.df-page.active > .df-container',
             cursorAt: {left: 5, top: 5},
             scroll: true,
             helper: "clone",
             start: function (event, ui) {
-                let exp = $('.df-container.active');
+                let exp = $('.df-page.active > .df-container');
                 ui.helper.addClass("ui-draggable-helper");
                 ui.helper.width(exp.width() / 4);
             },
@@ -209,13 +209,15 @@ function doBuilderLoad() {
                 return;
             }
             const new_el = $('<div class="df-field"></div>');
-            const cur_pg = $('.df-container.active');
-            cur_pg.append(new_el);
+            const cur_page = $('.df-page.active');
+            const cur_container = $('.df-page.active > .df-container');
+            cur_container.append(new_el);
             new_el.data('field-type', $(this).data('field-type'));
             new_el.data('field-pos', new_el.index());
             new_el.click(setupField);
+
             // Ajax Add Field
-            let field_url = `${document.URL + cur_pg.index()}/add/${new_el.data('field-type')}/${new_el.index()}/`;
+            let field_url = `${document.URL}${cur_page.index()}/add/${new_el.data('field-type')}/${new_el.index()}/`;
             new_el.load(field_url, function () {
                 $(this).click();
             });
@@ -226,39 +228,41 @@ function doBuilderLoad() {
             revert: false,
             forcePlaceholderSize: true,
             stop: function (event, ui) {
+                let page_fields = $('.df-page.active > .df-container .df-field');
+                let active_page = $('.df-page.active > .df-container');
                 if (ui.item.hasClass("field-btn")) {
                     ui.item.removeClass();
-                    ui.item.addClass("df-field container no-space").attr("style", "");
+                    ui.item.addClass("df-field container").attr("style", "");
                     ui.item.html("");
                     ui.item.click(setupField);
                     // Ajax Add Field
-                    let add_url = `${document.URL + $('.df-container.active').index()}/add/${ui.item.data('field-type')}/${ui.item.index()}/`;
+                    let add_url = `${document.URL}${active_page.index()}/add/${ui.item.data('field-type')}/${ui.item.index()}/`;
                     ui.item.load(add_url, function () {
                         // renumber all fields on active page
-                        $('.df-container.active .df-field').each(function () {
+                        page_fields.each(function () {
                             $(this).data('field-pos', $(this).index());
                         });
                         $(this).click();
                     });
                 } else {
                     // move dropped field to new position on server
-                    let move_url = `${document.URL + $('.df-container.active').index()}/mov/${ui.item.data('field-pos')}-${ui.item.index()}/`;
+                    let move_url = `${document.URL}${active_page.index()}/mov/${ui.item.data('field-pos')}-${ui.item.index()}/`;
                     $('<div class="ajax"></div>').load(move_url);
                     // renumber all fields on active page
-                    $('.df-container.active .df-field').each(function () {
+                    page_fields.each(function () {
                         $(this).data('field-pos', $(this).index());
                     });
                 }
             }
         }).droppable({});
 
-        $('div.df-field').click(setupField);
+        $('.df-field').click(setupField);
         setupMenuForm("#form-settings .df-menu-form");
         setupMenuForm("#field-settings .df-menu-form");
 
         $(document).on('click', "button[data-page-number]", function (e) {
             e.preventDefault();
-            $('<div class="ajax"></div>').load(`${document.URL + $(this).data('page-number')}/del/`);
+            $('<div class="ajax"></div>').load(`${document.URL}${$(this).data('page-number')}/del/`);
             window.location.reload();
         });
 
@@ -268,8 +272,9 @@ function doBuilderLoad() {
         $(document).on('click', '#field-settings #delete-field', function (e) {
             e.preventDefault();
             // handle deleting fields
-            const active_field = $('div.df-field.selected');
-            const active_page = $('.df-container.active');
+            const active_field = $('.df-field.selected');
+            const active_page = $('.df-page.active > .df-container');
+            const page_fields = $('.df-page.active > .df-container .df-field');
             let del_url = `${document.URL}${active_page.index()}/del/${active_field.index()}/`;
 
             $.ajax({
@@ -284,7 +289,7 @@ function doBuilderLoad() {
                     });
                     active_field.remove();
                     // renumber all fields on active page
-                    $('.df-container.active .df-field').each(function () {
+                    page_fields.each(function () {
                         $(this).data('field-pos', $(this).index());
                     });
                     $("#field-settings").html(response);
@@ -302,7 +307,7 @@ function doBuilderLoad() {
         $(document).on('click', "#field-settings #move-next", function (e) {
             e.preventDefault();
             let active_field = $('div.df-field.selected');
-            let active_page = $('.df-container.active');
+            let active_page = $('.df-page.active > .df-container');
             let next_page = Math.min(active_page.index() + 1, $('.df-container').last().index());
             let move_url = `${document.URL}${active_page.index()}/mov/${active_field.index()}/${next_page}/`;
             $.ajax({
@@ -322,7 +327,7 @@ function doBuilderLoad() {
         $(document).on('click', "#field-settings #move-prev", function (e) {
             e.preventDefault();
             let cur_fld = $('div.df-field.selected');
-            let page_no = $('.df-container.active').index();
+            let page_no = $('.df-page.active > .df-container').index();
             let move_url = `${document.URL + page_no}/mov/${cur_fld.index()}/${Math.max(page_no - 1, 0)}/`;
             $.ajax({
                 type: 'POST',

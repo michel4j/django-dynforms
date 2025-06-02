@@ -39,7 +39,7 @@ html, body {
   overflow-x: hidden;
 
   .tab-content {
-    padding: 0.5em;
+    padding: 0.5em 1.5em;
   }
 
   .df-hide {
@@ -60,6 +60,10 @@ html, body {
   > div.vr {
     border-left: 1px dotted var(--bs-border-color);
   }
+}
+
+.modal {
+  --bs-modal-width: 600px;
 }
 
 .sortable {
@@ -85,9 +89,6 @@ html, body {
   }
 }
 
-.sortable.grid {
-  overflow: hidden;
-}
 
 .df-field {
   padding: 0.5em;
@@ -166,7 +167,6 @@ html, body {
 .df-container {
   overflow: auto;
   min-height: 150px;
-  padding-bottom: 100px;
 }
 
 .ui-draggable-helper {

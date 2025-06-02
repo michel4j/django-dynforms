@@ -1,5 +1,6 @@
+{% load icons %}
 <div class="row rules-repeatable">
-    <div class="input-group mb-2">
+    <div class="input-group input-group-sm mb-2">
         <div class="form-floating">
             <select class="form-control select" name="rule.action" id="action{{ index }}">
                 {% for act_name, act_lbl in rule_actions %}
@@ -22,7 +23,7 @@
             <label for="field{{ index }}">Field</label>
         </div>
         <div class="form-floating">
-            <input type="text" class="form-control" id="subfield{{ index }}" name="rule.subfield" value={{ rule.subfield }}>
+            <input type="text" class="form-control" id="subfield{{ index }}" name="rule.subfield" value="{{ rule.subfield }}">
             <label for="subfield{{ index }}">Subfield</label>
         </div>
 
@@ -39,10 +40,10 @@
         </div>
 
         <div class="form-floating">
-            <input type="text" class="form-control" id="value{{ index }}" name="rule.value" value={{ rule.value }}>
+            <input type="text" class="form-control" id="value{{ index }}" name="rule.value" value="{{ rule.value }}">
             <label for="value{{ index }}">Value</label>
         </div>
-        <button type="button" class="btn btn-danger remove-repeat"><i class="bi-dash-lg"></i></button>
+        <button type="button" class="btn btn-danger remove-repeat">{% svg_icon "x" size=sm %}</button>
     </div>
 </div>
 

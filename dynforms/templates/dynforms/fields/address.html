@@ -3,37 +3,37 @@
 <div class="controls{{ repeatable }}" id="{{ field.name }}-controls">
     <div class="row">
         {% if 'department' in field.options %}
-            <div class="col-12">
+            <div class="col-12 mb-2">
                 {% if 'labels' in field.options %}
                     <label for="{{ field.name }}-place">Institution / Department</label>{% endif %}
                 <input id="{{ field.name }}-place" aria-label="Institution" placeholder="Institution / Department"
                        name="{{ field.name }}.place" class="form-control" type="text" value="{{ data.place }}">
             </div>
         {% endif %}
-        <div class="col-12">
+        <div class="col-12 mb-2">
             {% if 'labels' in field.options %}<label for="{{ field.name }}-street">Street</label>{% endif %}
             <input id="{{ field.name }}-street" name="{{ field.name }}.street"
                    aria-label="Street" placeholder="Street"
                    class="form-control" type="text" value="{{ data.street }}">
         </div>
-        <div class="col-6">
+        <div class="col-6 mb-2">
             {% if 'labels' in field.options %}<label for="{{ field.name }}-country">Country</label>{% endif %}
             <input id="{{ field.name }}-country" aria-label="Country" name="{{ field.name }}.country"
                    class="form-control" type="text" value="{{ data.country }}" placeholder="Country ...">
         </div>
-        <div class="col-6">
+        <div class="col-6 mb-2">
             {% if 'labels' in field.options %}
                 <label for="{{ field.name }}-region">Province / State / Region</label>{% endif %}
 
             <input id="{{ field.name }}-region" aria-label="Province/State/Region" name="{{ field.name }}.region"
                    class="form-control" type="text" value="{{ data.region }}" placeholder="Province/State/Region ...">
         </div>
-        <div class="col-6">
+        <div class="col-6 mb-2">
             {% if 'labels' in field.options %}<label for="{{ field.name }}-city">City</label>{% endif %}
             <input id="{{ field.name }}-city" aria-label="City" placeholder="City" name="{{ field.name }}.city"
                    class="form-control" type="text" value="{{ data.city }}">
         </div>
-        <div class="col-6">
+        <div class="col-6 mb-1">
             {% if 'labels' in field.options %}<label for="{{ field.name }}-code">Postal / Zip Code</label>{% endif %}
             <input id="{{ field.name }}-code" aria-label="Postal Code" placeholder="Postal Code"
                    name="{{ field.name }}.code" class="form-control" type="text" value="{{ data.code }}">

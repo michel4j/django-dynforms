@@ -64,29 +64,22 @@ CHOICES_TEMPLATE = "{% include 'dynforms/field-choices.html' %}"
 
 class FieldSettingsForm(forms.Form):
     def __init__(self, *args, **kwargs):
-        field_type = kwargs.pop('field_type')
+        self.field_type = kwargs.pop('field_type')
         action_url = kwargs.pop('action_url')
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_class = 'df-menu-form'
         self.helper.form_action = action_url
-        if field_type is not None:
+        if self.field_type is not None:
             self.helper.layout = Layout(
-                self.create_layout(field_type)
+                self.create_layout(self.field_type)
             )
         else:
-            self.helper.layout = Layout(
-                HTML(
-                    '<div class="alert alert-info">'
-                    '   <div class="panel-body">'
-                    '       <h4>No Field Selected</h4>'
-                    '       <p>Please select a field on the form preview to edit its settings.</p>'
-                    '   </div>'
-                    '</div>'
-                )
-            )
+            self.helper.layout = self.create_layout()
 
     def clean(self):
+        if self.field_type is None:
+            raise ValidationError(_("Field type is not defined. Cannot save settings."))
         cleaned_data = super().clean()
         if 'default_choices' in cleaned_data:
             cleaned_data['default_choices'] = list(map(int, cleaned_data['default_choices']))
@@ -99,15 +92,12 @@ class FieldSettingsForm(forms.Form):
         kwargs['required'] = kwargs.get('required', False)
         self.fields[name] = ft(**kwargs)
 
-    def create_layout(self, field_type):
-        for nm in ['name', 'tags', 'label', 'instructions']:
-            self.add_custom_field(nm)
-
+    def create_type_layout(self, field_type):
         for field_name in ['size', 'options', 'width']:
             if field_name == 'width' or field_name in field_type.settings:
                 self.add_custom_field(field_name, choices=field_type.get_choices(field_name))
 
-        _fieldset = Div(
+        fieldset = Div(
             AppendedText('label', mark_safe(f"<small>{field_type.name}</small>")),
             Field('instructions', rows=2)
         )
@@ -119,16 +109,16 @@ class FieldSettingsForm(forms.Form):
         if 'size' in field_type.settings:
             row.append(Div(Field('size', css_class='select'), css_class='col'))
 
-        _fieldset.append(row)
+        fieldset.append(row)
 
         if 'options' in field_type.settings:
-            _fieldset.append(InlineCheckboxes('options'))
+            fieldset.append(InlineCheckboxes('options'))
 
         if {'minimum', 'maximum', 'units'} & set(field_type.settings):
             self.add_custom_field('minimum')
             self.add_custom_field('maximum')
             self.add_custom_field('units', choices=field_type.get_choices('units'))
-            _fieldset.append(
+            fieldset.append(
                 Div(
                     Div('minimum', css_class='col-3'),
                     Div('maximum', css_class='col-3'),
@@ -151,14 +141,33 @@ class FieldSettingsForm(forms.Form):
             } for i, v in choices]
 
             self.initial['choices_type'] = field_type.choices_type
-            _fieldset.append(HTML(CHOICES_TEMPLATE))
+            fieldset.append(HTML(CHOICES_TEMPLATE))
 
         elif 'default' in field_type.settings:
             self.add_custom_field('default')
-            _fieldset.append('default'),
+            fieldset.append('default'),
+        fieldset.append('tags')
+        return fieldset
 
-        _fieldset.append('tags')
-        _fieldset.append(PrependedText(
+    def create_layout(self, field_type=None):
+        for nm in ['name', 'tags', 'label', 'instructions']:
+            self.add_custom_field(nm)
+
+        if field_type:
+            fieldset = self.create_type_layout(field_type)
+        else:
+            fieldset = Div(
+                HTML(
+                    '<div class="alert alert-warning">'
+                    '   <div class="panel-body">'
+                    '       <h4>Field Type Undefined</h4>'
+                    '       <p>Please delete this field, or select a different field to edit its settings.</p>'
+                    '   </div>'
+                    '</div>'
+                ),
+            )
+
+        fieldset.append(PrependedText(
             'name',
             mark_safe('🗲'),
             title="This is the internal reference name for the field. Change with caution!"
@@ -169,8 +178,7 @@ class FieldSettingsForm(forms.Form):
         else:
             rule_html = "Rules"
 
-        _fieldset.append(
-
+        fieldset.append(
             FormActions(
                 HTML('<hr class="hr-xs"/>'),
                 Div(
@@ -188,7 +196,7 @@ class FieldSettingsForm(forms.Form):
                 ),
                 css_class="row")
         )
-        _fieldset.append(
+        fieldset.append(
             FormActions(
                 HTML('<hr class="hr-xs"/>'),
                 Div(
@@ -206,7 +214,7 @@ class FieldSettingsForm(forms.Form):
                 )
             )
         )
-        return _fieldset
+        return fieldset
 
 
 PAGES_TEMPLATE = "{% include 'dynforms/form-pages.html' %}"

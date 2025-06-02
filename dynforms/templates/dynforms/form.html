@@ -2,77 +2,80 @@
 {% load icons %}
 {% with form.get_validation as validation %}
 
-<form id="myform" method="post">
-    <div class="df-form">
-        {#% render_form_tabs %#}
-        {% with form.form_type.get_pages as form_pages %}
-            <!-- Nav tabs -->
-            {% if form_pages|length > 1 %}
-            <ul class="df-form-tabs nav nav-tabs">
-                {% for page in form_pages %}
-                    <li class="nav-item">
-                        <a href="#page{{ page.number }}"
-                           class="nav-link {% if page.number == active_page %}active{% endif %}"
-                           data-bs-toggle="tab">{{ page.name }}
-                        </a>
-                    </li>
-                {% endfor %}
-            </ul>
-            {% else %}
-                <div class="df-form-tabs"></div>
-            {% endif %}
-            <div class="df-form-body">
-                <!-- Tab panes -->
-                <div class="tab-content">
-                    {% csrf_token %}
-                    <input type='hidden' name='active_page' value='{{ active_page }}'/>
-                    {% for page in form_pages %}
-                        <div class="tab-pane {% if page.number == active_page %}active{% endif %} df-container grid"
-                             id="page{{ page.number }}" data-page-number="{page.number}}"
-                        >
-                        {% with validation|page_errors:page.number as errors %}
-                        {% if errors or form.errors %}<div class="alert {% if form.errors %} alert-danger{% else %}alert-warning{% endif %} alert-dismissible">
-						<button class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
-                        {% include 'dynforms/form-errors.html' %}
-					    </div>{% endif %}
-                            {% for field in page.fields %}
-                                <div class="df-field {{ field.width_styles }}">
-                                    {% include "dynforms/builder-field.html" %}
-                                </div>
-                            {% endfor %}
-                        </div>
-                        {% endwith %}
-                    {% endfor %}
+    <form id="myform" method="post">
+        <div class="df-form">
+            {#% render_form_tabs %#}
+            {% with form.form_type.get_pages as form_pages %}
+                <!-- Nav tabs -->
+                {% if form_pages|length > 1 %}
+                    <ul class="df-form-tabs nav nav-tabs">
+                        {% for page in form_pages %}
+                            <li class="nav-item">
+                                <a href="#page{{ page.number }}"
+                                   class="nav-link {% if page.number == active_page %}active{% endif %}"
+                                   data-bs-toggle="tab">{{ page.name }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <div class="df-form-tabs"></div>
+                {% endif %}
+                <div class="df-form-body">
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        {% csrf_token %}
+                        <input type='hidden' name='active_page' value='{{ active_page }}'/>
+                        {% for page in form_pages %}
+                            <div class="tab-pane {% if page.number == active_page %}active{% endif %}"
+                                 id="page{{ page.number }}">
+                                <div class="df-container row">
+                                    {% with validation|page_errors:page.number as errors %}
+                                        {% if errors or form.errors %}
+                                            <div class="alert {% if form.errors %} alert-danger{% else %}alert-warning{% endif %} alert-dismissible">
+                                                <button class="btn-close ms-auto" data-bs-dismiss="alert"
+                                                        aria-label="Close"></button>
+                                                {% include 'dynforms/form-errors.html' %}
+                                            </div>{% endif %}
+                                        {% for field in page.fields %}
+                                            <div class="df-field {{ field.width_styles }}">
+                                                {% include "dynforms/field.html" %}
+                                            </div>
+                                        {% endfor %}
+                                        </div>
+                                    {% endwith %}
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
-            <div class="df-form-footer d-flex align-items-center">
-                <div class="footer-progress">
-                    <div class="d-flex flex-column align-items-stretch justify-content-center">
-                        <div style="font-size: 95%;">
-                            {{ validation.progress|default:0 }}% complete &mdash; {{ object }}
-                        </div>
-                        <div>
-                            <div class="progress" style="height: 0.75em;">
-                                <div class="progress-bar {% if validation.progress < 99.5 %}bg-warning{% else %}bg-success{% endif %}"
-                                     role="progressbar"
-                                     aria-valuenow="{{ validation.progress }}"
-                                     aria-valuemin="0" aria-valuemax="100"
-                                     style="width: {{ validation.progress }}%"></div>
+                <div class="df-form-footer d-flex align-items-center">
+                    <div class="footer-progress">
+                        <div class="d-flex flex-column align-items-stretch justify-content-center">
+                            <div style="font-size: 95%;">
+                                {{ validation.progress|default:0 }}% complete &mdash; {{ object }}
+                            </div>
+                            <div>
+                                <div class="progress" style="height: 0.75em;">
+                                    <div class="progress-bar {% if validation.progress < 99.5 %}bg-warning{% else %}bg-success{% endif %}"
+                                         role="progressbar"
+                                         aria-valuenow="{{ validation.progress }}"
+                                         aria-valuemin="0" aria-valuemax="100"
+                                         style="width: {{ validation.progress }}%"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <span class="footer-buttons">
+                    <span class="footer-buttons">
                 {% for name, label in form.form_type.actions reversed %}
                     <input type="submit" id="{{ name }}-action"
                            class="btn {% if forloop.last %}btn-primary{% else %}btn-light border{% endif %}"
                            value="{{ label }}" name="{{ name }}">
                 {% endfor %}
             </span>
-            </div>
-        {% endwith %}
-    </div>
-</form>
+                </div>
+            {% endwith %}
+        </div>
+    </form>
 {% endwith %}
 
 <script>
@@ -99,33 +102,37 @@
         var myform = $('#myform');
         {#myform.find("a[data-bs-toggle='tab']").click(function (e) {#}
         {#    myform.find(":input[name='active_page']").val($(this).parent().index());#}
-        {#});#}
-        $("a[data-tab-proxy]").click(function (e) {
-            $($(this).attr('data-tab-proxy')).click();
-        });
+        {#})
+            ;
+            #}
+            $("a[data-tab-proxy]").click(function (e) {
+                $($(this).attr('data-tab-proxy')).click();
+            });
 
-        //Save time when form was loaded
-        myform.attr('data-dynform-loaded', $.now());
+            //Save time when form was loaded
+            myform.attr('data-dynform-loaded', $.now());
 
-        function monitorChanges(event) {
-            // save time when any field was modified except while loading
-            var dur = Math.abs(event.timeStamp - myform.attr('data-dynform-loaded'));
-            if (dur > 2000) {
-                $("#myform").attr('data-dynform-dirty', dur);
+            function monitorChanges(event) {
+                // save time when any field was modified except while loading
+                var dur = Math.abs(event.timeStamp - myform.attr('data-dynform-loaded'));
+                if (dur > 2000) {
+                    $("#myform").attr('data-dynform-dirty', dur);
+                }
             }
+
+            myform.on('change', ':input', monitorChanges);
+            myform.on('click', '[data-repeat-add], .remove-repeat', monitorChanges);
+
+            myform.submit(function () {
+                $(this).removeAttr('data-dynform-dirty'); // No warning when saving dirty form
+                $("input[disabled]").removeAttr("disabled");
+            });
+            $(".df-field-runtime").click(function () {
+                $('.df-field-runtime').removeClass('activated');
+                $(this).addClass('activated');
+            });
+
         }
-
-        myform.on('change', ':input', monitorChanges);
-        myform.on('click', '[data-repeat-add], .remove-repeat', monitorChanges);
-
-        myform.submit(function () {
-            $(this).removeAttr('data-dynform-dirty'); // No warning when saving dirty form
-            $("input[disabled]").removeAttr("disabled");
-        });
-        $(".df-field-runtime").click(function () {
-            $('.df-field-runtime').removeClass('activated');
-            $(this).addClass('activated');
-        });
-
-    });
+    )
+        ;
 </script>

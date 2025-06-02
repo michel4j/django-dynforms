@@ -16,15 +16,17 @@
         <!-- Tab panes -->
         <div class="tab-content">
             {% for page in form_pages %}
-                <div class="tab-pane {% if page.number == active_page %}active{% endif %} df-container sortable grid"
-                     id="page{{ page.number }}" data-page-number="{page.number}}">
-                    {% for field in page.fields %}
-                        <div class="df-field {{ field.width_styles }}"
-                             data-field-width="{{ field.width_styles }}"
-                             data-field-type="{{ field.field_type }}" data-field-pos="{{ field.index }}">
-                            {% include "dynforms/builder-field.html" %}
-                        </div>
-                    {% endfor %}
+                <div class="tab-pane df-page {% if page.number == active_page %}active{% endif %}"
+                     id="page{{ page.number }}">
+                    <div class="df-container row sortable" data-page-number="{page.number}}">
+                        {% for field in page.fields %}
+                            <div class="df-field {{ field.width_styles }}"
+                                 data-field-width="{{ field.width_styles }}"
+                                 data-field-type="{{ field.field_type }}" data-field-pos="{{ field.index }}">
+                                {% include "dynforms/field.html" %}
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
             {% endfor %}
         </div>

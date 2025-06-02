@@ -1,6 +1,7 @@
 {% extends "crisp_modals/modal.html" %}
-{% block modal_title %}Field Rules Editor{% endblock %}
-{% block modal_styles %}modal-lg{% endblock %}
+{% load icons %}
+{% block modal_title %}Field Rules{% endblock %}
+{% block modal_styles %}modal-md{% endblock %}
 {% block pre_content %}<form role="form" id="rules-form" action="{{action_url}}">{% endblock %}
 {% block modal_body %}
     <p class="lead">
@@ -14,9 +15,9 @@
     {% empty %}
     {% include "dynforms/one-rule.html" with index=0 %}
     {% endfor %}
-    <button type="button" name="add" title="Add Rule" class="btn btn-success btn-sm"
+    <button type="button" name="add" title="Add Rule" class="btn btn-success "
             data-repeat-add=".rules-repeatable">
-        <i class="bi-plus-lg icon-fw"></i>
+        {% svg_icon "plus" size="sm" %}
     </button>
 {% endblock %}
 {% block modal_footer %}
@@ -27,6 +28,5 @@
 {% block modal_scripts %}
 <script>
 $('#rules-form button[data-repeat-add]').repeatable();
-//$("select.select").selectize();
 </script>
 {% endblock %}

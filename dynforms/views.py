@@ -74,7 +74,7 @@ class DynFormView(DynCreateView):
 
 
 class AddFieldView(*EDIT_MIXINS, TemplateView):
-    template_name = "dynforms/builder-field.html"
+    template_name = "dynforms/field.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -90,7 +90,7 @@ class AddFieldView(*EDIT_MIXINS, TemplateView):
 
 
 class GetFieldView(*EDIT_MIXINS, TemplateView):
-    template_name = "dynforms/builder-field.html"
+    template_name = "dynforms/field.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -191,9 +191,6 @@ class FieldRulesView(*EDIT_MIXINS, ModalFormView):
         form_obj.update_field(page, pos, field)
         return super().form_valid(form)
 
-    def get_success_url(self):
-        return self.request.get_full_path()
-
 
 class EditFieldView(*EDIT_MIXINS, FormView):
     template_name = "dynforms/edit-settings.html"
@@ -215,8 +212,10 @@ class EditFieldView(*EDIT_MIXINS, FormView):
         pos = int(self.kwargs.get('pos'))
         form_obj = FormType.objects.get(pk=self.kwargs.get('pk'))
         field = form_obj.get_field(page, pos)
-        field.update(form.cleaned_data)
-        form_obj.update_field(page, pos, field)
+        field_obj = FormField(**field, index=pos)
+        if field_obj.type:
+            field.update(form.cleaned_data)
+            form_obj.update_field(page, pos, field)
         return super().form_valid(form)
 
     def get_success_url(self):

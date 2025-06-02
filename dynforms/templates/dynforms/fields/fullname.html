@@ -1,3 +1,4 @@
+{% load icons %}
 <div class="controls row {{repeatable}}" id="{{field.name}}-controls">
 	    <span class="col-3">
 		    <input id="first_name" aria-label="First name" placeholder="First name" name="{{field.name}}.first_name"
@@ -13,8 +14,8 @@
             <input id="other_names" aria-label="Other names" placeholder="Other names" name="{{field.name}}.other_names"
                    class="form-control" type="text" value={{data.other_names}}
             >
-		    <button type="button" title="Remove person from list" class="btn border-3d remove-repeat">
-                <i class="bi-dash-lg text-danger"></i>
+		    <button type="button" title="Remove person from list" class="btn btn-light border text-danger remove-repeat">
+                {% svg_icon "x" size="sm" %}
             </button>
         </div>
 		{% else %}

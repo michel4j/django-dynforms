@@ -215,3 +215,19 @@
   <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M4 4m0 2a2 2 0 0 1
   2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /> <path d="M9 4v16"
   /> <path d="M14 10l2 2l-2 2" />
+"info-circle": >-
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M3 12a9 9 0 1 0 18
+  0a9 9 0 0 0 -18 0" /> <path d="M12 9h.01" /> <path d="M11 12h1v4h1" />
+"moon": >-
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M12 3c.132 0 .263 0
+  .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+"sun": >-
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M12 12m-4 0a4 4 0 1
+  0 8 0a4 4 0 1 0 -8 0" /> <path d="M4 12h.01" /> <path d="M12 4v.01" /> <path d="M20
+  12h.01" /> <path d="M12 20v.01" /> <path d="M6.31 6.31l-.01 -.01" /> <path d="M17.71
+  6.31l-.01 -.01" /> <path d="M17.7 17.7l.01 .01" /> <path d="M6.3 17.7l.01 .01" />
+"sun-moon": >-
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M9.173 14.83a4 4 0
+  1 1 5.657 -5.657" /> <path d="M11.294 12.707l.174 .247a7.5 7.5 0 0 0 8.845 2.492a9
+  9 0 0 1 -14.671 2.914" /> <path d="M3 12h1" /> <path d="M12 3v1" /> <path d="M5.6
+  5.6l.7 .7" /> <path d="M3 21l18 -18" />

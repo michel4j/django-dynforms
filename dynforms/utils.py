@@ -350,7 +350,6 @@ class FormField:
         self.instructions = instructions
         self.attrs = attrs
         self.options = options or []
-        print(f"FormField created: {self.name} ({self.field_type}) - {self.type}")
 
     def specs(self):
         return {

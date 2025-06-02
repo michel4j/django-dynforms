@@ -33,39 +33,7 @@ def _get_field_value(context, field):
 
 
 @register.simple_tag(takes_context=True)
-def show_field(context, field, repeatable=False):
-    field_type = FieldType.get_type(field['field_type'])
-    all_data = _get_field_value(context, field)
-
-    t = template.loader.get_template(field_type.templates[0])
-    if field_type.multi_valued:
-        all_data = [] if all_data == '' else all_data
-
-    if not repeatable or not isinstance(all_data, list):
-        all_data = [all_data]
-
-    if repeatable and all_data == []:
-        all_data = ['']
-
-    ctx = {} if not repeatable else {'repeatable': f"{field['name']}-repeatable"}
-    ctx.update(context.flatten())
-
-    rendered = ""
-    for i, data in enumerate(all_data):
-        if "choices" in field and "other" in field['options'] and isinstance(data, list):
-            oc_set = set(data) - set(field['choices'])
-            if oc_set:
-                field['other_choice'] = next(iter(oc_set))
-        repeat_index = i if repeatable else ""
-
-        ctx.update({'field': field, 'data': data, 'repeat_index': repeat_index})
-        rendered += t.render(ctx)
-
-    return mark_safe(rendered)
-
-
-@register.simple_tag(takes_context=True)
-def show_builder_field(context, field, repeatable=False):
+def render_field(context, field, repeatable=False):
     all_data = field.get_data(context)
     if field.type:
         t = template.loader.get_template(field.type.templates[0])

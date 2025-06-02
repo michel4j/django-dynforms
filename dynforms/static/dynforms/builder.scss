@@ -6,6 +6,8 @@ html, body {
 }
 
 #df-builder {
+  background: var(--bs-body-bg);
+  color: var(--bs-body-color);
   height: 100%;
   display: grid;
   overflow: hidden;
@@ -19,14 +21,21 @@ html, body {
 
 #df-header {
   grid-area: header;
+  background: var(--bs-light-bg-subtle);
 }
 
 #df-sidebar {
+  display: flex;
+  flex-direction: column;
   grid-area: sidebar;
   overflow-y: auto;
   overflow-x: hidden;
   background: var(--bs-light-bg-subtle);
+  .nav-tabs {
+    flex-shrink: 0;
+  }
   .tab-content {
+    flex-grow: 1;
     .tab-pane {
       padding: 0 0 1em 0;
     }

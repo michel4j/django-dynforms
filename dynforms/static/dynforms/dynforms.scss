@@ -160,20 +160,12 @@ legend {
   padding: 0;
 }
 
-.df-field-runtime {
-  padding: 0;
-  margin: 0;
+.df-field {
   border: 1px solid transparent;
-
   &:hover {
     .df-info {
       display: inline-block;
     }
-  }
-
-  .controls-inline {
-    flex-direction: row;
-    flex-wrap: wrap;
   }
 }
 
@@ -181,20 +173,33 @@ legend {
   --bs-gutter-x: 0.75em;
 }
 
-.df-field-runtime.error {
+.df-field.error {
   label {
     color: var(--bs-danger) !important;
   }
 }
 
 div {
-  &:not(.no-hover).df-field-runtime {
+  &:not(.no-hover).df-field {
     &:hover {
       border: 1px dotted var(--bs-border-color);
     }
   }
 }
+.tab-content {
+  background: var(--bs-body-bg);
+  height: 100%;
+  overflow-y: auto;
+  color: var(--bs-body-color);
+}
 
+.trumbowyg-reset-css {
+  font-family: var(--bs-font-family) !important;
+  background: var(--bs-body-bg) !important;
+    font-size: 1em;
+    line-height: 1.5;
+    color: var(--bs-body-color) !important;
+}
 input[type=number] {
   -moz-appearance: textfield;
   -webkit-appearance: none;
@@ -204,6 +209,10 @@ input[type=number] {
 .control-label {
   font-weight: 500;
   margin-top: 0.35em;
+  &.required:after {
+    content: "✱";
+    color: var(--bs-danger);
+  }
 }
 
 .control-description {
@@ -225,10 +234,6 @@ input[type=number] {
 
 div[class$="-repeatable"] {
   border: 1px solid transparent;
-
-  &:hover {
-    background: var(--bs-border-color);
-  }
 }
 
 span.twitter-typeahead {
@@ -253,7 +258,7 @@ ul.nav-tabs.small-tabs {
     display: none !important;
   }
 
-  .df-field-runtime {
+  .df-field {
     .control-instructions {
       height: 100%;
       right: 0;
@@ -267,7 +272,7 @@ ul.nav-tabs.small-tabs {
     }
   }
 
-  .df-field-runtime.activated {
+  .df-field.activated {
     .control-instructions {
       display: block;
     }

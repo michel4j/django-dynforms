@@ -2,7 +2,7 @@
 {% load icons %}
 {% with form.get_validation as validation %}
 
-    <form id="myform" method="post">
+    <form id="df-form-instance" method="post">
         <div class="df-form">
             {#% render_form_tabs %#}
             {% with form.form_type.get_pages as form_pages %}
@@ -80,59 +80,57 @@
 
 <script>
     $(document).ready(function () {
-// Regiter events for monitoring rule change triggers
+        // Regiter events for monitoring rule change triggers
         {% for fn, ft in form.form_type.field_specs.items %}
             {% for rl in ft.rules %}
-                $("#{{rl.field}}-group").on('dynrules:update', function (event) {
+                $("#{{rl.field}}-group").on('df-rules:update', function (event) {
                     //FIXME detect subfields
-                    var tgt = $("#{{fn}}-group");
-                    var value = valuesOnly($("#myform :input[name='{{rl.field}}{{rl.subfield}}']").serializeArray());
+                    let tgt = $("#{{fn}}-group");
+                    let value = valuesOnly($("#df-form-instance :input[name='{{rl.field}}{{rl.subfield}}']").serializeArray());
                     {% if rl.action == 'show' %}
                         tgt.toggleClass("df-hide", !testRule(value, "{{rl.operator}}", "{{rl.value}}"));
                     {% elif rl.action == 'hide' %}
                         tgt.toggleClass("df-hide", testRule(value, "{{rl.operator}}", "{{rl.value}}"));
                     {% endif %}
                 });
-                $("#myform :input[name='{{rl.field}}{{rl.subfield}}']").change(function (event) {
-                    $("#{{rl.field}}-group").trigger('dynrules:update');
+                $("#df-form-instance :input[name='{{rl.field}}{{rl.subfield}}']").change(function (event) {
+                    $("#{{rl.field}}-group").trigger('df-rules:update');
                 });
-                $("#myform :input[name='{{rl.field}}{{rl.subfield}}']").change();
+                $("#df-form-instance :input[name='{{rl.field}}{{rl.subfield}}']").change();
             {% endfor %}
         {% endfor %}
-        var myform = $('#myform');
-        {#myform.find("a[data-bs-toggle='tab']").click(function (e) {#}
-        {#    myform.find(":input[name='active_page']").val($(this).parent().index());#}
-        {#})
-            ;
-            #}
+            let form_instance = $('#df-form-instance');
+            form_instance.find("a[data-bs-toggle='tab']").click(function (e) {
+                form_instance.find(":input[name='active_page']").val($(this).parent().index());
+            });
+
             $("a[data-tab-proxy]").click(function (e) {
                 $($(this).attr('data-tab-proxy')).click();
             });
 
             //Save time when form was loaded
-            myform.attr('data-dynform-loaded', $.now());
+            form_instance.attr('data-df-loaded', $.now());
 
             function monitorChanges(event) {
                 // save time when any field was modified except while loading
-                var dur = Math.abs(event.timeStamp - myform.attr('data-dynform-loaded'));
+                var dur = Math.abs(event.timeStamp - form_instance.attr('data-df-loaded'));
                 if (dur > 2000) {
-                    $("#myform").attr('data-dynform-dirty', dur);
+                    $("#df-form-instance").attr('data-df-dirty', dur);
                 }
             }
 
-            myform.on('change', ':input', monitorChanges);
-            myform.on('click', '[data-repeat-add], .remove-repeat', monitorChanges);
+            form_instance.on('change', ':input', monitorChanges);
+            form_instance.on('click', '[data-repeat-add], .remove-repeat', monitorChanges);
 
-            myform.submit(function () {
-                $(this).removeAttr('data-dynform-dirty'); // No warning when saving dirty form
+            form_instance.submit(function () {
+                $(this).removeAttr('data-df-dirty'); // No warning when saving dirty form
                 $("input[disabled]").removeAttr("disabled");
             });
             $(".df-field-runtime").click(function () {
                 $('.df-field-runtime').removeClass('activated');
                 $(this).addClass('activated');
             });
-
         }
     )
-        ;
+    ;
 </script>

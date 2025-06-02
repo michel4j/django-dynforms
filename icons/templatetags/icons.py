@@ -78,11 +78,12 @@ class SpriteRegistry:
 
 
 @register.simple_tag(takes_context=True)
-def svg_icon(context, name, size=None, stroke=None):
+def svg_icon(context, name, size=None, stroke=None, styles=""):
     size = 'md' if not size else size
     stroke = 2 if not stroke else stroke
-    svg = SVG_USE_SPRITE.format(name=name, stroke=stroke, drawing=ICONS.get(name, DEFAULT_ICON),
-                                css_class=f"icon-{size}")
+    svg = SVG_USE_SPRITE.format(
+        name=name, stroke=stroke, drawing=ICONS.get(name, DEFAULT_ICON), css_class=f"icon-{size} {styles}".strip()
+    )
     return mark_safe(svg)
 
 
@@ -112,7 +113,7 @@ def tool_icon(context, **kwargs):
     color = kwargs.get("color", "info")
     badge = kwargs.get("badge", None)
     label = kwargs.get("label", None)
-    label_text = f'<span class="text-nowrap d-none d-md-inline-block">{label}</span>' if label else ''
+    label_text = f'<small class="text-nowrap d-none d-md-inline-block text-secondary mt-1">{label}</small>' if label else ''
     badge_text = (
         '' if not badge else
         f'<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-{color}">{badge}</span>'

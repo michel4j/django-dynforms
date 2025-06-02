@@ -7,6 +7,7 @@
     <link href="{% static 'dynforms/datepicker.css' %}" rel="stylesheet"/>
     <link href="{% static 'dynforms/dynforms.min.css' %}" rel="stylesheet" media="screen"/>
     <link href="{% static 'dynforms/builder.min.css' %}" rel="stylesheet" media="screen"/>
+    <script src="{% static 'dynforms/theme-switcher.min.js' %}"></script>
 {% endblock %}
 
 {% block body %}
@@ -16,6 +17,34 @@
                 {% svg_icon "left-sidebar-expand" size="lg" stroke="1" %}
             </a>
             <h5><span class="text-secondary">Dynamic Forms</span>{% if form_type %} &mdash; {{ form_type.name }}{% endif %}</h5>
+            <div class="dropdown ms-auto">
+                <button class="btn btn-link nav-link px-0 px-lg-2 py-2 dropdown-toggle d-flex align-items-center"
+                        id="bd-theme" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static"
+                        aria-label="Toggle theme">
+                    {% svg_icon "sun" styles="theme-icon-active" size="sm" %}
+                    <span class="d-lg-none ms-2" id="bd-theme-text">Toggle theme</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
+                    <li>
+                        <button type="button" class="dropdown-item d-flex align-items-center active"
+                                data-bs-theme-value="light" aria-pressed="true">
+                            {% svg_icon "sun" size="sm" styles="me-2" %} Light {% svg_icon "check" size="sm" styles="ms-auto d-none" %}
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="dropdown-item d-flex align-items-center"
+                                data-bs-theme-value="dark" aria-pressed="false">
+                            {% svg_icon "moon" size="sm" styles="me-2" %} Dark {% svg_icon "check" size="sm" styles="ms-auto d-none" %}
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="dropdown-item d-flex align-items-center"
+                                data-bs-theme-value="auto" aria-pressed="false">
+                            {% svg_icon "sun-moon" size="sm" styles="me-2" %} Auto {% svg_icon "sun-moon" size="sm" styles="ms-auto d-none" %}
+                        </button>
+                    </li>
+                </ul>
+            </div>
 
         </div>
 
@@ -51,14 +80,23 @@
         <div class="position-fixed bottom-0 end-0 p-3" id="toast-container"></div>
         <script defer src="{% static 'dynforms/df-toasts.min.js' %}"></script>
     </div>
-    <div class="offcanvas offcanvas-start {% if not form_type %}show{% endif %}" tabindex="-1" id="df-form-list" aria-labelledby="form-list-title">
-        <div class="offcanvas-header">
-            <h4 id="form-list-title">Form Types</h4>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    <div class="offcanvas offcanvas-start {% if not form_type %}show{% endif %}" tabindex="-1" id="df-form-list"
+         aria-labelledby="form-list-title">
+        <div class="offcanvas-header flex-column align-items-stretch bg-light-subtle">
+            <div class="d-flex flex-row align-items-center justify-content-between w-100">
+                <h4 class="offcanvas-title" id="form-list-title">Form Types</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <hr class="border-secondary my-2"/>
+            <div class="d-flex flex-row align-items-center justify-content-between w-100">
+                <input type="text" placeholder="search ..." class="form-control w-75" id="form-search"
+                       aria-label="Search Form Types"/>
+                <a class="ms-auto me-2" title='Add Form' href="#0" data-modal-url='{% url "dynforms-create-type" %}'>
+                    {% tool_icon icon='square-plus' label="Add Form" stroke="1" %}
+                </a>
+            </div>
         </div>
         <div class="offcanvas-body">
-            <input type="text" placeholder="search ..." class="form-control mb-2" id="form-search" aria-label="Search Form Types"/>
-            <hr/>
             <ul class="list-group list-group-flush" id="form-list-items">
                 {% for item in form_types %}
                     <li class="list-group-item">
@@ -76,14 +114,14 @@
 {% endblock %}
 {% block page-scripts %}
     <script>
-    $(document).ready(function () {
-        doBuilderLoad();
-        $("#form-search").on("keyup", function() {
-            let value = $(this).val().toLowerCase();
-            $("#form-list-items li").filter(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        $(document).ready(function () {
+            doBuilderLoad();
+            $("#form-search").on("keyup", function () {
+                let value = $(this).val().toLowerCase();
+                $("#form-list-items li").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
             });
         });
-    });
     </script>
 {% endblock %}

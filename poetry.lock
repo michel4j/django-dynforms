@@ -214,14 +214,14 @@ bcrypt = ["bcrypt"]
 
 [[package]]
 name = "django-crisp-modals"
-version = "2025.5.5"
+version = "2025.5.7"
 description = "Django Crispy Forms inside Bootstrap Modals"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "django_crisp_modals-2025.5.5-py3-none-any.whl", hash = "sha256:3d481ac0ba2a2c63da073cc39ca7e526440be99f2b0f24f9efc682c8b3e1178d"},
-    {file = "django_crisp_modals-2025.5.5.tar.gz", hash = "sha256:60f404b40f0b77ed5fe96fe79532704e133adf3f508fde4b51bba2ecf5b6c613"},
+    {file = "django_crisp_modals-2025.5.7-py3-none-any.whl", hash = "sha256:b389148b82d3b55014886a38c5609a56fbdc720ff5d4cab7e310e23e5ca3e5a5"},
+    {file = "django_crisp_modals-2025.5.7.tar.gz", hash = "sha256:2a4130e079054efec849049c40f4357469c5b02545dd3e5a936a7262a37f1df4"},
 ]
 
 [package.dependencies]
@@ -993,4 +993,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10"
-content-hash = "acf20fa9c4a3c7c1a572599e8c2112acbb2c05cb827892bf8b6396b24dec36db"
+content-hash = "9b10e533e6a6a740e20529edae4b3d327d5c11778aa5c38b56538616a48e23c5"

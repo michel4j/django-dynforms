@@ -6,7 +6,7 @@ from dynforms import views
 # urls will require changes to the javascript. The form urls are used to manage the form itself.
 ###
 urlpatterns = [
-    path('forms/', views.FormTypeList.as_view(), name='dynforms-list'),
+    path('forms/', views.FormList.as_view(), name='dynforms-list'),
     path('forms/new/', views.CreateFormType.as_view(), name='dynforms-create-type'),
     path('forms/<int:pk>/', views.FormBuilder.as_view(), name='dynforms-builder'),
     path('forms/<int:pk>/run/', views.DynFormView.as_view(), name='dynforms-run'),

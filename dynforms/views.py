@@ -7,11 +7,9 @@ from django.template.response import TemplateResponse
 from django.urls import reverse_lazy, reverse
 from django.utils.module_loading import import_string
 from django.views import View
-from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView, detail
 from django.views.generic import edit
 from django.views.generic.edit import FormView, UpdateView
-from itemlist.views import ItemListView
 
 from dynforms.fields import FieldType
 from dynforms.models import FormType
@@ -55,7 +53,6 @@ class DynFormView(DynCreateView):
         kwargs = super().get_form_kwargs()
         form_type = FormType.objects.get(pk=self.kwargs.get('pk'))
         kwargs['form_type'] = form_type
-        print("Form Type:", form_type)
         return kwargs
 
     def get_context_data(self, *args, **kwargs):
@@ -222,16 +219,23 @@ class EditFieldView(*EDIT_MIXINS, FormView):
         return self.request.get_full_path()
 
 
+class FormList(*EDIT_MIXINS, TemplateView):
+    template_name = 'dynforms/builder.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form_types'] = FormType.objects.all()
+        return context
+
+
 class FormBuilder(*EDIT_MIXINS, UpdateView):
     template_name = 'dynforms/builder.html'
     form_class = FormSettingsForm
     queryset = FormType.objects.all()
 
-    def check_allowed(self):
-        return super().check_allowed() and settings.DEBUG
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['form_types'] = FormType.objects.all()
         form_type = FormType.objects.get(pk=self.kwargs.get('pk'))
         form = form_type
         initial = model_to_dict(form)
@@ -240,7 +244,7 @@ class FormBuilder(*EDIT_MIXINS, UpdateView):
         initial['page_names'] = form.page_names()
         context['form_settings_form'] = FormSettingsForm(initial=initial, instance=form)
         context['field_types'] = FieldType.get_all()
-        context['form_spec'] = form
+        context['form_type'] = form
         context['warnings'] = form.check_form()
         context['active_page'] = self.request.GET.get('page', 1)
         context['active_form'] = self.request.GET.get('form', 1)
@@ -259,19 +263,6 @@ class DeletePageView(*EDIT_MIXINS, TemplateView):
         form = FormType.objects.get(pk=self.kwargs.get('pk'))
         form.remove_page(page)
         return context
-
-
-class FormTypeList(*EDIT_MIXINS, ItemListView):
-    queryset = FormType.objects.all()
-    template_name = "dynforms/list.html"
-    tool_template = "dynforms/formtype-tools.html"
-    paginate_by = 10
-    link_url = 'dynforms-builder'
-    list_columns = ['name', 'code', 'description']
-    list_filters = ['created', 'modified']
-    list_styles = {'description': 'col-xs-6'}
-    list_search = ['name', 'url_slug', 'description']
-    order_by = ['-created']
 
 
 class CreateFormType(SuccessMessageMixin, *EDIT_MIXINS, ModalCreateView):

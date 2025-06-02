@@ -79,7 +79,6 @@ class SpriteRegistry:
 
 @register.simple_tag(takes_context=True)
 def svg_icon(context, name, size=None, stroke=None):
-    SpriteRegistry.add_sprite(context.request.path, name)
     size = 'md' if not size else size
     stroke = 2 if not stroke else stroke
     svg = SVG_USE_SPRITE.format(name=name, stroke=stroke, drawing=ICONS.get(name, DEFAULT_ICON),
@@ -94,9 +93,8 @@ def svg_sprites(context):
     This is used to render the SVG sprite definitions in the template.
     """
 
-    sprites = SpriteRegistry.get_sprites(context.request.path)
     sprites_content = '\n\t'.join([
-        SPRITE_TEMPLATE.format(name=name, drawing=ICONS.get(name, DEFAULT_ICON)) for name in sprites
+        SPRITE_TEMPLATE.format(name=name, drawing=ICONS.get(name, DEFAULT_ICON)) for name in ICONS.keys()
     ])
     return mark_safe(SVG_SPRITES.format(sprites=sprites_content))
 

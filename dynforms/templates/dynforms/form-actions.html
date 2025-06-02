@@ -2,7 +2,7 @@
 <div class="row">
     <div class="col-12" id="div_id_actions">
         <label class="control-label w-100 requiredField">Form Actions
-        {% for name, label in form_spec.actions %}
+        {% for name, label in form_type.actions %}
             <div class="controls actions_repeatable" id="actions_{{ forloop.counter }}">
                 <div class="input-group">
                     <input type="text" value="{{ name }}"

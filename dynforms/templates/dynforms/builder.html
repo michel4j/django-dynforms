@@ -12,10 +12,11 @@
 {% block body %}
     <div id="df-builder">
         <div id="df-header" class="border-bottom d-flex align-items-center px-3">
-            <h5><span class="text-secondary">Dynamic Forms</span> &mdash; {{ form_spec.name }}</h5>
-            <a class="ms-auto border" href="{% url 'dynforms-list' %}">
-                {% tool_icon icon="list" tooltip="Forms" size="sm" stroke="1" %}
+            <a class="me-3" href="#df-form-list" data-bs-toggle="offcanvas" title="Show Types List">
+                {% svg_icon "left-sidebar-expand" size="lg" stroke="1" %}
             </a>
+            <h5><span class="text-secondary">Dynamic Forms</span>{% if form_type %} &mdash; {{ form_type.name }}{% endif %}</h5>
+
         </div>
 
         <div id="df-sidebar" class="border-end">
@@ -46,13 +47,43 @@
                 </div>
             </div>
         </div>
-        {% include "dynforms/preview.html" %}
+        {% if form_type %}{% include "dynforms/preview.html" %}{% endif %}
         <div class="position-fixed bottom-0 end-0 p-3" id="toast-container"></div>
         <script defer src="{% static 'dynforms/df-toasts.min.js' %}"></script>
+    </div>
+    <div class="offcanvas offcanvas-start {% if not form_type %}show{% endif %}" tabindex="-1" id="df-form-list" aria-labelledby="form-list-title">
+        <div class="offcanvas-header">
+            <h4 id="form-list-title">Form Types</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <input type="text" placeholder="search ..." class="form-control mb-2" id="form-search" aria-label="Search Form Types"/>
+            <hr/>
+            <ul class="list-group list-group-flush" id="form-list-items">
+                {% for item in form_types %}
+                    <li class="list-group-item">
+                        <a href="{% url 'dynforms-builder' pk=item.pk %}">
+                            <div>{{ item.name }}</div>
+                            <div class="small text-secondary lh-sm">{{ item.description }}</div>
+                        </a>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item text-muted">No form types available.</li>
+                {% endfor %}
+            </ul>
+        </div>
     </div>
 {% endblock %}
 {% block page-scripts %}
     <script>
+    $(document).ready(function () {
         doBuilderLoad();
+        $("#form-search").on("keyup", function() {
+            let value = $(this).val().toLowerCase();
+            $("#form-list-items li").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
     </script>
 {% endblock %}

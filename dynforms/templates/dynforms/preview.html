@@ -1,6 +1,6 @@
 {% load dynforms %}
 <div id="df-form-preview" class="bg-light-subtle">
-    {% with form_spec.get_pages as form_pages %}
+    {% with form_type.get_pages as form_pages %}
         <!-- Nav tabs -->
         <ul class="nav nav-tabs">
             {% for page in form_pages %}
@@ -37,7 +37,7 @@
 <div id="df-footer" class="border-top bg-secondary-subtle d-flex align-items-center">
     <div id="df-footer-content" class="d-flex flex-row align-items-center justify-content-start w-100">
         <button type="button" id="test-form"
-                onclick="window.location.href='{% url 'dynforms-run' pk=form_spec.pk %}'"
+                onclick="window.location.href='{% url 'dynforms-run' pk=form_type.pk %}'"
                 class="btn btn-success">Test
         </button>
         <button type="button" id="check-form"
@@ -47,7 +47,7 @@
             {% include 'dynforms/warnings.html' %}
         </div>
         <div class="vr ms-auto"></div>
-        {% for name, label in form_spec.actions %}
+        {% for name, label in form_type.actions %}
             <button type="button" id="{{ name }}-action" disabled class="btn btn-outline-secondary disabled"
                     name="{{ name }}">{{ label }}
             </button>
@@ -58,7 +58,7 @@
         function check_form() {
             $.ajax({
                 type: "GET",
-                url: "{% url 'dynforms-check' pk=form_spec.pk %}",
+                url: "{% url 'dynforms-check' pk=form_type.pk %}",
                 success: function (data) {
                     $("#footer-warnings").html(data);
                 }

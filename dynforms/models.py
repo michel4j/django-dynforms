@@ -129,7 +129,7 @@ class FormType(TimeStampedModel):
         return self.name
 
 
-class DynEntryMixin(TimeStampedModel):
+class BaseForm(TimeStampedModel):
     details = models.JSONField(default=dict, null=True, blank=True, editable=False)
     form_type = models.ForeignKey(FormType, on_delete=models.CASCADE, null=True)
     is_complete = models.BooleanField(default=False)
@@ -138,6 +138,14 @@ class DynEntryMixin(TimeStampedModel):
         abstract = True
 
     def get_field_value(self, key, default=None):
+        """
+        Get the value of a field from the details JSON.
+        If the key is not found, return the default value.
+        If the key is a dot-separated path, traverse the JSON structure.
+        :param key: The key to look for in the details JSON.
+        :param default: The default value to return if the key is not found.
+        :return: The value of the field or the default value if not found.
+        """
         keys = key.split('.')
         if hasattr(self, key) and not callable(getattr(self, key)):
             return getattr(self, key)
@@ -150,7 +158,11 @@ class DynEntryMixin(TimeStampedModel):
             return value
 
     def validate(self, data=None):
-
+        """
+        Validate the form data against the field specifications.
+        :param data: The data to validate. If None, use the details of the instance.
+        :return: A dictionary with validation results, including progress and any validation errors.
+        """
         if data is None:
             data = self.details
 
@@ -210,5 +222,5 @@ class DynEntryMixin(TimeStampedModel):
         return {'pages': dict(report['pages']), 'progress': report['progress']}
 
 
-class DynEntry(DynEntryMixin):
+class DynEntry(BaseForm):
     pass

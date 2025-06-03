@@ -4,12 +4,11 @@ from django.utils.translation import gettext as _
 from django.db.models import TextChoices
 
 DEFAULT_SETTINGS = {
-    "label": "%s %s",
     "instructions": "",
     "size": "medium",
     "width": "full",
     "options": [],
-    "choices": ["First Choice"],
+    "choices": ["First Choice", "Second Choice"],
     "default_choices": [],
 }
 
@@ -41,7 +40,7 @@ class FieldTypeMeta(type):
         ft = self.plugins.get(key, None)
         if ft is not None:
             return ft()
-
+        return None
 
 
 CHOICE_INFO = {
@@ -162,6 +161,7 @@ class FieldType(object, metaclass=FieldTypeMeta):
         except ValueError:
             if validate:
                 raise ValidationError(_('Invalid value: %(value)s'), code='invalid', params={'value': val}, )
+            return None
         else:
             if not (multi or self.multi_valued) and val:
                 return val[0]
@@ -169,16 +169,17 @@ class FieldType(object, metaclass=FieldTypeMeta):
                 return [v for v in val if v]
 
     def get_default(self, page=None, pos=None):
-        if pos is None: pos = 0
-        if page is None: page = 0
-        tag = "%03d" % (100 * page + pos)
-        field = {'field_type': self.key}
+        pos = 0 if pos is None else pos
+        page = 0 if page is None else page
+        tag = f"{100 * page + pos:03d}"
+        field = {
+            "field_type": self.key,
+            "label": f"{self.name} {tag}",
+            "name": slugify(f"{self.name}_{tag}").lower().replace("-", "_"),
+        }
         for k in self.settings:
             if k in DEFAULT_SETTINGS:
-                if k == 'label':
-                    field[k] = DEFAULT_SETTINGS[k] % (self.name, tag)
-                    field['name'] = slugify(str(field[k]))
-                elif k == "choices":
+                if k == "choices":
                     field[k] = DEFAULT_SETTINGS[k]
                     field['default_choices'] = DEFAULT_SETTINGS["default_choices"]
                 else:

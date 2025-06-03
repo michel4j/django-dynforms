@@ -144,12 +144,6 @@ svg {
   }
 }
 
-
-legend {
-  font-size: 150%;
-  margin-bottom: 0.25em;
-}
-
 .section-heading {
   font-size: 150%;
   margin-bottom: 0.25em;
@@ -331,4 +325,8 @@ ul.nav-tabs.small-tabs {
       margin-left: 1em;
     }
   }
+}
+
+#trumbowyg-icons {
+  display: none  !important;
 }

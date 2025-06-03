@@ -192,33 +192,34 @@ function doBuilderLoad() {
 
         // Make items within each df-container sortable
         $(".df-container").sortable({
-            connectWith: ".df-container", // Allows dragging between lists directly if they are visible
-            placeholder: "df-field-placeholder", // Optional: CSS class for placeholder
+            connectWith: ".df-container",           // Allows dragging between lists directly if they are visible
+            placeholder: "df-field-placeholder",    // Optional: CSS class for placeholder
             items: '.df-field',
             forcePlaceholderSize: true,
+            revert: true,
             start: function (event, ui) {
                 ui.item.addClass("dragging-item");
                 ui.item.click();
             },
-            stop: function (event, ui) {
+            update: function (event, ui) {
                 ui.item.removeClass("dragging-item");
-                let page_fields = $('.df-page.active > .df-container .df-field');
+                let draggedItem = $(ui.item);
                 let active_page = $('.df-page.active');
-                if (ui.item.hasClass("field-btn")) {
-                    ui.item.removeClass();
-                    ui.item.addClass("df-field container").attr("style", "");
-                    ui.item.html("");
-                    ui.item.click(setupField);
+                if (draggedItem.hasClass("field-btn")) {
+                    draggedItem.removeClass();
+                    draggedItem.addClass("df-field container").attr("style", "");
+                    draggedItem.html("");
+                    draggedItem.click(setupField);
                     // Ajax Add Field
-                    let add_url = `${document.URL}${active_page.index()}/add/${ui.item.data('field-type')}/${ui.item.index()}/`;
-                    ui.item.load(add_url, function () {
+                    let add_url = `${document.URL}${active_page.index()}/add/${draggedItem.data('field-type')}/${draggedItem.index()}/`;
+                    draggedItem.load(add_url, function () {
                         // renumber all fields on active page
-                        page_fields.each(function () {
+                        $('.df-page > .df-container > .df-field').each(function () {
                             $(this).data('field-pos', $(this).index());
                         });
                         $(this).click(setupField);
                     });
-                } else {
+                } else if (!draggedItem.hasClass('stop-sorting')) {
                     // move dropped field to new position on server
                     $.ajax(`${document.URL}move/`, {
                         type: 'post',
@@ -230,60 +231,72 @@ function doBuilderLoad() {
                             'to_pos': ui.item.index(),
                         },
                         success: function (result) {
+                            // renumber all fields on active page
+                            $('.df-page > .df-container > .df-field').each(function () {
+                                $(this).data('field-pos', $(this).index());
+                            });
                             dfToasts.success({
-                                message: `Field moved to ${active_page.index()}.${ui.item.index()}!`
+                                message: `Field moved to Position ${ui.item.index()}!`
                             });
                         }
-                    });
-                    // renumber all fields on active page
-                    page_fields.each(function () {
-                        $(this).data('field-pos', $(this).index());
                     });
                 }
             }
         }).disableSelection();
 
         // Make tab headers droppable
-        $(".nav-tabs .nav-link").droppable({
+        $("#df-form-preview .nav-tabs .nav-link").droppable({
             accept: ".df-container .df-field",  // Only accept items from our sortable lists
             hoverClass: "tab-drop-hover",       // Optional: CSS class when dragging over a tab
             tolerance: "pointer",               // Drop is triggered when a mouse pointer is over the tab
             drop: function (event, ui) {
-                let $draggedItem = $(ui.draggable);
-                let $targetTab = $(this);
-                let $targetPage = $($targetTab.attr("href")); // Get the target pane's ID (e.g., "#tab1")
+                let draggedItem = $(ui.draggable);
+                let targetTab = $(this);
+                let targetPage = $(targetTab.attr("href")); // Get the target pane's ID (e.g., "#tab1")
+                let targetList = targetPage.find('.df-container'); // Find the sortable list in the target pane
 
+                // notify sortable not to handle this drop
+                draggedItem.addClass("stop-sorting");
 
                 // Prevent dropping onto the tab of the current pane
-                if ($targetTab.hasClass("active")) {
+                if (targetTab.hasClass("active")) {
                     return false; // Or handle it differently, e.g., by simply reordering if that's desired
                 }
-                console.log($draggedItem.data());
+
                 $.ajax(`${document.URL}move/`, {
                     type: 'POST',
                     data: {
                         'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val(),
-                        'from_page': $draggedItem.data('field-page') - 1,
-                        'to_page': $targetPage.data('page-number') - 1,
-                        'from_pos': $draggedItem.data('field-pos'),
+                        'from_page': draggedItem.data('field-page') - 1,
+                        'to_page': targetPage.index(),
+                        'from_pos': draggedItem.data('field-pos'),
                         'to_pos': 0,
                     },
-                    dataType: 'json',
                     success: function () {
-                        window.location.reload();
+                        dfToasts.success({
+                            message: `Field moved to Page ${targetPage.data('page-number')}!`
+                        });
                     }
                 });
 
-                // // Append the dragged item to the target list
-                // $targetList.append($draggedItem);
-                //
-                // // Activate the target tab
-                // let tab = new bootstrap.Tab($targetTab[0]); // Get the Bootstrap Tab instance
-                // tab.show();
-                //
-                // // Optional: Refresh sortable on the target list if items were added/removed
-                // // $targetList.sortable("refresh");
-                // // $(".sortable-list").sortable("refreshPositions"); // Might be needed in some cases
+                // Activate the target tab
+                let tab = new bootstrap.Tab(targetTab[0]); // Get the Bootstrap Tab instance
+                tab.show();
+
+                // prepend the dragged item to the target list
+                draggedItem.removeClass("dragging-item ui-sortable-helper");
+                draggedItem.removeAttr("style"); // Remove any inline styles
+
+                let newItem = draggedItem.clone(true);
+                newItem.data('field-page', targetPage.index() + 1); // Update the page index
+                targetList.prepend(newItem);
+                draggedItem.remove(); // remove item from dom
+                targetList.sortable("refresh");
+
+                // renumber all fields
+                $('.df-page > .df-container > .df-field').each(function () {
+                    $(this).data('field-pos', $(this).index());
+                });
             }
         });
 
@@ -327,15 +340,16 @@ function doBuilderLoad() {
         setupMenuForm("#field-settings .df-menu-form");
 
         $(document).on('click', "button[data-page-number]", function (e) {
+            let page_number = $(this).data('page-number');
             e.preventDefault();
-            $.ajax(`${document.URL}${$(this).data('page-number')}/del/`, {
+            $.ajax(`${document.URL}${page_number}/del/`, {
                 type: 'post',
                 data: {
                     'csrfmiddlewaretoken': $('#df-builder').data('csrf-token'),
                 },
                 success: function (result) {
                     dfToasts.success({
-                        message: `Page Deleted!`
+                        message: `Page ${page_number} Deleted!`
                     });
                 }
             });

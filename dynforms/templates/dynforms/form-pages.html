@@ -1,9 +1,9 @@
 {% load icons %}
 <div class="row">
     <div class="col-12" id="div_id_page_names">
-        <label class="control-label w-100 requiredField">Pages<span class="asteriskField">*</span>
+        <label class="control-label form-label w-100 requiredField">Pages<span class="asteriskField">*</span></label>
         {% for page_name in form.initial.page_names %}
-            <div class="controls pages_repeatable" id="page_names_{{ forloop.counter }}">
+            <div class="controls pages_repeatable mb-2" id="page_names_{{ forloop.counter }}">
                 <div class="input-group">
                     <span class="input-group-text"><span class="repeat-html-index">{{ forloop.counter }}</span></span>
                     <input type="text" value="{{ page_name }}"
@@ -17,6 +17,5 @@
         <button data-repeat-add=".pages_repeatable" class="btn btn-success"
                 title="Add Page"  name="add" type="button"
         >{% svg_icon "plus" size="xs" %}</button>
-        </label>
     </div>
 </div>

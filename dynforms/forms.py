@@ -98,7 +98,7 @@ class FieldSettingsForm(forms.Form):
                 self.add_custom_field(field_name, choices=field_type.get_choices(field_name))
 
         fieldset = Div(
-            AppendedText('label', mark_safe(f"<small>{field_type.name}</small>")),
+            Field('label'),
             Field('instructions', rows=2)
         )
 
@@ -154,7 +154,13 @@ class FieldSettingsForm(forms.Form):
             self.add_custom_field(nm)
 
         if field_type:
-            fieldset = self.create_type_layout(field_type)
+            fieldset = Div(
+                AppendedText(
+                    'name', mark_safe(f"<small>🗲&nbsp;{field_type.name}</small>"),
+                    title="This is the internal reference name for the field. Change with caution!"
+                ),
+                self.create_type_layout(field_type),
+            )
         else:
             fieldset = Div(
                 HTML(
@@ -165,13 +171,11 @@ class FieldSettingsForm(forms.Form):
                     '   </div>'
                     '</div>'
                 ),
+                AppendedText(
+                    'name', mark_safe(f"⚠<small>&nbsp;Unknown</small>"),
+                    title="This is the internal reference name for the field. Change with caution!"
+                ),
             )
-
-        fieldset.append(PrependedText(
-            'name',
-            mark_safe('🗲'),
-            title="This is the internal reference name for the field. Change with caution!"
-        ))
 
         if self.initial.get('rules', []):
             rule_html = "Rules <span class='badge bg-info'>%d</span>" % (len(self.initial['rules']))
@@ -180,25 +184,7 @@ class FieldSettingsForm(forms.Form):
 
         fieldset.append(
             FormActions(
-                HTML('<hr class="hr-xs"/>'),
-                Div(
-                    StrictButton(
-                        'Move to Prev Page', name='move-prev',
-                        value="move-prev", id='move-prev', title="Move to Prev Page",
-                        css_class="btn btn-light border"
-                    ),
-                    StrictButton(
-                        'Move to Next Page',
-                        name='move-next', id='move-next', value="move-next",
-                        title="Move to Next Page", css_class="btn btn-light border"
-                    ),
-                    css_class="col-12 text-condensed d-flex flex-row justify-content-between"
-                ),
-                css_class="row")
-        )
-        fieldset.append(
-            FormActions(
-                HTML('<hr class="hr-xs"/>'),
+                HTML('<hr class="mt-5"/>'),
                 Div(
                     StrictButton(
                         'Apply', name='apply-field', id='apply-field', value="apply-field",

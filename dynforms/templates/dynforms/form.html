@@ -80,7 +80,7 @@
 
 <script>
     $(document).ready(function () {
-        // Regiter events for monitoring rule change triggers
+        // Register events for monitoring rule change triggers
         {% for fn, ft in form.form_type.field_specs.items %}
             {% for rl in ft.rules %}
                 $("#{{rl.field}}-group").on('df-rules:update', function (event) {
@@ -131,6 +131,5 @@
                 $(this).addClass('activated');
             });
         }
-    )
-    ;
+    );
 </script>

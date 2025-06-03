@@ -33,7 +33,7 @@ const dfToasts = {
             class="toast align-items-center mt-1 text-${options.textColor} bg-${options.color} border-0" role="alert" 
             aria-live="assertive" aria-atomic="true">
             ${title}
-            <div class="toast-body">${options.message}${closeBtn}</div>
+            <div class="toast-body d-flex"><div>${options.message}</div>${closeBtn}</div>
         </div>`;
         const toastElement = dfToasts.createToastElement(html);
         dfToastContainer.appendChild(toastElement);

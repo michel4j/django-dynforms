@@ -64,6 +64,8 @@ class DynFormView(DynCreateView):
         return context
 
     def form_valid(self, form):
+        import pprint
+        pprint.pprint(form.cleaned_data)
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):

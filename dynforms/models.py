@@ -104,6 +104,16 @@ class FormType(TimeStampedModel):
             self.pages[page]['fields'].insert(new_pos, fld)
             self.save()
 
+    def clone_field(self, page, pos):
+        if page < len(self.pages) and pos < len(self.pages[page]['fields']):
+            field = self.pages[page]['fields'][pos]
+            new_field = field.copy()
+            new_field['name'] += '_copy'
+            self.pages[page]['fields'].insert(pos + 1, new_field)
+            self.save()
+            return new_field
+        return None
+
     def field_specs(self):
         return {f['name']: f for p in self.pages for f in p['fields']}
 

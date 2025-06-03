@@ -36,11 +36,11 @@ def _get_field_value(context, field):
 def render_field(context, field, repeatable=False):
     all_data = field.get_data(context)
     if field.type:
-        t = template.loader.get_template(field.type.templates[0])
         if field.type.multi_valued:
             all_data = [] if all_data == '' else all_data
+        field_type = field.type
     else:
-        t = template.loader.get_template('dynforms/fields/nofield.html')
+        field_type = FieldType
 
     if not (repeatable and isinstance(all_data, list)):
         all_data = [all_data]
@@ -62,8 +62,7 @@ def render_field(context, field, repeatable=False):
         repeat_index = i if repeatable else ""
 
         ctx.update({'field': field.specs(), 'data': data, 'repeat_index': repeat_index})
-        rendered += t.render(ctx)
-
+        rendered += field_type.render(ctx)
     return mark_safe(rendered)
 
 

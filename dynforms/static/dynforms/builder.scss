@@ -100,11 +100,11 @@ html, body {
   align-items: center;
   justify-content: start;
   user-select: none;
-  text-overflow: ellipsis;
-  min-width: 25%;
+  border-color: var(--bs-border-color);
 
   .field-btn-label {
     display: inline-block;
+    width: 0%;
     text-align: left;
     text-overflow: ellipsis;
     text-wrap: nowrap;
@@ -143,6 +143,7 @@ html, body {
 
 
 .df-menu-form {
+  font-size: 0.9em;
   *.row {
     --bs-gutter-x: 0.75em;
   }

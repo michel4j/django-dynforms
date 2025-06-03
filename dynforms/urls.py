@@ -18,6 +18,7 @@ urlpatterns = [
     # field urls
     path('<int:pk>/<int:page>/add/<slug:type>/<int:pos>/', views.AddFieldView.as_view(), name='dynforms-add-field'),
     path('<int:pk>/<int:page>/del/<int:pos>/', views.DeleteFieldView.as_view(), name='dynforms-del-field'),
+    path('<int:pk>/<int:page>/clone/<int:pos>/', views.CloneFieldView.as_view(), name='dynforms-clone-field'),
     path('<int:pk>/<int:page>/del/', views.DeletePageView.as_view(), name='dynforms-del-page'),
     path('<int:pk>/<int:page>/put/<int:pos>/', views.EditFieldView.as_view(), name='dynforms-put-field'),
     path('<int:pk>/<int:page>/get/<int:pos>/', views.GetFieldView.as_view(), name='dynforms-get-field'),

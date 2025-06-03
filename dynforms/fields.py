@@ -2,6 +2,7 @@ from django.forms import ValidationError
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
 from django.db.models import TextChoices
+from django import template
 
 DEFAULT_SETTINGS = {
     "instructions": "",
@@ -17,11 +18,6 @@ class FieldTypeMeta(type):
     def __init__(cls, *args, **kwargs):
         super().__init__(*args, **kwargs)
         cls.key = slugify(cls.__name__)
-        if hasattr(cls, 'template_theme'):
-            cls.templates = ["%s/%s.html" % (cls.template_theme, cls.key), "dynforms/fields/nofield.html"]
-        else:
-            cls.templates = ["dynforms/fields/%s.html" % cls.key, "dynforms/fields/nofield.html"]
-
         if not hasattr(cls, 'plugins'):
             cls.plugins = {}
         else:
@@ -30,7 +26,7 @@ class FieldTypeMeta(type):
     def get_all(self, *args, **kwargs):
         info = {}
         for p in list(self.plugins.values()):
-            section = getattr(p, 'section', _("Application"))
+            section = getattr(p, 'section', _("Custom"))
             if section not in info:
                 info[section] = []
             info[section].append(p(*args, **kwargs))
@@ -59,7 +55,10 @@ CHOICE_INFO = {
 }
 
 
-def _build_choices(name, pars):
+def build_choices(name, pars) -> TextChoices:
+    """
+    A factory function to create a TextChoices class for field options.
+    """
     opts = {}
     for k in pars:
         if isinstance(k, str):
@@ -68,7 +67,10 @@ def _build_choices(name, pars):
     return TextChoices(name, opts)
 
 
-def _val_to_list(value):
+def value_to_list(value) -> list:
+    """
+    Re-map a value to a list.
+    """
     if isinstance(value, dict):
         try:
             new_value = {
@@ -108,16 +110,42 @@ class UnitType(TextChoices):
 
 
 class FieldType(object, metaclass=FieldTypeMeta):
+    template_theme = "dynforms/fields"
+    template_name = ""
+    section = _("Custom")
     name = _("Noname Field")
     icon = "bi-input-cursor"
     multi_valued = False
     sizes = ["medium", "small", "large"]
-    widths = ["full", "half", "third"]
     units = ["chars", "words", "values", "digits"]
     options = ["required", "unique", "randomize", "hide", "inline", "other", "repeat"]
     choices_type = 'checkbox'  # 'radio'
     settings = ["label", "name", "instructions"]
     required_subfields = []
+
+    @classmethod
+    def get_template_name(cls):
+        """
+        Returns the template name for the field type.
+        """
+        if cls.template_name:
+            return cls.template_name
+        else:
+            return f"{cls.template_theme}/{slugify(cls.__name__)}.html"
+
+    @classmethod
+    def render(cls, context):
+        """
+        Render the field type template with the given context.
+        :param context: The context to render the template with.
+        :return: Rendered template as a string.
+        """
+        templates = [
+            cls.get_template_name(),
+            "dynforms/fields/no-field.html"
+        ]
+        tmpl = template.loader.select_template(templates)
+        return tmpl.render(context)
 
     def check_entry(self, row):
         if not isinstance(row, dict):
@@ -127,7 +155,10 @@ class FieldType(object, metaclass=FieldTypeMeta):
         }
         return validity
 
-    def get_completeness(self, data):
+    def get_completeness(self, data) -> float:
+        """
+        Calculate the completeness of the field based on the provided data.
+        """
         if not data:
             return 0.0
         elif len(self.required_subfields) == 0:
@@ -144,6 +175,9 @@ class FieldType(object, metaclass=FieldTypeMeta):
             return 1.0 if total == 0 else (1.0 - len(invalid_fields) / float(total))
 
     def coerce(self, val):
+        """
+        Coerce value to a valid type
+        """
         if isinstance(val, dict):
             clean_val = {k: v[0] for k, v in list(val.items()) if isinstance(v, list)}
             val.update(clean_val)
@@ -151,7 +185,9 @@ class FieldType(object, metaclass=FieldTypeMeta):
         return val
 
     def clean(self, val, multi=False, validate=False):
-        """Parse and Validate field and return clean value"""
+        """
+        Parse and Validate field and return clean value
+        """
         try:
             if isinstance(val, dict) and (multi or self.multi_valued):
                 val = list(map(dict, zip(*[[(k, v) for v in value] for k, value in val.items()])))
@@ -169,6 +205,9 @@ class FieldType(object, metaclass=FieldTypeMeta):
                 return [v for v in val if v]
 
     def get_default(self, page=None, pos=None):
+        """
+        Generate a default field specification for this field type.
+        """
         pos = 0 if pos is None else pos
         page = 0 if page is None else page
         tag = f"{100 * page + pos:03d}"
@@ -187,23 +226,23 @@ class FieldType(object, metaclass=FieldTypeMeta):
         return field
 
     def option_choices(self):
-        return _build_choices('OptionType', self.options)
+        return build_choices('OptionType', self.options)
 
     def size_choices(self):
-        return _build_choices('SizeType', self.sizes)
+        return build_choices('SizeType', self.sizes)
 
     def width_choices(self):
-        return _build_choices('WidthType', self.widths)
+        return build_choices('WidthType', self.widths)
 
     def units_choices(self):
-        return _build_choices('UnitType', self.units)
+        return build_choices('UnitType', self.units)
 
     def get_choices(self, field_name):
         return {
-            'options': _build_choices(f'{self.__class__.__name__}Option', self.options),
+            'options': build_choices(f'{self.__class__.__name__}Option', self.options),
             'size': SizeType,
             'width': LayoutType,
-            'units': _build_choices(f'{self.__class__.__name__}Unit', self.units)
+            'units': build_choices(f'{self.__class__.__name__}Unit', self.units)
         }.get(field_name, [])
 
 

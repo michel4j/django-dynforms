@@ -109,8 +109,6 @@ class MoveFieldView(*EDIT_MIXINS, View):
         from_pos = request.POST.get('from_pos', None)
         to_pos = request.POST.get('to_pos', None)
 
-        print(request.POST)
-
         invalid = (
             from_page is None or to_page is None or from_pos is None or to_pos is None
         )
@@ -123,6 +121,16 @@ class MoveFieldView(*EDIT_MIXINS, View):
             form.move_field(from_page, from_pos, to_pos, to_page)
             return JsonResponse({})
 
+        return JsonResponse({})
+
+
+class CloneFieldView(*EDIT_MIXINS, View):
+
+    def post(self, request, **kwargs):
+        page = int(self.kwargs.get('page'))
+        pos = int(self.kwargs.get('pos'))
+        form = FormType.objects.get(pk=self.kwargs.get('pk'))
+        form.clone_field(page, pos)
         return JsonResponse({})
 
 

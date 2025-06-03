@@ -2,6 +2,7 @@ from collections import OrderedDict
 from datetime import datetime, timedelta
 from dateutil import parser
 from django.core.exceptions import ValidationError
+from django.utils.text import slugify
 from django.utils.translation import gettext as _
 
 from dynforms.fields import FieldType
@@ -11,10 +12,9 @@ from dynforms.utils import Crypt
 # Standard Fields
 class StandardMixin(object):
     section = _("Standard")
-    template_theme = "dynforms/fields"
 
 
-class SingleLineText(FieldType, StandardMixin):
+class SingleLineText(StandardMixin, FieldType):
     name = _("Single Line")
     icon = "forms"
     options = ['hide', 'required', 'unique', 'repeat']
@@ -41,7 +41,7 @@ class RichText(ParagraphText):
     settings = ['label', 'size', 'options', 'minimum', 'maximum', 'units', 'default']
 
 
-class MultipleChoice(FieldType, StandardMixin):
+class MultipleChoice(StandardMixin, FieldType):
     name = _("Choices")
     icon = "check-circle"
     options = ['required', 'randomize', 'inline', 'hide', 'other']
@@ -49,7 +49,7 @@ class MultipleChoice(FieldType, StandardMixin):
     choices_type = 'radio'
 
 
-class ScoreChoices(FieldType, StandardMixin):
+class ScoreChoices(StandardMixin, FieldType):
     name = _("Scores")
     icon = "check-circle"
     options = ['required', 'inline', 'hide']
@@ -78,7 +78,7 @@ class Number(SingleLineText):
         return val
 
 
-class CheckBoxes(FieldType, StandardMixin):
+class CheckBoxes(StandardMixin, FieldType):
     name = _("Checkboxes")
     icon = "check-square"
     options = ['required', 'randomize', 'inline', 'hide', 'other']
@@ -94,7 +94,7 @@ class DropDown(MultipleChoice):
     settings = ['label', 'options', 'width', 'choices']
 
 
-class NewSection(FieldType, StandardMixin):
+class NewSection(StandardMixin, FieldType):
     input_type = None
     name = _("Section")
     icon = "section"
@@ -103,12 +103,11 @@ class NewSection(FieldType, StandardMixin):
 
 
 # Fancy Fields
-class FancyMixin(object):
+class FancyMixin(StandardMixin):
     section = _("Fancy")
-    template_theme = "dynforms/fields"
 
 
-class FullName(FieldType, FancyMixin):
+class FullName(FancyMixin,FieldType):
     name = _("Full Name")
     icon = "user"
     options = ['required', 'hide', 'repeat']
@@ -139,14 +138,14 @@ class Address(FullName):
         return val
 
 
-class MultiplePhoneNumber(FieldType, FancyMixin):
+class MultiplePhoneNumber(FancyMixin,FieldType):
     name = _("Phone #s")
     icon = "phone"
     options = ['required', 'hide', 'repeat']
     settings = ['label', 'options', ]
 
 
-class Equipment(FieldType, FancyMixin):
+class Equipment(FancyMixin,FieldType):
     name = _("Equipment")
     icon = "plug"
     options = ['required', 'hide', 'repeat']
@@ -155,7 +154,7 @@ class Equipment(FieldType, FancyMixin):
 
 class ContactInfo(FullName):
     name = _("Contact")
-    icon = "person-vcard"
+    icon = "id-badge"
     options = ['required', 'hide', 'repeat']
     settings = ['label', 'options', ]
     required_subfields = ['email', 'phone']
@@ -199,7 +198,7 @@ class NameEmail(FullName):
         return val
 
 
-class Email(FieldType, FancyMixin):
+class Email(FancyMixin,FieldType):
     name = _("Email")
     icon = "email"
     options = ['required', 'unique', 'hide', 'repeat']
@@ -207,27 +206,27 @@ class Email(FieldType, FancyMixin):
     settings = ['label', 'width', 'options', 'minimum', 'maximum', 'units', 'default']
 
 
-class Date(FieldType, FancyMixin):
+class Date(FancyMixin,FieldType):
     name = _("Date")
     icon = "calendar"
     options = ['required', 'unique', 'hide', 'multiple']
     settings = ['label', 'options']
 
 
-class DatePreference(FieldType, FancyMixin):
+class DatePreference(FancyMixin,FieldType):
     name = _("Date Preferences")
     icon = "calendar-heart"
     options = ['required', 'unique', 'hide', 'multiple']
     settings = ['label', 'options']
 
 
-class Time(FieldType, FancyMixin):
+class Time(FancyMixin,FieldType):
     name = _("Time")
     icon = "clock"
     settings = ['label']
 
 
-class WebsiteURL(FieldType, FancyMixin):
+class WebsiteURL(FancyMixin,FieldType):
     name = _("URL")
     icon = "link"
     options = ['required', 'unique', 'hide', 'repeat']
@@ -235,7 +234,7 @@ class WebsiteURL(FieldType, FancyMixin):
     settings = ['label', 'width', 'options', 'minimum', 'maximum', 'units', 'default']
 
 
-class Likert(FieldType, FancyMixin):
+class Likert(FancyMixin,FieldType):
     name = _("Likert")
     icon = "list-details"
     options = ['required', 'hide']
@@ -264,21 +263,21 @@ class Likert(FieldType, FancyMixin):
         return val
 
 
-class File(FieldType, FancyMixin):
+class File(FancyMixin,FieldType):
     name = _("File")
     icon = "file"
     options = ['required', 'hide', 'repeat']
     settings = ['label', 'options', ]
 
 
-class PhoneNumber(FieldType, FancyMixin):
+class PhoneNumber(FancyMixin,FieldType):
     name = _("Phone #")
     icon = "phone"
     options = ['required', 'hide', 'repeat']
     settings = ['label', 'width', 'options', ]
 
 
-class Throttle(FieldType, FancyMixin):
+class Throttle(FancyMixin,FieldType):
     name = _("Throttle")
     icon = "stoplights"
     options = ['hide']

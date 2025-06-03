@@ -43,7 +43,6 @@ dynamic = ["version"]
 [project.urls]
 Homepage = "https://github.com/michel4j/django-dynforms"
 Issues = "https://github.com/michel4j/django-dynforms/issues"
-Documentation = "https://michel4j.github.io/django-dynforms/"
 
 [tool.poetry]
 packages = [

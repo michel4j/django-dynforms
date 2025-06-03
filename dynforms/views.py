@@ -14,7 +14,7 @@ from django.views.generic.edit import FormView, UpdateView
 from dynforms.fields import FieldType
 from dynforms.models import FormType
 from . import utils, forms
-from .forms import FieldSettingsForm, FormSettingsForm, RulesForm, DynForm
+from .forms import FieldSettingsForm, FormSettingsForm, RulesForm, DynModelForm, DynForm
 from .models import DynEntry
 from .utils import FormField
 
@@ -24,52 +24,6 @@ VIEW_MIXINS = [import_string(mixin) for mixin in MIXINS.get('VIEW', [])]
 EDIT_MIXINS = [import_string(mixin) for mixin in MIXINS.get('EDIT', [])]
 
 utils.load('dynfields')
-
-
-class DynFormViewMixin:
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        if 'object' in context:
-            context['active_page'] = context['object'].details.get('active_page', 0)
-        else:
-            context['active_page'] = 0
-        return context
-
-
-class DynUpdateView(*EDIT_MIXINS, DynFormViewMixin, edit.UpdateView):
-    pass
-
-
-class DynCreateView(*EDIT_MIXINS, DynFormViewMixin, edit.CreateView):
-    pass
-
-
-class DynFormView(DynCreateView):
-    template_name = 'dynforms/test-form.html'
-    form_class = DynForm
-    model = DynEntry
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        form_type = FormType.objects.get(pk=self.kwargs.get('pk'))
-        kwargs['form_type'] = form_type
-        return kwargs
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        form_type = FormType.objects.get(pk=self.kwargs.get('pk'))
-        context['form_type'] = form_type
-        context['active_page'] = self.request.GET.get('page', 1)
-        context['active_form'] = self.request.GET.get('form', 1)
-        return context
-
-    def form_valid(self, form):
-        import pprint
-        pprint.pprint(form.cleaned_data)
-        return HttpResponseRedirect(self.get_success_url())
-
-    def get_success_url(self):
-        return self.request.get_full_path()
 
 
 class AddFieldView(*EDIT_MIXINS, TemplateView):
@@ -162,7 +116,6 @@ RULE_ACTIONS = [
     ("hide", "Hide if"),
     ("require", "Require if"),
 ]
-
 
 class ModalFormView(AjaxFormMixin, FormView):
     """
@@ -352,4 +305,70 @@ class CheckFormAPI(*EDIT_MIXINS, detail.DetailView):
         context = super().get_context_data(**kwargs)
         if self.object:
             context['warnings'] = self.object.check_form()
+        return context
+
+
+class DynUpdateView(edit.UpdateView):
+    template_name = 'dynforms/test-form.html'
+    form_class = DynModelForm
+    model = DynEntry
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        self.object = self.get_object()
+        kwargs['form_type'] = self.object.form_type
+        return kwargs
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        form_type = self.object.form_type
+        active_page = self.object.details.get('active_page', self.request.GET.get('page', 0))
+        context['form_type'] = form_type
+        context['active_page'] = active_page
+        return context
+
+
+class DynCreateView(edit.CreateView):
+    template_name = 'dynforms/test-form.html'
+    form_class = DynModelForm
+    model = DynEntry
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        form_type = FormType.objects.get(pk=self.kwargs.get('pk'))
+        kwargs['form_type'] = form_type
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        form_type = FormType.objects.get(pk=self.kwargs.get('pk'))
+        context['form_type'] = form_type
+        context['active_page'] = self.request.GET.get('page', 0)
+        return context
+
+    def form_valid(self, form):
+        import pprint
+        pprint.pprint(form.cleaned_data)
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return self.request.get_full_path()
+
+
+class DynFormView(FormView):
+    template_name = 'dynforms/test-form.html'
+    form_class = DynForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        form_type = FormType.objects.get(pk=self.kwargs.get('pk'))
+        kwargs['form_type'] = form_type
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        form_type = FormType.objects.get(pk=self.kwargs.get('pk'))
+        active_page = self.request.GET.get('page', 0)
+        context['form_type'] = form_type
+        context['active_page'] = active_page
         return context

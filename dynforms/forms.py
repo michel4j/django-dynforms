@@ -377,11 +377,18 @@ class DynFormMixin:
         return cleaned_data, failures
 
 
-class DynForm(DynFormMixin, forms.ModelForm):
+class DynModelForm(DynFormMixin, forms.ModelForm):
     class Meta:
         model = models.DynEntry
         fields = []
 
+    def __init__(self, *args, **kwargs):
+        self.form_type = kwargs.pop('form_type')
+        super().__init__(*args, **kwargs)
+        self.field_specs = self.form_type.field_specs()
+
+
+class DynForm(DynFormMixin, forms.Form):
     def __init__(self, *args, **kwargs):
         self.form_type = kwargs.pop('form_type')
         super().__init__(*args, **kwargs)

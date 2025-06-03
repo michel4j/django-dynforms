@@ -139,7 +139,7 @@ class FormType(TimeStampedModel):
         return self.name
 
 
-class BaseForm(TimeStampedModel):
+class BaseFormModel(TimeStampedModel):
     details = models.JSONField(default=dict, null=True, blank=True, editable=False)
     form_type = models.ForeignKey(FormType, on_delete=models.CASCADE, null=True)
     is_complete = models.BooleanField(default=False)
@@ -232,5 +232,5 @@ class BaseForm(TimeStampedModel):
         return {'pages': dict(report['pages']), 'progress': report['progress']}
 
 
-class DynEntry(BaseForm):
+class DynEntry(BaseFormModel):
     pass

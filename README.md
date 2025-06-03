@@ -114,9 +114,9 @@ Currently supported operators include:
 
 ## Abstract Model Classes
 
-Inherit from the abstract class `BaseForm`, to create a model which records data from a dynamic form. This class
+Inherit from the abstract class `BaseFormModel`, to create a model which records data from a dynamic form. This class
 provides
-the necessary fields and methods to handle form data. The `BaseForm` class provides the following fields:
+the necessary fields and methods to handle form data. The `BaseFormModel` class provides the following fields:
 
 - `created`: DateTime field that records when the form was created.
 - `modified`: DateTime field that records when the form was last modified.
@@ -125,14 +125,34 @@ the necessary fields and methods to handle form data. The `BaseForm` class provi
 - `is_complete`: A Boolean field that indicates whether the form data is complete. Partial submissions are allowed to be
   saved, and the form can be completed later.
 
-Additionally, the `BaseForm` class provides the following methods:
+Additionally, the `BaseFormModel` class provides the following methods:
 
 - `get_field_value(self, field_name, default=None)`: Returns the value of a specific field in the form.
 - `validate(self, data=None)`: Sets the value of a specific field in the form. The validation login uses either the
   provided data or the current saved form data.
 
-## Adding custom fields
 
+## Views
+The app provides a set of views to handle form display and submission.
+
+- `DynFormView`: The main view for displaying and submitting forms. It handles the form rendering, validation, and
+  submission logic. Derive from this class to create a plain FormView not bound to a specific model. The `template_name`
+  attribute should be set to a template that includes `dynforms/form.html` to render the form as desired.  Submitted
+  form can then be handled in the `form_valid` method, which can be overridden to perform custom actions.  The view expects
+  a single `pk` kwarg that corresponds to the primary key of the form type being displayed.
+- `DynCreateView`: A view for creating new forms. This is derived from `django.generic.edit.CreateView` and provides a
+  a view form for creating a new entries of models that derive from `BaseFormModel`. The `form_class` attribute should
+  be set to a form class that inherits from `DynModelForm`. As for the `DynFormView`, the `template_name` attribute
+  should be set to a template that includes `dynforms/form.html` to render the form as desired. The view expects a
+  `pk` kwarg that corresponds to the primary key of the form type being created.
+- `DynUpdateView`: A view for updating `DynModelForm` entries. This is derived from `django.generic.edit.UpdateView` and
+  provides a view for updating entries of models that derive from `BaseFormModel`. The `form_class` attribute should
+  be set to a form class that inherits from `DynModelForm`. As for the `DynFormView`, the `template_name` attribute
+  should be set to a template that includes `dynforms/form.html` to render the form as desired. The view expects a
+  `pk` kwarg that corresponds to the primary key of the `DynModelForm` entry being updated.
+
+
+## Adding custom fields
 To add custom fields to the form builder from another app, add a `dynfields.py`  module to your App's top-level
 directory and define a new field inheriting from `dynforms.fields.FieldType`. Implement the necessary methods to handle
 rendering, validation, and type conversion.

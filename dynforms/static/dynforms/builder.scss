@@ -63,6 +63,12 @@ html, body {
   }
 }
 
+.tab-drop-hover::before {
+    content: ' ⤓ ';
+  font-weight: 900;
+  color: var(--bs-body-color);
+}
+
 #df-footer {
   grid-area: work-footer;
   text-align: center;

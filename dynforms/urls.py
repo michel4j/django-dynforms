@@ -21,8 +21,7 @@ urlpatterns = [
     path('<int:pk>/<int:page>/del/', views.DeletePageView.as_view(), name='dynforms-del-page'),
     path('<int:pk>/<int:page>/put/<int:pos>/', views.EditFieldView.as_view(), name='dynforms-put-field'),
     path('<int:pk>/<int:page>/get/<int:pos>/', views.GetFieldView.as_view(), name='dynforms-get-field'),
-    path('<int:pk>/<int:page>/mov/<int:from_pos>-<int:pos>/', views.MoveFieldView.as_view(), name='dynforms-move-field'),
-    path('<int:pk>/<int:page>/mov/<int:pos>/<int:to>/', views.PageFieldView.as_view(), name='dynforms-page-field'),
+    path('<int:pk>/move/', views.MoveFieldView.as_view(), name='dynforms-move-field'),
     path('<int:pk>/<int:page>/rules/<int:pos>/', views.FieldRulesView.as_view(), name='dynforms-field-rules'),
 
 ]

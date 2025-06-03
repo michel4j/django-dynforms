@@ -102,11 +102,25 @@ class GetFieldView(*EDIT_MIXINS, TemplateView):
 class MoveFieldView(*EDIT_MIXINS, View):
 
     def post(self, request, **kwargs):
-        page = int(self.kwargs.get('page'))
-        pos = int(self.kwargs.get('pos'))
-        src = int(self.kwargs.get('from_pos'))
-        form = FormType.objects.get(pk=self.kwargs.get('pk'))
-        form.move_field(page, src, pos)
+        from_page = request.POST.get('from_page', None)
+        to_page = request.POST.get('to_page', None)
+        from_pos = request.POST.get('from_pos', None)
+        to_pos = request.POST.get('to_pos', None)
+
+        print(request.POST)
+
+        invalid = (
+            from_page is None or to_page is None or from_pos is None or to_pos is None
+        )
+        if not invalid:
+            from_page = int(from_page)
+            to_page = int(to_page)
+            from_pos = int(from_pos)
+            to_pos = int(to_pos)
+            form = FormType.objects.get(pk=self.kwargs.get('pk'))
+            form.move_field(from_page, from_pos, to_pos, to_page)
+            return JsonResponse({})
+
         return JsonResponse({})
 
 

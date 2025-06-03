@@ -2,9 +2,9 @@
 <div id="df-form-preview" class="bg-light-subtle">
     {% with form_type.get_pages as form_pages %}
         <!-- Nav tabs -->
-        <ul class="nav nav-tabs">
+        <ul class="nav nav-tabs" role="tablist">
             {% for page in form_pages %}
-                <li class="nav-item">
+                <li class="nav-item" >
                     <a href="#page{{ page.number }}"
                        class="nav-link {% if page.number == active_page %}active{% endif %}"
                        data-bs-toggle="tab">{{ page.name }}
@@ -17,10 +17,11 @@
         <div class="tab-content">
             {% for page in form_pages %}
                 <div class="tab-pane df-page {% if page.number == active_page %}active{% endif %}"
-                     id="page{{ page.number }}">
-                    <div class="df-container row sortable" data-page-number="{page.number}}">
+                     id="page{{ page.number }}" data-page-number="{{ page.number }}">
+                    <div class="df-container row sortable-list">
                         {% for field in page.fields %}
                             <div class="df-field {{ field.width_styles }}"
+                                 data-field-page="{{ page.number }}"
                                  data-field-width="{{ field.width_styles }}"
                                  data-field-type="{{ field.field_type }}" data-field-pos="{{ field.index }}">
                                 {% include "dynforms/field.html" %}

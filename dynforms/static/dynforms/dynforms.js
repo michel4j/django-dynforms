@@ -227,9 +227,12 @@ function doBuilderLoad() {
             items: '.df-field',
             revert: false,
             forcePlaceholderSize: true,
+            start: function (event, ui) {
+                ui.item.click();
+            },
             stop: function (event, ui) {
                 let page_fields = $('.df-page.active > .df-container .df-field');
-                let active_page = $('.df-page.active > .df-container');
+                let active_page = $('.df-page.active');
                 if (ui.item.hasClass("field-btn")) {
                     ui.item.removeClass();
                     ui.item.addClass("df-field container").attr("style", "");
@@ -242,19 +245,33 @@ function doBuilderLoad() {
                         page_fields.each(function () {
                             $(this).data('field-pos', $(this).index());
                         });
-                        $(this).click();
+                        $(this).click(setupField);
                     });
                 } else {
                     // move dropped field to new position on server
                     let move_url = `${document.URL}${active_page.index()}/mov/${ui.item.data('field-pos')}-${ui.item.index()}/`;
-                    $('<div class="ajax"></div>').load(move_url);
+                    $.ajax(move_url, {
+                        type: 'post',
+                        data: {
+                            'csrfmiddlewaretoken': $('#df-builder').data('csrf-token'),
+                        },
+                        success: function (result) {
+                            dfToasts.success({
+                                message: `Field moved to position ${ui.item.index()}!`
+                            });
+                        }
+                    });
                     // renumber all fields on active page
                     page_fields.each(function () {
                         $(this).data('field-pos', $(this).index());
                     });
                 }
             }
-        }).droppable({});
+        }).droppable({
+            drop: function (event, ui) {
+                console.log("Dropped: ", ui, event);
+            }
+        });
 
         $('.df-field').click(setupField);
         setupMenuForm("#form-settings .df-menu-form");
@@ -262,7 +279,17 @@ function doBuilderLoad() {
 
         $(document).on('click', "button[data-page-number]", function (e) {
             e.preventDefault();
-            $('<div class="ajax"></div>').load(`${document.URL}${$(this).data('page-number')}/del/`);
+            $.ajax(`${document.URL}${$(this).data('page-number')}/del/`, {
+                type: 'post',
+                data: {
+                    'csrfmiddlewaretoken': $('#df-builder').data('csrf-token'),
+                },
+                success: function (result) {
+                    dfToasts.success({
+                        message: `Page Deleted!`
+                    });
+                }
+            });
             window.location.reload();
         });
 

@@ -43,14 +43,21 @@ html, body {
 }
 
 #df-form-preview {
+  display: flex;
+  flex-direction: column;
   grid-area: work-area;
   overflow-y: auto;
   overflow-x: hidden;
 
   .tab-content {
     padding: 0.5em 1.5em;
+    flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
-
+  .nav-tabs {
+    flex-shrink: 0;
+  }
   .df-hide {
     opacity: 0.3;
   }

@@ -59,6 +59,7 @@ html, body {
     flex-shrink: 0;
   }
   .df-hide {
+    display: inherit;
     opacity: 0.3;
   }
 }

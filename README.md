@@ -57,16 +57,60 @@ A Django reusable App for dynamically designing and generating forms.
 ## Usage
 
 - Access the form builder at `/dynforms/`.
-- Create a new form by clicking "Add Form" icon on the off-canvas Form Types sidebar or select a form from the list to
+- Create a new form by clicking "[+ Add]" button the off-canvas Form Types sidebar or select a form from the list to
   edit it.
-- The search bar allows you to filter the form list.
-- Use the sidebar to add fields or drag a field from the sidebar onto the form to add it.
-- To edit for field click on it and edit the settings using the form on the left-sidebar. Many of the field parameters
+- The search bar allows you to filter the form list by searching through the titles and descriptions.
+- Use the sidebar field panel to add fields. Clicking a field on the panel will append a field of that type to the 
+  current page. Drag the field to rearrange it within the form.
+- To edit for field click on it and edit the settings using the Field settings form on the left-sidebar. Many of the field parameters
   will auto-apply and update the form in real-time.
 - Undo/Redo capabilities are not yet implemented. All changes are currently saved automatically as you edit the form.
 - To delete a field, click the trash icon on the field settings form.
 - Fields can be rearranged by dragging within the form. Move a field from one page to another by dragging it onto the
   desired page tab.
+- The form parameters like title, description, number of pages, and action buttons can be edited in, the form settings
+  sidebar.
+- To select a new form for editing withing the designer, click the "Select Form" button in the top-right corner of
+  the form designer. This will open the off-screen sidebar for adding new forms or selecting an existing form.
+
+## Field Rules
+Fields can have rules associated with them, allowing for conditional logic to hide or show fields based on user input. 
+Multiple rules can be defined for a field, and they will be evaluated in the order they are defined.
+
+To add rules to a field, click on the "Rules" button in the field settings sidebar. Here you can define conditions that
+determine what action to take based on the value of other fields. Each rule consists of
+- An **action** that determines what the rule does
+- A source **field** that the rule will be evaluated against. The rule will be triggered when the value of this
+  field changes. Any field defined in the form can be used as a source field.
+- A **subfield** to go along with the source field, if applicable. This is useful for fields that have subfields, such as
+  Address. 
+- An **operator** that defines how the source field's value is compared to the test value.
+- A test **value** that the source field's value is compared against. This can be a static value or a reference to
+  another field's value.
+
+Supported actions include:
+- **Show If**: Makes the field visible when the condition is met.
+- **Hide If**: Hides the field when the condition is met.
+- **Required If**: Makes the field required when the condition is met.
+
+Currently supported operators include:
+- **Less Than**: The source field's value is less than the test value.
+- **Greater Than**: The source field's value is greater than the test value.
+- **Equal or Less Than**: The source field's value is less than or equal to the test value.
+- **Equal or Greater Than**: The source field's value is greater than or equal to the test value.
+- **Exactly**: The source field's value is exactly equal to the test value.
+- **Exactly (Any Case)**: The source field's value is exactly equal to the test value, ignoring case.
+- **Not Equal to**: The source field's value is not equal to the test value.
+- **Contained in**: The source field's value is contained in the test value.
+- **Contains**: The source field's value contains the test value.
+- **Not Contained in**: The source field's value is not contained in the test value.
+- **Starts With**: The source field's value starts with the test value.
+- **Ends With**: The source field's value ends with the test value.
+- **Starts With (Any Case)**: The source field's value starts with the test value, ignoring case.
+- **Ends With (Any Case)**: The source field's value ends with the test value, ignoring case.
+- **Is Empty**: The source field's value is empty.
+- **Is Not Empty**: The source field's value is not empty.
+
 
 ## Abstract Model Classes
 
@@ -173,7 +217,7 @@ values (e.g., for checkboxes).
 *Form Builder interface showing the field menu and main designer area*
 
 ![Multi-Page Forms](docs/src/form-editor.png)
-*Form editor showing multi-page form support*
+*Form editor showing multipage form support*
 
 ## Contributing
 
@@ -183,8 +227,6 @@ Pull requests and issues are welcome!
 
 [MIT License](LICENSE)
 
----
-
-Adjust the details as needed for your specific app and distribution method.   
+ 
 
  

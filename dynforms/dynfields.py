@@ -2,7 +2,6 @@ from collections import OrderedDict
 from datetime import datetime, timedelta
 from dateutil import parser
 from django.core.exceptions import ValidationError
-from django.utils.text import slugify
 from django.utils.translation import gettext as _
 
 from dynforms.fields import FieldType

@@ -77,59 +77,9 @@
         </div>
     </form>
 {% endwith %}
-
 <script>
     $(document).ready(function () {
-        // Register events for monitoring rule change triggers
-        {% for fn, ft in form.form_type.field_specs.items %}
-            {% for rl in ft.rules %}
-                $("#{{rl.field}}-group").on('df-rules:update', function (event) {
-                    //FIXME detect subfields
-                    let tgt = $("#{{fn}}-group");
-                    let value = valuesOnly($("#df-form-instance :input[name='{{rl.field}}{{rl.subfield}}']").serializeArray());
-                    {% if rl.action == 'show' %}
-                        tgt.toggleClass("df-hide", !testRule(value, "{{rl.operator}}", "{{rl.value}}"));
-                    {% elif rl.action == 'hide' %}
-                        tgt.toggleClass("df-hide", testRule(value, "{{rl.operator}}", "{{rl.value}}"));
-                    {% endif %}
-                });
-                $("#df-form-instance :input[name='{{rl.field}}{{rl.subfield}}']").change(function (event) {
-                    $("#{{rl.field}}-group").trigger('df-rules:update');
-                });
-                $("#df-form-instance :input[name='{{rl.field}}{{rl.subfield}}']").change();
-            {% endfor %}
-        {% endfor %}
-            let form_instance = $('#df-form-instance');
-            form_instance.find("a[data-bs-toggle='tab']").click(function (e) {
-                form_instance.find(":input[name='active_page']").val($(this).parent().index());
-            });
-
-            $("a[data-tab-proxy]").click(function (e) {
-                $($(this).attr('data-tab-proxy')).click();
-            });
-
-            //Save time when form was loaded
-            form_instance.attr('data-df-loaded', $.now());
-
-            function monitorChanges(event) {
-                // save time when any field was modified except while loading
-                var dur = Math.abs(event.timeStamp - form_instance.attr('data-df-loaded'));
-                if (dur > 2000) {
-                    $("#df-form-instance").attr('data-df-dirty', dur);
-                }
-            }
-
-            form_instance.on('change', ':input', monitorChanges);
-            form_instance.on('click', '[data-repeat-add], .remove-repeat', monitorChanges);
-
-            form_instance.submit(function () {
-                $(this).removeAttr('data-df-dirty'); // No warning when saving dirty form
-                $("input[disabled]").removeAttr("disabled");
-            });
-            $(".df-field-runtime").click(function () {
-                $('.df-field-runtime').removeClass('activated');
-                $(this).addClass('activated');
-            });
-        }
-    );
+        guardDirtyForm('#df-form-instance');
+    });
 </script>
+{% include "dynforms/form-rules.html" with form_type=form.form_type %}

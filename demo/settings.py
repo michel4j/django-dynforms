@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
     "crisp_modals",
-    "icons",
     'itemlist',
     'dynforms',
     'demo.example',

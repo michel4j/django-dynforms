@@ -204,29 +204,14 @@ function doBuilderLoad() {
             update: function (event, ui) {
                 ui.item.removeClass("dragging-item");
                 let draggedItem = $(ui.item);
-                let active_page = $('.df-page.active');
-                if (draggedItem.hasClass("field-btn")) {
-                    draggedItem.removeClass();
-                    draggedItem.addClass("df-field container").attr("style", "");
-                    draggedItem.html("");
-                    draggedItem.click(setupField);
-                    // Ajax Add Field
-                    let add_url = `${document.URL}${active_page.index()}/add/${draggedItem.data('field-type')}/${draggedItem.index()}/`;
-                    draggedItem.load(add_url, function () {
-                        // renumber all fields on active page
-                        $('.df-page > .df-container > .df-field').each(function () {
-                            $(this).data('field-pos', $(this).index());
-                        });
-                        $(this).click(setupField);
-                    });
-                } else if (!draggedItem.hasClass('stop-sorting')) {
-                    // move dropped field to new position on server
+                let activePage = $('.df-page.active');
+                if (!draggedItem.hasClass('stop-sorting')) {
                     $.ajax(`${document.URL}move/`, {
                         type: 'post',
                         data: {
                             'csrfmiddlewaretoken': $('#df-builder').data('csrf-token'),
-                            'from_page': active_page.index(),
-                            'to_page': active_page.index(),
+                            'from_page': activePage.index(),
+                            'to_page': activePage.index(),
                             'from_pos': ui.item.data('field-pos'),
                             'to_pos': ui.item.index(),
                         },
@@ -301,39 +286,24 @@ function doBuilderLoad() {
         });
 
         // Make field buttons draggable to containers
-        $('.field-btn').draggable({
-            connectToSortable: '.df-page.active > .df-container',
-            revert: "invalid",
-            appendTo: '.df-page.active > .df-container',
-            cursorAt: {left: 5, top: 5},
-            scroll: true,
-            helper: "clone",
-            start: function (event, ui) {
-                let exp = $('.df-page.active > .df-container');
-                ui.helper.addClass("ui-draggable-helper");
-                ui.helper.width(exp.width() / 4);
-            },
-            drag: function (event, ui) {
-                ui.position.top = NaN;
-            }
-        }).click(function () {
+        $('.field-btn').click(function () {
             if ($(this).is('.ui-draggable-dragging')) {
                 return;
             }
-            const new_el = $('<div class="df-field"></div>');
-            const cur_page = $('.df-page.active');
-            const cur_container = $('.df-page.active > .df-container');
-            cur_container.append(new_el);
-            new_el.data('field-type', $(this).data('field-type'));
-            new_el.data('field-pos', new_el.index());
-            new_el.click(setupField);
+            const newField = $('<div class="df-field"></div>');
+            const curPage = $('.df-page.active');
+            const curContainer = $('.df-page.active > .df-container');
+            curContainer.append(newField);
+            newField.data('field-type', $(this).data('field-type'));
+            newField.data('field-pos', newField.index());
+            newField.click(setupField);
 
             // Ajax Add Field
-            let field_url = `${document.URL}${cur_page.index()}/add/${new_el.data('field-type')}/${new_el.index()}/`;
-            new_el.load(field_url, function () {
+            let field_url = `${document.URL}${curPage.index()}/add/${newField.data('field-type')}/${newField.index()}/`;
+            newField.load(field_url, function () {
                 $(this).click();
             });
-        }).disableSelection();
+        });
 
         $('.df-field').click(setupField);
         setupMenuForm("#form-settings .df-menu-form");
@@ -395,16 +365,16 @@ function doBuilderLoad() {
         // Move field to next page
         $(document).on('click', "#field-settings #move-next", function (e) {
             e.preventDefault();
-            let active_field = $('div.df-field.selected');
-            let active_page = $('.df-page.active');
-            let next_page = Math.min(active_page.index() + 1, $('.df-page').last().index());
+            let activeField = $('div.df-field.selected');
+            let activePage = $('.df-page.active');
+            let nextPage = Math.min(activePage.index() + 1, $('.df-page').last().index());
             $.ajax(`${document.URL}move/`, {
                 type: 'POST',
                 data: {
                     'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val(),
-                    'from_page': active_page.index(),
-                    'to_page': next_page,
-                    'from_pos': active_field.index(),
+                    'from_page': activePage.index(),
+                    'to_page': nextPage,
+                    'from_pos': activeField.index(),
                     'to_pos': 0,
                 },
                 dataType: 'json',
@@ -417,15 +387,15 @@ function doBuilderLoad() {
         //
         $(document).on('click', "#field-settings #move-prev", function (e) {
             e.preventDefault();
-            let cur_fld = $('div.df-field.selected');
-            let page_no = $('.df-page.active').index();
+            let curField = $('div.df-field.selected');
+            let pageNumber = $('.df-page.active').index();
             $.ajax(`${document.URL}move/`, {
                 type: 'POST',
                 data: {
                     'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val(),
-                    'from_page': page_no,
-                    'to_page': Math.max(page_no - 1, 0),
-                    'from_pos': cur_fld.index(),
+                    'from_page': pageNumber,
+                    'to_page': Math.max(pageNumber - 1, 0),
+                    'from_pos': curField.index(),
                     'to_pos': 0,
                 },
                 dataType: 'json',
@@ -447,11 +417,11 @@ function testRule(first, operator, second) {
         case "lte":
             return (first <= second);
         case "exact":
-            return (first == second);
+            return (first === second);
         case "iexact":
             return (typeof first == 'string' ? first.toLowerCase() === second.toLowerCase() : false);
         case "neq":
-            return (first != second);
+            return (first !== second);
         case "gte":
             return (first >= second);
         case "eq" :
@@ -464,13 +434,13 @@ function testRule(first, operator, second) {
             return (first != null ? (typeof first == 'array' ? $.inArray(second, first) : first.indexOf(second) >= 0) : false);
         }
         case "startswith":
-            return (first.indexOf(second) == 0);
+            return (first.indexOf(second) === 0);
         case "istartswith":
             return (typeof first == 'string' ? first.toLowerCase().indexOf(second.toLowerCase()) == 0 : false);
         case "endswith":
-            return (first.slice(-second.length) == second);
+            return (first.slice(-second.length) === second);
         case "iendswith":
-            return (typeof first == 'string' ? first.toLowerCase().slice(-second.length) == second.toLowerCase() : false);
+            return (typeof first == 'string' ? first.toLowerCase().slice(-second.length) === second.toLowerCase() : false);
         case "nin":
             return !(second.indexOf(first) >= 0);
         case "isnull":
@@ -492,6 +462,40 @@ function valuesOnly(va) {
         value.push(this.value)
     });
     return value;
+}
+
+function guardDirtyForm(selector) {
+    let formInstance = $(selector);
+    formInstance.find("a[data-bs-toggle='tab']").click(function (e) {
+        formInstance.find(":input[name='active_page']").val($(this).closest('.df-page').index());
+    });
+
+    $("a[data-tab-proxy]").click(function (e) {
+        $($(this).attr('data-tab-proxy')).click();
+    });
+
+    //Save time when form was loaded
+    formInstance.attr('data-df-loaded', $.now());
+
+    function monitorChanges(event) {
+        // save time when any field was modified except while loading
+        let dur = Math.abs(event.timeStamp - formInstance.attr('data-df-loaded'));
+        if (dur > 2000) {
+            $(selector).attr('data-df-dirty', dur);
+        }
+    }
+
+    formInstance.on('change', ':input', monitorChanges);
+    formInstance.on('click', '[data-repeat-add], .remove-repeat', monitorChanges);
+
+    formInstance.submit(function () {
+        $(this).removeAttr('data-df-dirty'); // No warning when saving dirty form
+        $("input[disabled]").removeAttr("disabled");
+    });
+    $(".df-field").click(function () {
+        $('.df-field').removeClass('activated');
+        $(this).addClass('activated');
+    });
 }
 
 $(document).on("keypress", ":input:not(textarea):not([type=submit])", function (event) {

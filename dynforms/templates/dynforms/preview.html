@@ -54,9 +54,8 @@
             </button>
         {% endfor %}
     </div>
-
     <script>
-        function check_form() {
+        $("#check-form").click(function () {
             $.ajax({
                 type: "GET",
                 url: "{% url 'dynforms-check' pk=form_type.pk %}",
@@ -64,11 +63,7 @@
                     $("#footer-warnings").html(data);
                 }
             });
-        }
-
-        $("#check-form").click(function () {
-            check_form();
         });
-        //setInterval(check_form, 10000);
     </script>
+    {% include "dynforms/form-rules.html" %}
 </div>

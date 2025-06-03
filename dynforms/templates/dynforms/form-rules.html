@@ -1,0 +1,22 @@
+<script>
+    $(document).ready(function () {
+        // Register events for monitoring rule change triggers
+        {% for fieldName, fieldType in form_type.field_specs.items %}
+            {% for rule in fieldType.rules %}
+                $("#{{rule.field}}-group").on('df-rules:update', function (event) {
+                    let target = $("#{{fieldName}}-group");
+                    let value = valuesOnly($(":input[name='{{rule.field}}{{rule.subfield}}']").serializeArray());
+                    {% if rule.action == 'show' %}
+                        target.toggleClass("df-hide", !testRule(value, "{{rule.operator}}", "{{rule.value}}"));
+                    {% elif rule.action == 'hide' %}
+                        target.toggleClass("df-hide", testRule(value, "{{rule.operator}}", "{{rule.value}}"));
+                    {% endif %}
+                });
+                $(":input[name='{{rule.field}}{{rule.subfield}}']").change(function (event) {
+                    $("#{{rule.field}}-group").trigger('df-rules:update');
+                });
+                $(":input[name='{{rule.field}}{{rule.subfield}}']").change();
+            {% endfor %}
+        {% endfor %}
+    });
+</script>

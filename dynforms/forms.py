@@ -190,7 +190,7 @@ class FieldSettingsForm(forms.Form):
                         'Apply', name='apply-field', id='apply-field', value="apply-field",
                         css_class="btn btn-primary"
                     ),
-                    StrictButton(rule_html, css_class='btn btn-light border', id='edit-rules',
+                    StrictButton(rule_html, css_class='btn btn-secondary', id='edit-rules',
                                  value="edit-rules"),
                     StrictButton(
                         'Delete', name='delete-field', value="delete-field", id="delete-field",
@@ -289,7 +289,7 @@ class RulesForm(ModalForm):
 class DynFormMixin:
     type_code = None
     field_specs: dict
-    instance: models.DynEntry
+    instance: models.DynEntry = None
     form_type: models.FormType
     initial: dict
     cleaned_data: dict

@@ -155,7 +155,6 @@ svg {
 }
 
 .df-field {
-  border: 1px solid transparent;
   &:hover {
     .df-info {
       display: inline-block;
@@ -174,14 +173,6 @@ svg {
 .df-field.error {
   label {
     color: var(--bs-danger) !important;
-  }
-}
-
-div {
-  &:not(.no-hover).df-field {
-    &:hover {
-      border: 1px dotted var(--bs-border-color);
-    }
   }
 }
 .tab-content {
@@ -324,7 +315,6 @@ ul.nav-tabs.small-tabs {
 
   .nav-item {
     margin-left: 0.25em;
-
     &:first-child {
       margin-left: 1em;
     }
@@ -333,4 +323,8 @@ ul.nav-tabs.small-tabs {
 
 #trumbowyg-icons {
   display: none  !important;
+}
+
+.clock-timepicker {
+  flex-grow: 1;
 }

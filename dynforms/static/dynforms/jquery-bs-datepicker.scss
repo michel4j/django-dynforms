@@ -1,0 +1,84 @@
+.datepicker-popover {
+  --bs-popover-header-padding-x: 0.25em;
+
+  .popover-arrow {
+  }
+
+  .popover-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .dp-nav-title {
+    font-weight: bold;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .dp-action {
+    &.btn-link {
+      text-decoration: none;
+
+      &:hover {
+        opacity: 0.5;
+      }
+    }
+  }
+
+  .table {
+    margin-bottom: 0;
+
+    td {
+      &.dp-action {
+        cursor: pointer;
+
+        &:hover {
+          background-color: var(--bs-primary);
+          color: white;
+        }
+      }
+
+      &.table-info {
+        background-color: var(--bs-info);
+        font-weight: bold;
+        color: white;
+      }
+
+      &.table-primary {
+        background-color: var(--bs-primary);
+        color: white;
+      }
+
+      &.dp-disabled {
+        color: var(--bs-tertiary-color);
+        cursor: default;
+        background-color: var(--bs-secondary-bg);
+      }
+
+      &.dp-empty {
+        background-color: transparent;
+        cursor: default;
+      }
+    }
+  }
+
+  .dp-table {
+    thead {
+      th {
+        color: var(--bs-secondary-color);
+      }
+    }
+  }
+}
+
+.datepicker-popover .table th,
+.datepicker-popover .table td {
+  text-align: center;
+  padding: 0.35rem;
+  aspect-ratio: 1;
+  min-width: 2em;
+}

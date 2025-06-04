@@ -1,12 +1,20 @@
-<div class="controls input-group time-input {{repeatable}}" id="{{field.name}}-controls">
-    <input type="text" name="{{field.name}}" id="{{field.name}}" class="form-control" value="{{data}}">
-	<span class="input-group-addon"><i class="bi-clock"></i></span>
+{% load icons %}
+{% load static %}
+<div class="controls input-group {{repeatable}}" id="{{field.name}}-controls">
+    <input type="text" class="form-control time-input" aria-label="{{ field.label }}" id="{{ field.name }}" name="{{ field.name }}" value="{{ data }}" placeholder="HH:MM">
+	<span class="input-group-text">{% svg_icon "clock" size="sm" %}</span>
+    <script src="{% static 'dynforms/jquery-clock-timepicker.min.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#{{field.name}}').clockTimePicker({
+                alwaysSelectHoursFirst: true,
+                interval: 5,
+                modeSwitchSpeed: 25
+            });
+            $('#{{field.name}}').on('keydown', function(e) {
+                e.preventDefault(); // Prevent direct editing of the input field
+            });
+        });
+    </script>
 </div>
-<script type="text/javascript">
-	$('#{{field.name}}-controls').datetimepicker({
-		format: 'hh:mm',
-		pickDate: false,
-		useSeconds: false
-	});
-</script>
 	

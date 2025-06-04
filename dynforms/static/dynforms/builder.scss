@@ -11,7 +11,7 @@ html, body {
   height: 100%;
   display: grid;
   overflow: hidden;
-  grid-template-columns: 375px auto;
+  grid-template-columns: 400px auto;
   grid-template-rows: 50px auto 4em;
   grid-template-areas:
 		"header header"
@@ -31,11 +31,14 @@ html, body {
   overflow-y: auto;
   overflow-x: hidden;
   background: var(--bs-light-bg-subtle);
+
   .nav-tabs {
     flex-shrink: 0;
   }
+
   .tab-content {
     flex-grow: 1;
+
     .tab-pane {
       padding: 0 0 1em 0;
     }
@@ -55,9 +58,11 @@ html, body {
     overflow-y: auto;
     overflow-x: hidden;
   }
+
   .nav-tabs {
     flex-shrink: 0;
   }
+
   .df-hide {
     display: inherit;
     opacity: 0.3;
@@ -65,7 +70,7 @@ html, body {
 }
 
 .tab-drop-hover::before {
-    content: ' ⤓ ';
+  content: ' ⤓ ';
   font-weight: 900;
   color: var(--bs-body-color);
 }
@@ -115,11 +120,18 @@ html, body {
 .df-field {
   padding: 0.5em;
   margin-bottom: 0.5em;
-  border: 1px solid transparent;
+  border: 2px solid transparent;
+  border-radius: var(--bs-border-radius);
 
   &:hover {
-    border: 1px dashed var(--bs-border-color);
+    border: 2px dotted var(--bs-primary-border-subtle);
     cursor: pointer;
+  }
+
+  &.selected {
+    border-radius: var(--bs-border-radius);
+    background: var(--bs-tertiary-bg);
+    border: 2px solid var(--bs-primary-border-subtle);
   }
 
   .ui-draggable-dragging {
@@ -137,21 +149,19 @@ html, body {
   background: none;
 }
 
-.df-field.selected {
-  background: var(--bs-secondary-bg-subtle);
-  border: 1px solid var(--bs-border-color);
-}
-
 
 .df-menu-form {
   font-size: 0.9em;
+
   *.row {
     --bs-gutter-x: 0.75em;
   }
+
   legend {
     font-size: inherit;
     margin-bottom: 0.25em;
   }
+
   width: 100%;
 
   .form-label {

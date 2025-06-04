@@ -1,11 +1,10 @@
 {% load dynforms %}
 {% load static %}
-<div class="controls{{ repeatable }}" id="{{ field.name }}-controls">
+<div class="controls {{ repeatable }}" id="{{ field.name }}-controls">
     <div class="row">
         {% if 'department' in field.options %}
             <div class="col-12 mb-2">
-                {% if 'labels' in field.options %}
-                    <label for="{{ field.name }}-place">Institution / Department</label>{% endif %}
+                {% if 'labels' in field.options %}<label for="{{ field.name }}-place">Institution / Department</label>{% endif %}
                 <input id="{{ field.name }}-place" aria-label="Institution" placeholder="Institution / Department"
                        name="{{ field.name }}.place" class="form-control" type="text" value="{{ data.place }}">
             </div>
@@ -33,7 +32,7 @@
             <input id="{{ field.name }}-city" aria-label="City" placeholder="City" name="{{ field.name }}.city"
                    class="form-control" type="text" value="{{ data.city }}">
         </div>
-        <div class="col-6 mb-1">
+        <div class="col-6 mb-2">
             {% if 'labels' in field.options %}<label for="{{ field.name }}-code">Postal / Zip Code</label>{% endif %}
             <input id="{{ field.name }}-code" aria-label="Postal Code" placeholder="Postal Code"
                    name="{{ field.name }}.code" class="form-control" type="text" value="{{ data.code }}">

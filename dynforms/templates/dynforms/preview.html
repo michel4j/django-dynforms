@@ -14,7 +14,7 @@
         </ul>
 
         <!-- Tab panes -->
-        <div class="tab-content">
+        <div class="tab-content" >
             {% for page in form_pages %}
                 <div class="tab-pane df-page {% if page.number == active_page %}active{% endif %}"
                      id="page{{ page.number }}" data-page-number="{{ page.number }}">

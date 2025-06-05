@@ -372,3 +372,13 @@ class DynFormView(FormView):
         context['form_type'] = form_type
         context['active_page'] = active_page
         return context
+
+    def get_success_url(self):
+        return self.request.get_full_path()
+
+
+class TestFormView(DynFormView):
+    def form_valid(self, form):
+        import pprint
+        pprint.pprint(form.cleaned_data)
+        return HttpResponseRedirect(self.get_success_url())

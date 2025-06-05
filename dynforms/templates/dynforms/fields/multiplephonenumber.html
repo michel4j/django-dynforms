@@ -1,23 +1,19 @@
 {% load dynforms %}
-<div class="controls row no-space{{repeatable}}"
-	id="{{field.name}}-controls">
-	<span class="field-group-item col-xs-6">
-		<div class="field-group-item input-group"
-			id="{{field.name}}-primary-controls">
-			<span class="input-group-addon"><i class="bi-telephone"></i></span> <input
-				type="text" name="{{field.name}}.primary"
-				id="{{field.name}}-primary" class="form-control"
-				value="{{data.primary}}">
-		</div> <label for="{{field.name}}-primary">Primary</label>
-	</span> <span class="field-group-item col-xs-6">
-		<div class="field-group-item input-group"
-			id="{{field.name}}-alternate-controls">
-			<span class="input-group-addon"><i class="bi-telephone"></i></span> <input
-				type="text" name="{{field.name}}.alternate"
-				id="{{field.name}}-alternate" class="form-control"
-				value="{{data.alternate}}">
-		</div> <label for="{{field.name}}-alternate">Alternate</label>
-	</span>
+{% load icons %}
+<div class="controls row {{ repeatable }}" id="{{ field.name }}-controls">
+    <div class="input-group col">
+        <div class="input-group-text">{% svg_icon "phone" size="sm" %}</div>
+        <input type="tel" name="{{ field.name }}.primary"
+               id="{{ field.name }}-primary" class="form-control" aria-label="Primary"
+               placeholder="Primary Phone"
+               value="{{ data.primary }}">
+    </div>
+    <div class="input-group col">
+        <div class="input-group-text">{% svg_icon "phone" size="sm" %}</div>
+        <input type="tel" name="{{ field.name }}.alternate"
+               id="{{ field.name }}-alternate" class="form-control" aria-label="Alternate"
+                placeholder="Alternate Phone"
+               value="{{ data.alternate }}">
+    </div>
 </div>
-
 

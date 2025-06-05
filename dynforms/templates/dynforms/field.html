@@ -3,25 +3,26 @@
 {% load icons %}
 <div id="{{ field.name }}-group" data-field-width="{{ field.width_styles }}" class="form-group {{ field.hide_styles }} {{ field.extra_styles }}">
     {% if field.field_type != 'newsection' %}
-        {% if 'no-label' not in field.options %}
+        {% if 'no-label' in field.options %}
+        {% else %}
             <label class="control-label {% if field.is_required %}required{% endif %}" for="{{ field.name }}">
                 {{ field.label }}
             </label>
-            {% if field.instructions and field.field_type != 'newsection' %}
-                <span class="df-info text-primary" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-trigger="hover"
-                      title="{{ field.label }}" data-bs-content="{{ field.instructions }}">{% svg_icon "info-circle" size="sm" %}</span>
-            {% endif %}
-            <div class="control-instructions text-narrow">
-                <div class="d-flex flex-row align-items-center">
-                    {% svg_icon "info-circle" %}
-                    <div class="flex-grow-1 ps-2">{{ field.label }}</div>
-                </div>
-                <hr class="hr-xs"/>
-                <span class="fg-help">
-                    {{ field.instructions|markdown }}
-                </span>
-            </div>
         {% endif %}
+        {% if field.instructions and field.field_type != 'newsection' %}
+            <span class="df-info text-primary" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-trigger="hover"
+                  title="{{ field.label }}" data-bs-content="{{ field.instructions }}">{% svg_icon "info-circle" size="sm" %}</span>
+        {% endif %}
+        <div class="control-instructions text-narrow">
+            <div class="d-flex flex-row align-items-center">
+                {% svg_icon "info-circle" %}
+                <div class="flex-grow-1 ps-2">{{ field.label }}</div>
+            </div>
+            <hr class="hr-xs"/>
+            <span class="fg-help">
+                {{ field.instructions|markdown }}
+            </span>
+        </div>
     {% endif %}
 
     {% if field.is_repeatable %}

@@ -346,6 +346,8 @@ class DynFormMixin:
         # extract field data
         for field_name, field_spec in self.field_specs.items():
             field_type = FieldType.get_type(field_spec['field_type'])
+            if field_type is None:
+                continue
             multiple = "repeat" in field_spec.get('options', []) or field_type.multi_valued
             required = "required" in field_spec.get('options', [])
 

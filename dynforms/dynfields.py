@@ -17,7 +17,7 @@ class StandardMixin(object):
 class SingleLineText(StandardMixin, FieldType):
     name = _("Single Line")
     icon = "forms"
-    options = ['hide', 'required', 'repeat']
+    options = ['hide', 'required', 'repeat', 'floating', 'no-label']
     units = ['chars', 'words']
     settings = ['minimum', 'maximum', 'units', 'default']
 
@@ -104,14 +104,12 @@ class DropDown(MultipleChoice):
 class PhoneNumber(SingleLineText):
     name = _("Phone #")
     icon = "phone"
-    options = ['required', 'hide', 'repeat']
     settings = []
 
 
 class Date(SingleLineText):
     name = _("Date")
     icon = "calendar"
-    options = ['required', 'hide', 'multiple']
     settings = []
 
 
@@ -119,12 +117,12 @@ class Time(SingleLineText):
     name = _("Time")
     icon = "clock"
     settings = []
+    options = ['hide', 'required', 'repeat', 'no-label']
 
 
 class Email(SingleLineText):
     name = _("Email")
     icon = "email"
-    options = ['required', 'hide', 'repeat']
     units = ['chars']
     settings = ['default']
 
@@ -252,28 +250,6 @@ class Likert(FancyMixin, FieldType):
     icon = "list-details"
     options = ['required', 'hide']
     settings = ['choices']
-
-    def clean(self, val, multi=False, validate=True):
-        val = super().clean(val, multi=multi, validate=validate)
-        invalid_fields = set()
-        if isinstance(val, list):
-            entries = OrderedDict()
-            for entry in val:
-                key = "{}{}{}".format(
-                    entry.get('first_name', '').strip(),
-                    entry.get('last_name', '').strip(),
-                    entry.get('email', '').strip()
-                )
-                entries[key.lower()] = entry
-                invalid_fields |= {k for k, v in list(self.check_entry(entry).items()) if not v}
-            val = list(entries.values())
-        else:
-            invalid_fields |= {k for k, v in list(self.check_entry(val).items()) if not v}
-
-        if validate and invalid_fields:
-            raise ValidationError("Must provide {} for all entries".format(', '.join(invalid_fields)))
-
-        return val
 
 
 class Throttle(FancyMixin, FieldType):

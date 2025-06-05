@@ -314,11 +314,15 @@ ul.nav-tabs.small-tabs {
     }
   }
 }
+.clock-timepicker {
+  flex-grow: 1;
+}
 
 #trumbowyg-icons {
   display: none  !important;
 }
 
-.clock-timepicker {
-  flex-grow: 1;
+.trumbowyg-editor.trumbowyg-reset-css[contenteditable="true"] {
+  background-color: var(--bs-body-bg) !important;
+  color: var(--bs-body-color) !important;
 }

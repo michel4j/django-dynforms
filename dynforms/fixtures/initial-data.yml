@@ -2,171 +2,117 @@
   pk: 1
   fields:
     created: 2016-02-03 19:16:06+00:00
-    modified: 2025-06-03 18:40:16.227294+00:00
-    name: Form For testing
+    modified: 2025-06-05 23:20:15.116322+00:00
+    name: Party Survey Form
     code: test-form
     description: Just an example playground form for testing
     pages:
-    - name: First Page
+    - name: Personal Information
       fields:
-      - name: sample-types-002
-        label: Sample Types 002
-        options: []
-        field_type: sampletypes
-      - field_type: nameaffiliation
-        label: Name/Affiliation 003
-        name: nameaffiliation_003
-        options: []
+      - field_type: fullname
+        label: Full Name
+        name: full_name
+        instructions: Please enter your full name as it appears on your government
+          issued ID.
+        width: full
         tags: ''
-        instructions: ''
+        options:
+        - required
+      - field_type: multiplephonenumber
+        label: Phone Numbers
+        name: phone
+        instructions: Please enter your primary and secondary phone numbers
         width: full
-      - name: sector-000
         tags: ''
-        label: Sector 000
         options: []
-        field_type: sector
-        instructions: ''
-      - field_type: phonenumber
-        label: 'Phone # 003'
-        name: phone__003
+      - field_type: email
+        label: Email Address
+        name: email
+        instructions: Please provide your work email address
         width: full
-        options: []
-    - name: Second Page
-      fields:
-      - field_type: richtext
-        label: Rich Text 101
-        name: rich-text-101
-        size: medium
-        options: []
-      - field_type: singlelinetext
-        label: Single Line 100
-        name: single-line-100
-        width: full
-        options: []
-      - field_type: singlelinetext
-        label: Single Line 102
-        name: single-line-102
-        width: full
-        options: []
         tags: ''
-        instructions: ''
-        minimum: null
-        maximum: null
-        units: chars
+        options: []
         default: ''
-    actions:
-    - - submit
-      - Submit
-- model: dynforms.formtype
-  pk: 2
-  fields:
-    created: 2025-06-02 22:30:11.042435+00:00
-    modified: 2025-06-03 20:54:08.119803+00:00
-    name: Another Test Form
-    code: another-test
-    description: A second playground for testing various fields
-    pages:
-    - name: Page 1
-      fields:
-      - field_type: newsection
-        label: Section 003
-        name: section_003
-        options: []
-        tags: ''
-        instructions: ''
-        width: full
-      - field_type: richtext
-        label: Rich Text 000
-        name: rich_text_000
-        size: medium
-        options: []
       - field_type: address
-        label: Address 002
-        name: address_002
+        label: Home Address
+        name: address
+        instructions: Enter your residential address
+        width: full
+        tags: ''
         options: []
-      - field_type: scorechoices
-        label: Scores 001
-        name: scores_001
-        options: []
-        choices:
-        - First Choice
-        - Second Choice
-        default_choices: []
-    - name: Page 2
+    - name: RSVP
       fields:
-      - field_type: scorechoices
-        label: Scores 100
-        name: scores_100
-        options: []
-        choices:
-        - 1 Choice
-        - 2 Choice
-        - 3 Choice
-        default_choices: []
-        tags: ''
-        instructions: ''
+      - field_type: nameaffiliation
+        label: Accompanying Guests
+        name: guests
+        instructions: Please list all individuals you will be bringing to the event
+          as guests, and their affiliations.
         width: full
-        values:
-        - First Choice
-        - Second Choice
-        - Third Choice
-        default: []
-      - field_type: multiplechoice
-        label: Choices 003
-        name: choices_003
-        options: []
-        choices:
-        - First Choice
-        - Second Choice
-        - Third Choice
-        - Fourth Choice
-        default_choices: []
         tags: ''
-        instructions: ''
-        width: full
-        values:
-        - '1'
-        - '2'
-        - '3'
-        - '4'
-        default: []
-        rules:
-        - action: hide
-          field: scores_100
-          subfield: ''
-          operator: exact
-          value: '2'
-      - field_type: likert
-        label: Likert 102
-        name: likert_102
-        options: []
-        choices:
-        - First Choice
-        - Second Choice
-        default_choices: []
-        tags: ''
-        instructions: ''
-        width: full
-        values:
-        - first_choice
-        - second_choice
-        default: []
-      - field_type: paragraphtext
-        label: Paragraph 001
-        name: paragraph-001
+        options:
+        - repeat
+      - field_type: richtext
+        label: Prepared Remarks
+        name: remarks
         size: medium
-        options: []
-      - field_type: number
-        label: Number 101
-        name: number_101
+        options:
+        - counter
+        instructions: Please summarize the key points of your prepared remarks to
+          be presented at the event
         width: full
-        options: []
         tags: ''
-        instructions: ''
         minimum: null
-        maximum: null
-        units: digits
+        maximum: 500
+        units: words
         default: ''
+    - name: Dietary Requirements
+      fields:
+      - field_type: multiplechoice
+        label: Dinner Preference
+        name: dinner
+        choices:
+        - Sea Food
+        - Beef/Lamb/Pork
+        - Poultry
+        - Tofu
+        - Beans & Lentils
+        - Quinoa
+        default_choices: []
+        instructions: Select the preference for your dinner menu
+        width: half
+        tags: ''
+        options: []
+        values:
+        - seafood
+        - meets
+        - Chicken
+        - Tofu
+        - pulses
+        - quinoa
+        default: []
+      - field_type: checkboxes
+        label: Dietary Restrictions
+        name: restrictions
+        choices:
+        - Lactose
+        - Vegetarian/Vegan
+        - Nut Allergies
+        - Gluten
+        - Halal
+        default_choices: []
+        instructions: Please mark all dietary restrictions that apply
+        width: half
+        tags: ''
+        options: []
+        values:
+        - First Choice
+        - Second Choice
+        - Second Choice
+        - Second Choice
+        - Second Choice
+        default: []
     actions:
+    - - save
+      - Save
     - - submit
       - Submit

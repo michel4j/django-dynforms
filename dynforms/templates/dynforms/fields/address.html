@@ -4,7 +4,8 @@
     <div class="row">
         {% if 'department' in field.options %}
             <div class="col-12 mb-2">
-                {% if 'labels' in field.options %}<label for="{{ field.name }}-place">Institution / Department</label>{% endif %}
+                {% if 'labels' in field.options %}
+                    <label for="{{ field.name }}-place">Institution / Department</label>{% endif %}
                 <input id="{{ field.name }}-place" aria-label="Institution" placeholder="Institution / Department"
                        name="{{ field.name }}.place" class="form-control" type="text" value="{{ data.place }}">
             </div>
@@ -38,59 +39,60 @@
                    name="{{ field.name }}.code" class="form-control" type="text" value="{{ data.code }}">
         </div>
     </div>
-</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"
-        integrity="sha512-qOBWNAMfkz+vXXgbh0Wz7qYSLZp6c14R0bZeVX2TdQxWpuKr6yHjBIM69fcF8Ve4GUX6B6AKRQJqiiAmwvmUmQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="{% static 'js/countries.min.js' %}" charset="UTF-8"></script>
-<script type="text/javascript">
-    var $country = $('#{{field.name}}-country');
-    var $region = $('#{{field.name}}-region');
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"
+            integrity="sha512-qOBWNAMfkz+vXXgbh0Wz7qYSLZp6c14R0bZeVX2TdQxWpuKr6yHjBIM69fcF8Ve4GUX6B6AKRQJqiiAmwvmUmQ=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="{% static 'dynforms/countries.min.js' %}" charset="UTF-8"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            const $country = $('#{{field.name}}-country');
+            const $region = $('#{{field.name}}-region');
 
-    var countries = new Bloodhound({
-        datumTokenizer: Bloodhound.tokenizers.whitespace,
-        queryTokenizer: Bloodhound.tokenizers.whitespace,
-        local: COUNTRIES
-    });
-    var _regions = new Bloodhound({
-        datumTokenizer: Bloodhound.tokenizers.whitespace,
-        queryTokenizer: Bloodhound.tokenizers.whitespace,
-        local: REGIONS["CANADA"]
-    });
-
-
-    $country.typeahead(null, {
-        source: countries,
-        limit: 20
-    });
-
-    $region.typeahead(null, {
-        source: _regions,
-        limit: 20
-    });
-
-    $country.bind('typeahead:selected typeahead:autocompleted', function () {
-        var cntry = $country.val();
-        var cntry_regions = REGIONS[cntry.toUpperCase()];
-
-
-        if (cntry && cntry_regions) {
-            var regions = new Bloodhound({
+            const countries = new Bloodhound({
                 datumTokenizer: Bloodhound.tokenizers.whitespace,
                 queryTokenizer: Bloodhound.tokenizers.whitespace,
-                local: cntry_regions
+                local: COUNTRIES
             });
-            //console.log(cntry_regions);
-            $region.typeahead('destroy');
-            $region.typeahead(null, {
-                source: regions,
+            const _regions = new Bloodhound({
+                datumTokenizer: Bloodhound.tokenizers.whitespace,
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                local: REGIONS["CANADA"]
+            });
+
+
+            $country.typeahead(null, {
+                source: countries,
                 limit: 20
             });
-            if ($.inArray($region.val(), cntry_regions) != -1) {
-                $region.val("")
-            }
-        }
-    });
 
-</script>
+            $region.typeahead(null, {
+                source: _regions,
+                limit: 20
+            });
+
+            $country.bind('typeahead:selected typeahead:autocompleted', function () {
+                const cntry = $country.val();
+                const cntry_regions = REGIONS[cntry.toUpperCase()];
+
+
+                if (cntry && cntry_regions) {
+                    const regions = new Bloodhound({
+                        datumTokenizer: Bloodhound.tokenizers.whitespace,
+                        queryTokenizer: Bloodhound.tokenizers.whitespace,
+                        local: cntry_regions
+                    });
+                    //console.log(cntry_regions);
+                    $region.typeahead('destroy');
+                    $region.typeahead(null, {
+                        source: regions,
+                        limit: 20
+                    });
+                    if ($.inArray($region.val(), cntry_regions) !== -1) {
+                        $region.val("")
+                    }
+                }
+            });
+        });
+    </script>
+</div>

@@ -1,8 +1,8 @@
 {% load icons %}
 <div class="controls input-group {% if 'floating' in field.options %}form-floating{% endif %} {{repeatable}}" id="{{field.name}}-controls">
+    <span class="input-group-text">{% svg_icon "mail" size="sm" %}</span>
     <input type="email" aria-label="{{ field.label }}" name="{{field.name}}" id="{{field.name}}" class="form-control" value={{data}}>
     {% if 'floating' in field.options %}
     <label for="{{field.name}}">{{ field.label }}</label>
     {% endif %}
-    <span class="input-group-text">{% svg_icon "email" size="sm" %}</span>
 </div>	

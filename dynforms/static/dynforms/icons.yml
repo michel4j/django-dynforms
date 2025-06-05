@@ -240,3 +240,7 @@
   0 2 2 0 10-4 0"/><path d="m10 20h-6"/><path d="m14 20h6"/><path d="m14 5.716h3a1
   1 0 011 1v2a1 1 0 01-1 1h-2a1 1 0 00-1 1v2a1 1 0 001 1h3"/><path d="m6 5.716v3a1
   1 0 001 1h3"/><path d="m10 5.716v8"/>
+"mail": >-
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M3 7a2 2 0 0 1 2 -2h14a2
+  2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" /> <path d="M3 7l9 6l9 -6"
+  />

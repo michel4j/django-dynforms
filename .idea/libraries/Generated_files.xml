@@ -2,6 +2,7 @@
   <library name="Generated files" type="javaScript">
     <properties>
       <sourceFilesUrls>
+        <item url="file://$PROJECT_DIR$/dynforms/static/dynforms/countries.min.js" />
         <item url="file://$PROJECT_DIR$/dynforms/static/dynforms/df-toasts.min.js" />
         <item url="file://$PROJECT_DIR$/dynforms/static/dynforms/dynforms.min.js" />
         <item url="file://$PROJECT_DIR$/dynforms/static/dynforms/jquery-bs-datepicker.min.js" />
@@ -11,6 +12,7 @@
       </sourceFilesUrls>
     </properties>
     <CLASSES>
+      <root url="file://$PROJECT_DIR$/dynforms/static/dynforms/countries.min.js" />
       <root url="file://$PROJECT_DIR$/dynforms/static/dynforms/df-toasts.min.js" />
       <root url="file://$PROJECT_DIR$/dynforms/static/dynforms/dynforms.min.js" />
       <root url="file://$PROJECT_DIR$/dynforms/static/dynforms/jquery-bs-datepicker.min.js" />

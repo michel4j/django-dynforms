@@ -17,6 +17,7 @@ def default_pages():
 
 def default_actions():
     return [
+        ('save', 'Save'),
         ('submit', 'Submit'),
     ]
 

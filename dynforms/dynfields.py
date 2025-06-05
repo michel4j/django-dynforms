@@ -38,7 +38,8 @@ class ParagraphText(SingleLineText):
 class RichText(ParagraphText):
     name = _("Rich Text")
     icon = "rich-text"
-    settings = ['size', 'minimum', 'maximum', 'units', 'default']
+    options = ['hide', 'required', 'counter']
+    settings = ['size', 'minimum', 'maximum', 'units']
 
 
 class MultipleChoice(StandardMixin, FieldType):
@@ -122,7 +123,7 @@ class Time(SingleLineText):
 
 class Email(SingleLineText):
     name = _("Email")
-    icon = "email"
+    icon = "mail"
     units = ['chars']
     settings = ['default']
 

@@ -3,7 +3,7 @@
 {% load icons %}
 <div id="{{ field.name }}-group" data-field-width="{{ field.width_styles }}" class="form-group {{ field.hide_styles }} {{ field.extra_styles }}">
     {% if field.field_type != 'newsection' %}
-        {% if 'nolabel' not in field.options %}
+        {% if 'no-label' not in field.options %}
             <label class="control-label {% if field.is_required %}required{% endif %}" for="{{ field.name }}">
                 {{ field.label }}
             </label>

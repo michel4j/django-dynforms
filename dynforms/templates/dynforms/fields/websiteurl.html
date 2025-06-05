@@ -1,4 +1,5 @@
+{% load icons %}
 <div class="controls input-group {{repeatable}}" id="{{field.name}}-controls">
-	<span class="input-group-addon"><i class="bi-link"></i></span>
-    <input type="text" name="{{field.name}}" id="{{field.name}}" class="form-control" value="{{data}}">
+	<span class="input-group-text">{% svg_icon "link" size="sm" %}</span>
+    <input type="url" name="{{field.name}}" id="{{field.name}}" aria-label="{{ field.label }}" class="form-control" value="{{data}}">
 </div>	

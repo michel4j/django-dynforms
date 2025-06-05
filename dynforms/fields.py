@@ -1,3 +1,5 @@
+from typing import Literal
+
 from django.forms import ValidationError
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
@@ -39,20 +41,30 @@ class FieldTypeMeta(type):
         return None
 
 
-CHOICE_INFO = {
+OPTION_INFO = {
     'chars': _('Characters'),
     'words': _('Words'),
     'value': _('Value'),
     'digits': _('Digits'),
     'required': _('Required'),
-    'unique': _('Unique'),
     'randomize': _('Randomize'),
     'hide': _('Hide'),
     'inline': _('Inline'),
-    'other': _('Add Other'),
+    'other': _('Other'),
+    'counter': _('Counter'),
+    'switch': _('Switch'),
+    'floating': _('Floating Label'),
     'repeat': _('Repeatable'),
-    'nolabel': _('No Label'),
+    'no-label': _('No Label'),
 }
+
+OPTION_TYPE = Literal[
+    'required', 'randomize', 'hide', 'inline', 'other', 'counter', 'switch', 'floating', 'repeat', 'no-label'
+]
+
+SETTING_TYPE = Literal['size', 'choices', 'minimum', 'maximum', 'units', 'default']
+SIZE_TYPE = Literal['medium', 'small', 'large']
+UNITS_TYPE = Literal['chars', 'words', 'value', 'digits']
 
 
 def build_choices(name, pars) -> TextChoices:
@@ -62,7 +74,7 @@ def build_choices(name, pars) -> TextChoices:
     opts = {}
     for k in pars:
         if isinstance(k, str):
-            v = CHOICE_INFO.get(k, k.capitalize())
+            v = OPTION_INFO.get(k, k.capitalize())
             opts[k.upper()] = (k, v)
     return TextChoices(name, opts)
 
@@ -116,12 +128,12 @@ class FieldType(object, metaclass=FieldTypeMeta):
     name = _("Noname Field")
     icon = "bi-input-cursor"
     multi_valued = False
-    sizes = ["medium", "small", "large"]
-    units = ["chars", "words", "values", "digits"]
-    options = ["required", "unique", "randomize", "hide", "inline", "other", "repeat"]
-    choices_type = 'checkbox'  # 'radio'
-    settings = ["label", "name", "instructions"]
-    required_subfields = []
+    sizes: list[str] = ["medium", "small", "large"]
+    units: list[UNITS_TYPE] = []
+    options: list[OPTION_TYPE] = ["required", "hide", "repeat"]
+    choices_type: str = 'checkbox'  # 'radio'
+    settings: list[SETTING_TYPE] = []
+    required_subfields: list[str] = []
 
     @classmethod
     def get_template_name(cls):
@@ -230,9 +242,6 @@ class FieldType(object, metaclass=FieldTypeMeta):
 
     def size_choices(self):
         return build_choices('SizeType', self.sizes)
-
-    def width_choices(self):
-        return build_choices('WidthType', self.widths)
 
     def units_choices(self):
         return build_choices('UnitType', self.units)

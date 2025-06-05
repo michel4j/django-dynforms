@@ -1,0 +1,5 @@
+<div class="controls {{repeatable}}" id="{{field.name}}-controls">
+    <input type="range" name="{{field.name}}" id="{{field.name}}" aria-label="{{ field.label }}" class="form-range"
+           value="{{data}}" min="{{ field.minimum|default:0 }}" max="{{ field.maximum|default:100 }}"
+    >
+</div>	

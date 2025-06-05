@@ -1,5 +1,6 @@
 from collections import OrderedDict
 from datetime import datetime, timedelta
+
 from dateutil import parser
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
@@ -16,9 +17,9 @@ class StandardMixin(object):
 class SingleLineText(StandardMixin, FieldType):
     name = _("Single Line")
     icon = "forms"
-    options = ['hide', 'required', 'unique', 'repeat']
+    options = ['hide', 'required', 'repeat']
     units = ['chars', 'words']
-    settings = ['label', 'width', 'options', 'minimum', 'maximum', 'units', 'default']
+    settings = ['minimum', 'maximum', 'units', 'default']
 
     def clean(self, val, multi=False, validate=True):
         val = super().clean(val, multi=multi, validate=validate)
@@ -30,21 +31,21 @@ class SingleLineText(StandardMixin, FieldType):
 class ParagraphText(SingleLineText):
     name = _("Paragraph")
     icon = "paragraph"
-    options = ['hide', 'required', 'unique', 'repeat', 'counter']
-    settings = ['label', 'size', 'options', 'minimum', 'maximum', 'units', 'default']
+    options = ['hide', 'required', 'repeat', 'counter']
+    settings = ['size', 'minimum', 'maximum', 'units', 'default']
 
 
 class RichText(ParagraphText):
     name = _("Rich Text")
     icon = "rich-text"
-    settings = ['label', 'size', 'options', 'minimum', 'maximum', 'units', 'default']
+    settings = ['size', 'minimum', 'maximum', 'units', 'default']
 
 
 class MultipleChoice(StandardMixin, FieldType):
     name = _("Choices")
     icon = "check-circle"
-    options = ['required', 'randomize', 'inline', 'hide', 'other']
-    settings = ['label', 'options', 'choices']
+    options = ['required', 'randomize', 'inline', 'hide', 'other', 'no-label']
+    settings = ['choices']
     choices_type = 'radio'
 
 
@@ -52,7 +53,7 @@ class ScoreChoices(StandardMixin, FieldType):
     name = _("Scores")
     icon = "check-circle"
     options = ['required', 'inline', 'hide']
-    settings = ['label', 'options', 'choices']
+    settings = ['choices']
     choices_type = 'radio'
 
     def coerce(self, value):
@@ -67,7 +68,7 @@ class Number(SingleLineText):
     name = _("Number")
     icon = "number-4"
     units = ['digits', 'value']
-    settings = ['label', 'width', 'options', 'minimum', 'maximum', 'units', 'default']
+    settings = ['minimum', 'maximum', 'units', 'default']
 
     def coerce(self, value):
         try:
@@ -77,11 +78,18 @@ class Number(SingleLineText):
         return val
 
 
+class Range(Number):
+    name = _("Range")
+    icon = "range"
+    options = ['required', 'hide', 'repeat']
+    settings = ['minimum', 'maximum', 'units', 'default']
+
+
 class CheckBoxes(StandardMixin, FieldType):
     name = _("Checkboxes")
     icon = "check-square"
-    options = ['required', 'randomize', 'inline', 'hide', 'other']
-    settings = ['label', 'options', 'choices']
+    options = ['required', 'randomize', 'inline', 'switch', 'hide', 'other', 'no-label']
+    settings = ['choices']
     choices_type = 'checkbox'
     multi_valued = True
 
@@ -90,15 +98,57 @@ class DropDown(MultipleChoice):
     name = _("Dropdown")
     icon = "dropdown"
     options = ['required', 'randomize', 'inline', 'hide', 'multiple']
-    settings = ['label', 'options', 'width', 'choices']
+    settings = ['choices']
+
+
+class PhoneNumber(SingleLineText):
+    name = _("Phone #")
+    icon = "phone"
+    options = ['required', 'hide', 'repeat']
+    settings = []
+
+
+class Date(SingleLineText):
+    name = _("Date")
+    icon = "calendar"
+    options = ['required', 'hide', 'multiple']
+    settings = []
+
+
+class Time(SingleLineText):
+    name = _("Time")
+    icon = "clock"
+    settings = []
+
+
+class Email(SingleLineText):
+    name = _("Email")
+    icon = "email"
+    options = ['required', 'hide', 'repeat']
+    units = ['chars']
+    settings = ['default']
 
 
 class NewSection(StandardMixin, FieldType):
     input_type = None
     name = _("Section")
     icon = "section"
-    options = ['hide', 'nolabel']
-    settings = ['label', 'options']
+    options = ['hide', 'no-label']
+    settings = []
+
+
+class File(StandardMixin, FieldType):
+    name = _("File")
+    icon = "file"
+    options = ['required', 'hide', 'repeat']
+    settings = []
+
+
+class WebsiteURL(StandardMixin, FieldType):
+    name = _("URL")
+    icon = "link"
+    options = ['required', 'hide', 'repeat']
+    settings = ['default']
 
 
 # Fancy Fields
@@ -106,11 +156,11 @@ class FancyMixin(StandardMixin):
     section = _("Fancy")
 
 
-class FullName(FancyMixin,FieldType):
+class FullName(FancyMixin, FieldType):
     name = _("Full Name")
     icon = "user"
     options = ['required', 'hide', 'repeat']
-    settings = ['label', 'options', ]
+    settings = []
     required_subfields = ['first_name', 'last_name']
 
 
@@ -118,7 +168,7 @@ class Address(FullName):
     name = _("Address")
     icon = "address"
     options = ['required', 'hide', 'department', 'labels']
-    settings = ['label', 'options', ]
+    settings = []
     required_subfields = ['street', 'city', 'region', 'country', 'code']
 
     def clean(self, val, multi=False, validate=True):
@@ -137,25 +187,25 @@ class Address(FullName):
         return val
 
 
-class MultiplePhoneNumber(FancyMixin,FieldType):
+class MultiplePhoneNumber(FancyMixin, FieldType):
     name = _("Phone #s")
     icon = "phone"
     options = ['required', 'hide', 'repeat']
-    settings = ['label', 'options', ]
+    settings = []
 
 
-class Equipment(FancyMixin,FieldType):
+class Equipment(FancyMixin, FieldType):
     name = _("Equipment")
     icon = "plug"
     options = ['required', 'hide', 'repeat']
-    settings = ['label', 'options']
+    settings = []
 
 
 class ContactInfo(FullName):
     name = _("Contact")
     icon = "id-badge"
     options = ['required', 'hide', 'repeat']
-    settings = ['label', 'options', ]
+    settings = []
     required_subfields = ['email', 'phone']
 
 
@@ -163,7 +213,7 @@ class NameAffiliation(FullName):
     name = _("Name/Affiliation")
     icon = "id-badge"
     options = ['required', 'hide', 'repeat']
-    settings = ['label', 'options', ]
+    settings = []
     required_subfields = ['first_name', 'last_name', 'affiliation']
 
 
@@ -171,7 +221,7 @@ class NameEmail(FullName):
     name = _("Name/Email")
     icon = "id-badge"
     options = ['required', 'hide', 'repeat']
-    settings = ['label', 'options', ]
+    settings = []
     required_subfields = ['first_name', 'last_name', 'email']
 
     def clean(self, val, multi=False, validate=True):
@@ -197,47 +247,11 @@ class NameEmail(FullName):
         return val
 
 
-class Email(FancyMixin,FieldType):
-    name = _("Email")
-    icon = "email"
-    options = ['required', 'unique', 'hide', 'repeat']
-    units = ['chars']
-    settings = ['label', 'width', 'options', 'minimum', 'maximum', 'units', 'default']
-
-
-class Date(FancyMixin,FieldType):
-    name = _("Date")
-    icon = "calendar"
-    options = ['required', 'unique', 'hide', 'multiple']
-    settings = ['label', 'options']
-
-
-class DatePreference(FancyMixin,FieldType):
-    name = _("Date Preferences")
-    icon = "calendar-heart"
-    options = ['required', 'unique', 'hide', 'multiple']
-    settings = ['label', 'options']
-
-
-class Time(FancyMixin,FieldType):
-    name = _("Time")
-    icon = "clock"
-    settings = ['label']
-
-
-class WebsiteURL(FancyMixin,FieldType):
-    name = _("URL")
-    icon = "link"
-    options = ['required', 'unique', 'hide', 'repeat']
-    units = ['chars', 'words']
-    settings = ['label', 'width', 'options', 'minimum', 'maximum', 'units', 'default']
-
-
-class Likert(FancyMixin,FieldType):
+class Likert(FancyMixin, FieldType):
     name = _("Likert")
     icon = "list-details"
     options = ['required', 'hide']
-    settings = ['label', 'options', 'choices']
+    settings = ['choices']
 
     def clean(self, val, multi=False, validate=True):
         val = super().clean(val, multi=multi, validate=validate)
@@ -262,25 +276,11 @@ class Likert(FancyMixin,FieldType):
         return val
 
 
-class File(FancyMixin,FieldType):
-    name = _("File")
-    icon = "file"
-    options = ['required', 'hide', 'repeat']
-    settings = ['label', 'options', ]
-
-
-class PhoneNumber(FancyMixin,FieldType):
-    name = _("Phone #")
-    icon = "phone"
-    options = ['required', 'hide', 'repeat']
-    settings = ['label', 'width', 'options', ]
-
-
-class Throttle(FancyMixin,FieldType):
+class Throttle(FancyMixin, FieldType):
     name = _("Throttle")
     icon = "stoplights"
     options = ['hide']
-    settings = ['label', 'options']
+    settings = []
 
     def clean(self, value, validate=True, multi=False):
         if isinstance(value, list):

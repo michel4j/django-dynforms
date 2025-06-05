@@ -1,26 +1,27 @@
 {% load markup %}
 {% load dynforms %}
-<div class="controls {% if 'inline' in field.options %}inline{% endif %} {{repeatable}}" id="{{field.name}}-controls">
+<div class="controls {{repeatable}}" id="{{field.name}}-controls">
 	{% for choice in field|group_choices:data|randomize_choices:field %}
-        <div class="form-check">
+        <div class="form-check {% if 'switch' in field.options %}form-switch{% endif %} {% if 'inline' in field.options %}form-check-inline{% endif %}">
             <input name="{{field.name}}" id="{{field.name}}_{{forloop.counter}}" class="form-check-input"
        	        value="{{choice.value}}" {% if choice.selected %}checked{% endif %}
-       	        type="checkbox"
+                {% if 'switch' in field.options %}role="switch" switch{% endif %}
+       	        type="{{ input_type|default:"checkbox" }}"
             >
        	    <label for="{{field.name}}_{{forloop.counter}}" class="form-check-label">{{choice.label}}</label>
         </div>
 	{% endfor %}
-	{% if "other" in field.options %}
+	{% if "other" in field.options and 'switch' not in field.options and 'inline' not in field.options %}
         <div class="input-group">
             <div class="input-group-text">
-                <input class="form-check-input mt-0" id="{{field.name}}_other" name="{{field.name}}" value="{{field.other_choice}}" aria-label="Other" type="checkbox" {% if field.other_choice in data %}checked{% endif %}>
+                <input class="form-check-input mt-0" id="{{field.name}}_other" name="{{field.name}}" value="{{field.other_choice}}" aria-label="Other" type="{{ input_type|default:"checkbox" }}" {% if field.other_choice in data %}checked{% endif %}>
             </div>
-            <input id="{{field.name}}_othersrc"  type="text" placeholder="Other" value="{{field.other_choice}}" class="form-control" aria-label="Other Description">
+            <input id="{{field.name}}_other_name"  type="text" placeholder="Other" value="{{field.other_choice}}" class="form-control" aria-label="Other Description">
         </div>
 	{% endif %}
 </div>
 <script>
-$("#{{field.name}}_othersrc").change(function(){
+$("#{{field.name}}_other_name").change(function(){
 	$("#{{field.name}}_other").val($(this).val());
 	if ($(this).val()) {
 		$("#{{field.name}}_other").attr("checked", "checked");

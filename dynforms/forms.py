@@ -14,7 +14,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 
 from . import models
-from .fields import FieldType
+from .fields import FieldType, LayoutType
 from .utils import Queryable, DotExpandedDict, build_Q, Crypt
 
 
@@ -93,10 +93,6 @@ class FieldSettingsForm(forms.Form):
         self.fields[name] = ft(**kwargs)
 
     def create_type_layout(self, field_type):
-        for field_name in ['size', 'options', 'width']:
-            if field_name == 'width' or field_name in field_type.settings:
-                self.add_custom_field(field_name, choices=field_type.get_choices(field_name))
-
         fieldset = Div(
             Field('label'),
             Field('instructions', rows=2)
@@ -107,25 +103,23 @@ class FieldSettingsForm(forms.Form):
             css_class="row"
         )
         if 'size' in field_type.settings:
+            self.add_custom_field('size', choices=field_type.get_choices('size'))
             row.append(Div(Field('size', css_class='select'), css_class='col'))
 
         fieldset.append(row)
 
-        if 'options' in field_type.settings:
+        if field_type.options:
+            self.add_custom_field('options', choices=field_type.get_choices('options'))
             fieldset.append(InlineCheckboxes('options'))
 
         if {'minimum', 'maximum', 'units'} & set(field_type.settings):
             self.add_custom_field('minimum')
             self.add_custom_field('maximum')
-            self.add_custom_field('units', choices=field_type.get_choices('units'))
-            fieldset.append(
-                Div(
-                    Div('minimum', css_class='col-3'),
-                    Div('maximum', css_class='col-3'),
-                    Div('units', css_class='col-6'),
-                    css_class="row"
-                )
-            )
+            entries = [Div('minimum', css_class='col'), Div('maximum', css_class='col')]
+            if 'units' in field_type.settings:
+                self.add_custom_field('units', choices=field_type.get_choices('units'))
+                entries.append(Div('units', css_class='col-auto'))
+            fieldset.append(Div(*entries, css_class="row"))
 
         if 'choices' in field_type.settings:
             self.add_custom_field('default_choices')
@@ -150,8 +144,10 @@ class FieldSettingsForm(forms.Form):
         return fieldset
 
     def create_layout(self, field_type=None):
-        for nm in ['name', 'tags', 'label', 'instructions']:
+        # All field types have these in common
+        for nm in ['name', 'label', 'instructions', 'width', 'tags']:
             self.add_custom_field(nm)
+        self.add_custom_field('width', choices=LayoutType)
 
         if field_type:
             fieldset = Div(

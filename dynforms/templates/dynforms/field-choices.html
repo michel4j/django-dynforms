@@ -1,6 +1,6 @@
 {% load icons %}
 <div class="form-group" id="div_id_choices">
-<label class="control-label ">Choices</label>
+<label class="form-label ">Choices</label>
 {% for choice in form.initial.choices_info %}
 <div class="controls choices-repeatable mb-2">
     <div class="input-group">
@@ -28,5 +28,11 @@
 {% endfor %}
 <button type="button" name="add" title="Add choices"
         class="btn btn-success btn-xs"
-        data-repeat-add=".choices-repeatable" >{% svg_icon "plus" size="xs" %}</button>
+        data-repeat-add=".choices-repeatable" >{% svg_icon "plus" size="xs" %}
+</button>
+<script>
+    $('[name="default_choices"]').on('click', function() {
+        console.log($(this).val());
+    });
+</script>
 </div>

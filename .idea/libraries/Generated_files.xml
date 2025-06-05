@@ -7,6 +7,7 @@
         <item url="file://$PROJECT_DIR$/dynforms/static/dynforms/jquery-bs-datepicker.min.js" />
         <item url="file://$PROJECT_DIR$/dynforms/static/dynforms/jquery-clock-timepicker.min.js" />
         <item url="file://$PROJECT_DIR$/dynforms/static/dynforms/theme-switcher.min.js" />
+        <item url="file://$PROJECT_DIR$/dynforms/static/dynforms/trumbowyg.mathjax.min.js" />
       </sourceFilesUrls>
     </properties>
     <CLASSES>
@@ -15,6 +16,7 @@
       <root url="file://$PROJECT_DIR$/dynforms/static/dynforms/jquery-bs-datepicker.min.js" />
       <root url="file://$PROJECT_DIR$/dynforms/static/dynforms/jquery-clock-timepicker.min.js" />
       <root url="file://$PROJECT_DIR$/dynforms/static/dynforms/theme-switcher.min.js" />
+      <root url="file://$PROJECT_DIR$/dynforms/static/dynforms/trumbowyg.mathjax.min.js" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

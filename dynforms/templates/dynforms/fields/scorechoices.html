@@ -1,16 +1,13 @@
 {% load markup %}
 {% load dynforms %}
-<div class="controls" id="{{ field.name }}-controls">
+<div class="controls {% if 'inline' in field.options %}inline{% endif %}" id="{{ field.name }}-controls">
     {% for choice in field|group_scores:data %}
-        <div class="score-choice media {% if 'inline' in field.options %}radio-inline {% else %}radio{% endif %}">
-            <label for="{{ field.name }}_{{ forloop.counter }}">
-                <input name="{{ field.name }}" id="{{ field.name }}_{{ forloop.counter }}"
-                   value="{{ choice.score }}"  {% if choice.checked %}checked="checked"{% endif %}
-                   type="radio"
-                >
-                <span class="badge score-pill bg-secondary">
-                    <span class="pull-left">{{ choice.score }}</span>
-                    <span class="pull-left">{{ choice.label }}</span>
+        <div class="score-choice form-check">
+            <input name="{{ field.name }}" class="form-check-input" id="{{ field.name }}_{{ forloop.counter }}"
+                   value="{{ choice.score }}"  {% if choice.checked %}checked="checked"{% endif %} type="radio">
+            <label for="{{ field.name }}_{{ forloop.counter }}" class="form-check-label">
+                <span class="badge rounded-pill bg-secondary">
+                    <span>{{ choice.score }}</span> = <span>{{ choice.label }}</span>
                 </span>
                 <span class="media-content">{{ choice.value }}</span>
             </label>

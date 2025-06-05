@@ -1,26 +1,51 @@
 {% load icons %}
 <div class="controls row {{repeatable}}" id="{{field.name}}-controls">
-	    <span class="col-3">
-		    <input id="first_name" aria-label="First name" placeholder="First name" name="{{field.name}}.first_name"
-                   class="form-control" type="text" value={{data.first_name}}>
-	    </span>	
-	    <span class="col-5">
-		    <input id="last_name" aria-label="Last name" placeholder="Last name" name="{{field.name}}.last_name"
-                   class="form-control" type="text" value={{data.last_name}}>
-	    </span>
-		<span class="col-4">
+	    <div class="col-3 {% if 'floating' in field.options %}form-floating{% endif %} ">
+		    <input id="{{field.name}}-first_name" aria-label="First name"
+                   placeholder="First name"
+                   name="{{field.name}}.first_name"
+                   class="form-control" type="text"
+                   value="{{data.first_name}}"
+            >
+            {% if 'floating' in field.options or 'labels' in field.options %}
+            <label for="{{field.name}}-first_name">First name</label>
+            {% endif %}
+	    </div>
+	    <div class="col-5 {% if 'floating' in field.options %}form-floating{% endif %} ">
+		    <input id="{{field.name}}-last_name" aria-label="Last name"
+                   placeholder="Last name"
+                   name="{{field.name}}.last_name"
+                   class="form-control" type="text"
+                   value="{{data.last_name}}"
+            >
+            {% if 'floating' in field.options or 'labels' in field.options %}
+            <label for="{{field.name}}-last_name">Last name</label>
+            {% endif %}
+	    </div>
+		<div class="col-4 {% if 'floating' in field.options %}form-floating{% endif %} ">
     	{% if "repeat" in field.options %}
     	<div class="input-group">
-            <input id="other_names" aria-label="Other names" placeholder="Other names" name="{{field.name}}.other_names"
-                   class="form-control" type="text" value={{data.other_names}}
+            <input id="{{field.name}}-other_names"
+                   aria-label="Other names"
+                   placeholder="Other names"
+                   name="{{field.name}}.other_names"
+                   class="form-control"
+                   type="text" value="{{data.other_names}}"
             >
 		    <button type="button" title="Remove person from list" class="btn btn-light border text-danger remove-repeat">
                 {% svg_icon "x" size="sm" %}
             </button>
         </div>
 		{% else %}
-	    <input id="other_names" aria-label="Other names" placeholder="Other names" name="{{field.name}}.other_names"
-               class="form-control" type="text" value={{data.other_names}}>
+	    <input id="other_names"
+               aria-label="Other names"
+               placeholder="Other names"
+               name="{{field.name}}.other_names"
+               class="form-control" type="text" value="{{data.other_names}}"
+        >
 	    {% endif %}
-    </span>
+        {% if 'floating' in field.options or 'labels' in field.options %}
+        <label for="{{field.name}}-other_names">Other names</label>
+        {% endif %}
+        </div>
 </div>

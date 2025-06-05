@@ -157,7 +157,7 @@ class FancyMixin(StandardMixin):
 class FullName(FancyMixin, FieldType):
     name = _("Full Name")
     icon = "user"
-    options = ['required', 'hide', 'repeat']
+    options = ['required', 'hide', 'repeat', 'labels', 'floating', 'no-label']
     settings = []
     required_subfields = ['first_name', 'last_name']
 

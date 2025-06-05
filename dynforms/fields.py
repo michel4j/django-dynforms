@@ -51,6 +51,7 @@ OPTION_INFO = {
     'hide': _('Hide'),
     'inline': _('Inline'),
     'other': _('Other'),
+    'labels': _('Sub-Labels'),
     'counter': _('Counter'),
     'switch': _('Switch'),
     'floating': _('Floating Label'),

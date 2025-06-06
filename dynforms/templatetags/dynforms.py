@@ -83,6 +83,16 @@ def group_choices(field, defaults):
 
 
 @register.filter
+def show_sublabels(field):
+    """
+    Returns whether the field should show sublabels based on its options.
+    :param field: The field dictionary containing options.
+    :return: True if 'sublabels' is in options, otherwise False.
+    """
+    return bool({'labels', 'floating'} & set(field.get('options', [])))
+
+
+@register.filter
 def group_scores(field, default):
     choices = [
         {

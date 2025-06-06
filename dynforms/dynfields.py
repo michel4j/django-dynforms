@@ -166,7 +166,7 @@ class FullName(FancyMixin, FieldType):
 class Address(FullName):
     name = _("Address")
     icon = "address"
-    options = ['required', 'hide', 'department', 'labels']
+    options = ['required', 'hide', 'department', 'labels', 'floating']
     settings = []
     required_subfields = ['street', 'city', 'region', 'country', 'code']
 

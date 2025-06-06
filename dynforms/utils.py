@@ -363,6 +363,9 @@ class FormField:
             **self.attrs,
         }
 
+    def show_sublabels(self):
+        return 'labels' in self.options or 'floating' in self.options
+
     def width_styles(self):
         width = self.attrs.get('width', 'full')
         return {

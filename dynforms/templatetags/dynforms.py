@@ -134,11 +134,6 @@ def readable(value):
     return value.replace('_', ' ').capitalize()
 
 
-@register.inclusion_tag('dynforms/form-tabs.html', takes_context=True)
-def render_form_tabs(context):
-    return context
-
-
 @register.simple_tag(takes_context=True)
 def define(context, **kwargs):
     for k, v in list(kwargs.items()):

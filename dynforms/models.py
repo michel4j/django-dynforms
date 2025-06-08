@@ -177,12 +177,12 @@ class BaseFormModel(TimeStampedModel):
         if data is None:
             data = self.details
 
-        # Do not validate if review has not been modified since creation
+        # Do not validate if item has not been modified since creation
         if not all((self.modified, self.created)) or (self.modified - self.created) < timedelta(seconds=1):
             return {'progress': 0.0}
 
         field_specs = {
-            field['name']: (page_no, field)
+            field['name']: (page_no + 1, field)
             for page_no, page in enumerate(self.form_type.pages) for field in page['fields']
         }
         report = {'pages': defaultdict(dict), 'progress': 0}
@@ -229,7 +229,7 @@ class BaseFormModel(TimeStampedModel):
                         )
                     else:
                         valid_req += 1.0
-        report['progress'] = 100.0 if num_req == 0.0 else round(100.0 * valid_req / num_req, 0);
+        report['progress'] = 100.0 if num_req == 0.0 else round(100.0 * valid_req / num_req, 0)
         return {'pages': dict(report['pages']), 'progress': report['progress']}
 
 

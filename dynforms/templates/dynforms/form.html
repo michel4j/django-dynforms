@@ -4,23 +4,11 @@
     {% svg_sprites %}
     <form id="df-form-instance" method="post">
         <div class="df-form">
-            {#% render_form_tabs %#}
+
             {% with form.form_type.get_pages as form_pages %}
+                {% include "dynforms/form-tabs.html" %}
                 <!-- Nav tabs -->
-                {% if form_pages|length > 1 %}
-                    <ul class="df-form-tabs nav nav-tabs">
-                        {% for page in form_pages %}
-                            <li class="nav-item">
-                                <a href="#page{{ page.number }}"
-                                   class="nav-link {% if page.number == active_page %}active{% endif %}"
-                                   data-bs-toggle="tab">{{ page.name }}
-                                </a>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <div class="df-form-tabs"></div>
-                {% endif %}
+
                 <div class="df-form-body">
                     <!-- Tab panes -->
                     <div class="tab-content">

@@ -32,11 +32,13 @@ html, body {
 .df-container {
 }
 .df-form-body {
-  padding: 0.5em 1.5em;
   grid-area: form-content;
   overflow-y: auto;
   overflow-x: hidden;
   background: var(--bs-body-bg);
+  .tab-content {
+    padding: 0.5em 1.5em;
+  }
 }
 
 .df-form-footer {

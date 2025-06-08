@@ -15,6 +15,9 @@
   --demo-mono-font: "Fira Code";
 }
 
+html, body {
+    height: 100%;
+}
 body {
   background: var(--bs-body-bg);
   color: var(--bs-body-color);

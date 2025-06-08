@@ -3,14 +3,13 @@
 {% load dynforms %}
 {% load icons %}
 {% block page-styles %}
-    <link href="{% static 'dynforms/datetimepicker.css' %}" rel="stylesheet"/>
-    <link href="{% static 'dynforms/datepicker.css' %}" rel="stylesheet"/>
     <link href="{% static 'dynforms/dynforms.min.css' %}" rel="stylesheet" media="screen"/>
     <link href="{% static 'dynforms/builder.min.css' %}" rel="stylesheet" media="screen"/>
     <script src="{% static 'dynforms/theme-switcher.min.js' %}"></script>
 {% endblock %}
 
 {% block body %}
+    {% svg_sprites %}
     <div id="df-builder"  data-csrf-token="{{ csrf_token}}">
         <div id="df-header" class="border-bottom d-flex align-items-center px-3">
             <a class="me-3" href="#df-form-list" data-bs-toggle="offcanvas" title="Show Types List">

@@ -8,8 +8,12 @@ html, body {
   margin: 0;
   font-size: 11pt;
 }
-
+#df-form-instance {
+  height: 100%;
+  width: 100%
+}
 .df-form {
+  height: 100%;
   display: grid;
   overflow-x: hidden;
   overflow-y: auto;

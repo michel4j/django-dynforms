@@ -1,3 +1,14 @@
+
+function createMultiSelect(selector) {
+    let sel = $(selector);
+    sel.selectize({plugins: ['remove_button'],});
+}
+
+function destroyMultiSelect(selector) {
+    $(selector).selectize('destroy');
+}
+
+
 // Handle Repeats
 (function ($) {
     $.fn.extend({
@@ -59,17 +70,15 @@
 
         $(ctl).click(function (e) {
             let rp_el = all_rp.last();
-            let field_cnt = $(ctl).closest(".df-field-runtime");
-
             let cloned = rp_el.clone(true);
             cloned.insertAfter(rp_el);
             if (options.clearNew) {
 
             }
             updateRepeat(cloned);
-            // rebuild chosen fields
-            cloned.find("select.select option").removeAttr('selected');
-            cloned.find("select.select").each(function () {
+            // reset select fields
+            cloned.find("select option").removeAttr('selected');
+            cloned.find("select").each(function () {
                 $(this).val('');
                 $(this).trigger('change')
             });
@@ -101,7 +110,7 @@
             all_rp_rm.attr("disabled", "disabled");
         }
 
-        // Keep multi valued fields separate, by renaming them, __# can be stripped when cleaning
+        // Keep multivalued fields separate, by renaming them, __# can be stripped when cleaning
         // the data
         all_rp.each(function (idx, obj) {
             $(obj).find("select[multiple]:not([data-repeat-name])").each(function () {
@@ -145,7 +154,7 @@ function setupField() {
         setupMenuForm("#field-settings .df-menu-form");
         $('#field-settings #edit-rules').attr('data-modal-url', rules_url);
     });
-};
+}
 
 // Form customization for each form
 function setupMenuForm(form_id) {

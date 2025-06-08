@@ -319,12 +319,11 @@ class DynUpdateView(edit.UpdateView):
         kwargs['form_type'] = self.object.form_type
         return kwargs
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         form_type = self.object.form_type
-        active_page = self.object.details.get('active_page', self.request.GET.get('page', 1))
         context['form_type'] = form_type
-        context['active_page'] = active_page
+        context['active_page'] = max(1, context['object'].details.get('active_page', 1))
         return context
 
 
@@ -343,7 +342,7 @@ class DynCreateView(edit.CreateView):
         context = super().get_context_data(**kwargs)
         form_type = FormType.objects.get(pk=self.kwargs.get('pk'))
         context['form_type'] = form_type
-        context['active_page'] = self.request.GET.get('page', 1)
+        context['active_page'] = 1
         return context
 
     def form_valid(self, form):

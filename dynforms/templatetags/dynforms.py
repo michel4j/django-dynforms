@@ -70,10 +70,12 @@ def render_field(context, field, repeatable=False):
 def group_choices(field, defaults):
     if not defaults:
         defaults = field.get('default', [])
-    if 'values' in field:
+    if field.get('values') and field.get('choices'):
         choices = list(zip(field['choices'], field['values']))
-    else:
+    elif field.get('choices'):
         choices = list(zip(field['choices'], field['choices']))
+    else:
+        choices = []
     ch = [{
         'label': l,
         'value': l if v is None else v,

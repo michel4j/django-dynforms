@@ -1,7 +1,7 @@
 {% load dynforms %}
 {% load icons %}
 {% with form.get_validation as validation %}
-
+    {% svg_sprites %}
     <form id="df-form-instance" method="post">
         <div class="df-form">
             {#% render_form_tabs %#}

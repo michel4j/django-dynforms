@@ -197,6 +197,7 @@ function adjustFieldWidth(selector) {
 
 // Load the form builder
 function doBuilderLoad() {
+    $('body').attr('data-df-builder', 'true');
     if (!$('#df-form-preview').is('.loaded')) {
 
         // Make items within each df-container sortable

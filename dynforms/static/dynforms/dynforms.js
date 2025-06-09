@@ -477,7 +477,7 @@ function valuesOnly(va) {
 function guardDirtyForm(selector) {
     let formInstance = $(selector);
     formInstance.find("a[data-bs-toggle='tab']").click(function (e) {
-        formInstance.find(":input[name='active_page']").val($(this).closest('.df-page').index());
+        formInstance.find(":input[name='active_page']").val($(this).data('page-number'));
     });
 
     $("a[data-tab-proxy]").click(function (e) {

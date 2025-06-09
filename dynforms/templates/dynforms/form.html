@@ -13,7 +13,7 @@
                     <!-- Tab panes -->
                     <div class="tab-content">
                         {% csrf_token %}
-                        <input type='hidden' name='active_page' value='{{ active_page }}'/>
+                        <input id="active-page-input" type='hidden' name='active_page' value='{{ active_page }}'/>
                         {% for page in form_pages %}
                             <div class="tab-pane {% if page.number == active_page %}active{% endif %}"
                                  id="page{{ page.number }}">
@@ -68,10 +68,6 @@
 <script>
     $(document).ready(function () {
         guardDirtyForm('#df-form-instance');
-        $(document).on('shown.bs.tab', '#df-form-tabs .nav-item',  function(event){
-            // change the active page number when a tab is clicked
-            $('#df-form-instance input[name="active_page"]').val($(this).data('page-number'));
-        })
     });
 </script>
 {% include "dynforms/form-rules.html" with form_type=form.form_type %}

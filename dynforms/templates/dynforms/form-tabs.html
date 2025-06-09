@@ -5,6 +5,7 @@
         {% for page in form_pages %}
             <li class="nav-item">
                 <a href="#page{{ page.number }}"
+                   data-page-number="{{ page.number }}"
                    class="nav-link {% if page.number == active_page %}active{% endif %}"
                    {% if page.number == active_page %}aria-current="page" {% endif %}
                    data-bs-toggle="tab">{{ page.name }}

@@ -339,7 +339,7 @@ class DynFormMixin:
         field_type = FieldType.get_type('number')
         active_page = field_type.clean(data.get('active_page', 1), multi=False, validate=True)
         if cleaned_data['form_action'] == 'save_continue':
-            cleaned_data['active_page'] = min(active_page + 1, len(self.form_type.pages) - 1)
+            cleaned_data['active_page'] = min(active_page + 1, len(self.form_type.pages))
         else:
             cleaned_data['active_page'] = active_page
 

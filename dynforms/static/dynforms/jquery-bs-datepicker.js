@@ -133,10 +133,10 @@
                     // For now, single select
                     const formatted = formatDate(state.selectedDates[0], state.settings.dateFormat);
                     $input.val(formatted);
-                    $input.trigger('changeDate'); // Trigger change event for any listeners
+                    $input.trigger('changeDate', {date: formatted}); // Trigger change event for any listeners
                 } else {
                     $input.val('');
-                    $input.trigger('changeDate'); // Trigger change event for any listeners
+                    $input.trigger('changeDate', {date: null}); // Trigger change event for any listeners
                 }
             }
 

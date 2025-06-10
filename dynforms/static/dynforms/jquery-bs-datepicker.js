@@ -133,8 +133,10 @@
                     // For now, single select
                     const formatted = formatDate(state.selectedDates[0], state.settings.dateFormat);
                     $input.val(formatted);
+                    $input.trigger('changeDate'); // Trigger change event for any listeners
                 } else {
                     $input.val('');
+                    $input.trigger('changeDate'); // Trigger change event for any listeners
                 }
             }
 
@@ -192,12 +194,7 @@
 
             // Initialize for each element in the jQuery selection
             return this.each(function() {
-                let $input = $(this);
-
-                if (!$input.is('input')) {
-                    $input = $(this).find('input').first();
-                }
-
+                const $input = $(this);
                 // Try to parse initial date from input value if it's set and valid, otherwise use settings.initialDate
                 let initialDateFromInput = new Date($input.val());
                 let initialPickerDate = settings.initialDate;

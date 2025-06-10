@@ -192,7 +192,11 @@
 
             // Initialize for each element in the jQuery selection
             return this.each(function() {
-                const $input = $(this);
+                let $input = $(this);
+
+                if (!$input.is('input')) {
+                    $input = $(this).find('input').first();
+                }
 
                 // Try to parse initial date from input value if it's set and valid, otherwise use settings.initialDate
                 let initialDateFromInput = new Date($input.val());

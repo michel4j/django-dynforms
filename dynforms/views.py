@@ -2,7 +2,7 @@ from crisp_modals.views import ModalUpdateView, ModalDeleteView, ModalCreateView
 from django.conf import settings
 from django.contrib.messages.views import SuccessMessageMixin
 from django.forms.models import model_to_dict
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseRedirect, Http404
 from django.template.response import TemplateResponse
 from django.urls import reverse_lazy, reverse
 from django.utils.module_loading import import_string
@@ -332,16 +332,23 @@ class DynCreateView(edit.CreateView):
     form_class = DynModelForm
     model = DynEntry
 
+    def get_form_type(self) -> FormType:
+        """
+        Get the FormType instance.
+        """
+        form_type = FormType.objects.filter(pk=self.kwargs.get('pk')).first()
+        if not form_type:
+            raise Http404("FormType does not exist.")
+        return form_type
+
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        form_type = FormType.objects.get(pk=self.kwargs.get('pk'))
-        kwargs['form_type'] = form_type
+        kwargs['form_type'] = self.get_form_type()
         return kwargs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        form_type = FormType.objects.get(pk=self.kwargs.get('pk'))
-        context['form_type'] = form_type
+        context['form_type'] = self.get_form_type()
         context['active_page'] = 1
         return context
 
@@ -358,17 +365,24 @@ class DynFormView(FormView):
     template_name = 'dynforms/test-form.html'
     form_class = DynForm
 
+    def get_form_type(self) -> FormType:
+        """
+        Get the FormType instance.
+        """
+        form_type = FormType.objects.filter(pk=self.kwargs.get('pk')).first()
+        if not form_type:
+            raise Http404("FormType does not exist.")
+        return form_type
+
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        form_type = FormType.objects.get(pk=self.kwargs.get('pk'))
-        kwargs['form_type'] = form_type
+        kwargs['form_type'] = self.get_form_type()
         return kwargs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        form_type = FormType.objects.get(pk=self.kwargs.get('pk'))
         active_page = self.request.GET.get('page', 1)
-        context['form_type'] = form_type
+        context['form_type'] = self.get_form_type()
         context['active_page'] = active_page
         return context
 

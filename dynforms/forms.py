@@ -15,6 +15,7 @@ from django.utils.translation import gettext as _
 
 from . import models
 from .fields import FieldType, LayoutType
+from .models import FormType
 from .utils import Queryable, DotExpandedDict, build_Q, Crypt
 
 
@@ -283,7 +284,7 @@ class RulesForm(ModalForm):
 
 
 class DynFormMixin:
-    type_code = None
+    form_type: FormType = None
     field_specs: dict
     instance: models.DynEntry = None
     form_type: models.FormType
@@ -291,14 +292,9 @@ class DynFormMixin:
     cleaned_data: dict
 
     def init_fields(self):
-
         self.initial['throttle'] = Crypt.encrypt(datetime.now().isoformat())
-        if self.instance and hasattr(self.instance, 'form_type') and self.instance.form_type:
+        if not self.form_type and self.instance and hasattr(self.instance, 'form_type'):
             self.form_type = self.instance.form_type
-        else:
-            self.form_type = models.FormType.objects.get(code=self.type_code)
-            self.type_code = self.form_type.code
-
         self.field_specs = self.form_type.field_specs()
 
     def get_validation(self):
@@ -383,14 +379,14 @@ class DynModelForm(DynFormMixin, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.form_type = kwargs.pop('form_type')
         super().__init__(*args, **kwargs)
-        self.field_specs = self.form_type.field_specs()
+        self.init_fields()
 
 
 class DynForm(DynFormMixin, forms.Form):
     def __init__(self, *args, **kwargs):
         self.form_type = kwargs.pop('form_type')
         super().__init__(*args, **kwargs)
-        self.field_specs = self.form_type.field_specs()
+        self.init_fields()
 
 
 class FormTypeForm(ModalModelForm):

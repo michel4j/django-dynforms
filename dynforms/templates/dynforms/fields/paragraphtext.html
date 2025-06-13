@@ -1,7 +1,7 @@
 <div class="controls {{repeatable}}" id="{{field.name}}-controls">
-       <textarea cols="40" name="{{field.name}}" id="{{field.name}}" 
+       <textarea cols="40" name="{{field.name}}" id="{{field.name}}"  aria-label="{{ field.label }}"
        		rows="{% if field.size == 'large' %}20{% elif field.size == 'medium' %}8{% else %}3{% endif %}"
-       		class="textarea form-control">{{data}}</textarea>
+       		class="textarea form-control {{ required }}">{{data}}</textarea>
     {% if "counter" in field.options %}
     	<div class="word-counter text-wide"></div>
     {% endif %}

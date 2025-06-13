@@ -4,7 +4,7 @@
 		    <input id="{{field.name}}-first_name" aria-label="First name"
                    placeholder="First name"
                    name="{{field.name}}.first_name"
-                   class="form-control" type="text"
+                   class="form-control {{ required }}" type="text"
                    value="{{data.first_name}}"
             >
             {% if 'floating' in field.options or 'labels' in field.options %}

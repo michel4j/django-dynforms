@@ -5,14 +5,14 @@
     <div class="input-group col">
         <div class="input-group-text">{% svg_icon "email" size="sm" %}</div>
         <input type="tel" name="{{ field.name }}.email"
-               id="{{ field.name }}-email" class="form-control" aria-label="Email"
+               id="{{ field.name }}-email" class="form-control {{ required }}" aria-label="Email"
                placeholder="Email"
                value="{{ data.email }}">
     </div>
     <div class="input-group col">
         <div class="input-group-text">{% svg_icon "phone" size="sm" %}</div>
         <input type="tel" name="{{ field.name }}.phone"
-               id="{{ field.name }}-phone" class="form-control" aria-label="Phone"
+               id="{{ field.name }}-phone" class="form-control{{ required }}" aria-label="Phone"
                 placeholder="Phone"
                value="{{ data.phone }}">
     </div>

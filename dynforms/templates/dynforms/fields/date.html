@@ -1,7 +1,7 @@
 {% load static %}
 {% load icons %}
-<div class="controls input-group {% if 'floating' in field.options %}form-floating{% endif %} {{ repeatable }}" id="{{ field.name }}-controls">
-    <input type="text" class="form-control" aria-label="{{ field.label }}" id="{{ field.name }}" name="{{ field.name }}" placeholder="YYYY-MM-DD" value="{{ data }}">
+<div class="controls input-group {{ floating }} {{ repeatable }}" id="{{ field.name }}-controls">
+    <input type="text" class="form-control {{ required }}" aria-label="{{ field.label }}" id="{{ field.name }}" name="{{ field.name }}" placeholder="YYYY-MM-DD" value="{{ data }}">
     {% if 'floating' in field.options %}
     <label for="{{field.name}}">{{ field.label }}</label>
     {% endif %}

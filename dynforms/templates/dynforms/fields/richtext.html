@@ -2,7 +2,7 @@
 <div class="controls {{repeatable}}" id="{{field.name}}-controls">
        <textarea cols="40" name="{{field.name}}" id="{{field.name}}"  aria-label="{{ field.label }}"
        		rows="{% if field.size == 'large' %}20{% elif field.size == 'medium' %}10{% else %}5{% endif %}"
-       		class="textarea form-control rich-text-input">{{data}}</textarea>
+       		class="textarea form-control rich-text-input {{ required }}">{{data}}</textarea>
 </div>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.27.3/ui/trumbowyg.min.css" integrity="sha512-Fm8kRNVGCBZn0sPmwJbVXlqfJmPC13zRsMElZenX6v721g/H7OukJd8XzDEBRQ2FSATK8xNF9UYvzsCtUpfeJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />

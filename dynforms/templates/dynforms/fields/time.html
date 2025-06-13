@@ -1,7 +1,7 @@
 {% load icons %}
 {% load static %}
 <div class="controls input-group {{repeatable}}" id="{{field.name}}-controls">
-    <input type="text" class="form-control time-input" aria-label="{{ field.label }}" id="{{ field.name }}" name="{{ field.name }}" value="{{ data }}" placeholder="HH:MM">
+    <input type="text" class="form-control time-input {{ required }}" aria-label="{{ field.label }}" id="{{ field.name }}" name="{{ field.name }}" value="{{ data }}" placeholder="HH:MM">
 	<span class="input-group-text">{% svg_icon "clock" size="sm" %}</span>
     <script src="{% static 'dynforms/jquery-clock-timepicker.min.js' %}"></script>
     <script type="text/javascript">

@@ -3,7 +3,7 @@
 <div class="controls {% if 'inline' in field.options %}inline{% endif %}" id="{{ field.name }}-controls">
     {% for choice in field|group_scores:data %}
         <div class="score-choice form-check">
-            <input name="{{ field.name }}" class="form-check-input" id="{{ field.name }}_{{ forloop.counter }}"
+            <input name="{{ field.name }}" class="form-check-input {{ required }}" id="{{ field.name }}_{{ forloop.counter }}"
                    value="{{ choice.score }}"  {% if choice.checked %}checked="checked"{% endif %} type="radio">
             <label for="{{ field.name }}_{{ forloop.counter }}" class="form-check-label">
                 <span class="badge rounded-pill bg-secondary">

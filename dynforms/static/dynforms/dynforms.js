@@ -550,53 +550,51 @@ function guardDirtyForm(selector) {
              * @returns {number} The completion percentage (0-100).
              */
             function calculateProgress() {
-                let totalFields = 0;
-                let totalRequiredFields = 0;
-                let completedFields = 0;
-                let completedRequiredFields = 0;
+                let completedFields = new Set();
+                let requiredFields = new Set();
+                let allFields = new Set(); // Total number of relevant fields
 
                 // Select all relevant input fields within the form
                 // Exclude buttons, resets, submits, and hidden fields
-                $form.find('input:not([type="button"], [type="submit"], [type="reset"], [type="hidden"]), select, textarea')
+                $form.find(':input[name]:not([type="button"], [type="submit"], [type="reset"], [type="hidden"], .hidden, .df-hide :input)')
                     .each(function () {
                         const $field = $(this);
-                        totalFields++; // Increment total fields for each relevant element
+                        let fieldValue = ""; // Initialize field value
+
+                        allFields.add($field.attr('name')); // add field name to the set of all fields
+
                         // Check if the field is required
-                        if ($field.is[':input[required]']) {
-                            totalRequiredFields++; // Increment required fields if the field is required
+                        if ($field.is('[required], .required')) {
+                            requiredFields.add($field.attr('name'));
                         }
-                        let fieldValue = ""; // Initialize fieldValue to an empty string
 
                         // Check if the field is completed
-                        if ($field.is('input[type="text"], input[type="password"], input[type="email"], input[type="tel"], input[type="url"], input[type="number"], textarea')) {
-                            // For text-based inputs and textareas, check if they have a value
-                            fieldValue = $field.val() ? $field.val().trim() : ""; // Get the trimmed value of the field
-                        } else if ($field.is('input[type="checkbox"], input[type="radio"]')) {
+                        if ($field.is('input[type="checkbox"], input[type="radio"]')) {
                             // For checkboxes and radio buttons, check if they are checked
                             fieldValue = $field.is(':checked') ? $field.val() : ""; // Get the value if checked, otherwise empty
-                        } else if ($field.is('select')) {
+                        } else if ($field.is('input[type="text"], input[type="password"], input[type="email"], input[type="tel"], input[type="url"], input[type="number"], textarea')) {
+                            // For text-based inputs and text areas, check if they have a value
+                            fieldValue = $field.val() ? $field.val().trim() : "";
+                        } else  if ($field.is('select')) {
                             // For select elements, check if a value is selected
                             fieldValue = $field.val() ? `${$field.val()}`.trim() : ""; // Get the trimmed value of the selected option
                         }
 
                         // Add more field types here if necessary
+
                         if (fieldValue !== "") {
                             // If the field has a value, consider it completed
-                            completedFields++;
-                            if ($field.is[':input[required]']) {
-                                completedRequiredFields++; // Increment required fields if the field is required
-                            }
+                            completedFields.add($field.attr('name'));
                         }
                     });
 
                 // Calculate the percentage
-                const percentAll = (totalFields > 0) ? (completedFields / totalFields) * 100 : 100;
-                const percentRequired = (totalRequiredFields > 0) ? (completedRequiredFields / totalRequiredFields) * 100 : 100;
+                const percentAll = (allFields.size > 0) ? (allFields.intersection(completedFields).size / allFields.size) * 100 : 100;
+                const percentRequired = (requiredFields.size > 0) ? (requiredFields.intersection(completedFields).size / requiredFields.size) * 100 : 100;
 
                 // If an update callback is provided in options, call it
                 if (typeof settings.update === 'function') {
                     // Call the update function with 'this' pointing to the form element
-                    // and passing the calculated percentage
                     settings.update.call($form[0], percentAll, percentRequired);
                 }
 

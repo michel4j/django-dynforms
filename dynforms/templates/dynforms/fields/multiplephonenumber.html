@@ -4,7 +4,7 @@
     <div class="input-group col">
         <div class="input-group-text">{% svg_icon "phone" size="sm" %}</div>
         <input type="tel" name="{{ field.name }}.primary"
-               id="{{ field.name }}-primary" class="form-control" aria-label="Primary"
+               id="{{ field.name }}-primary" class="form-control {{ required }}" aria-label="Primary"
                placeholder="Primary Phone"
                value="{{ data.primary }}">
     </div>

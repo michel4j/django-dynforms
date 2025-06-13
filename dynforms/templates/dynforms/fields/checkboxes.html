@@ -3,7 +3,7 @@
 <div class="controls {{repeatable}}" id="{{field.name}}-controls">
 	{% for choice in field|group_choices:data|randomize_choices:field %}
         <div class="form-check {% if 'switch' in field.options %}form-switch{% endif %} {% if 'inline' in field.options %}form-check-inline{% endif %}">
-            <input name="{{field.name}}" id="{{field.name}}_{{forloop.counter}}" class="form-check-input"
+            <input name="{{field.name}}" id="{{field.name}}_{{forloop.counter}}" class="form-check-input {{ required }}"
        	        value="{{choice.value}}" {% if choice.selected %}checked{% endif %}
                 {% if 'switch' in field.options %}role="switch" switch{% endif %}
        	        type="{{ input_type|default:"checkbox" }}"

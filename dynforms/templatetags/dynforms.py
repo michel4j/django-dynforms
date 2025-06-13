@@ -5,6 +5,7 @@ from django import template
 from django.utils.safestring import mark_safe
 
 from dynforms.fields import FieldType
+from dynforms.utils import FormField
 
 register = template.Library()
 
@@ -33,7 +34,7 @@ def _get_field_value(context, field):
 
 
 @register.simple_tag(takes_context=True)
-def render_field(context, field, repeatable=False):
+def render_field(context, field: FormField, repeatable: bool = False):
     all_data = field.get_data(context)
     if field.type:
         if field.type.multi_valued:
@@ -47,8 +48,11 @@ def render_field(context, field, repeatable=False):
 
     if repeatable and all_data == []:
         all_data = ['']
-
-    ctx = {} if not repeatable else {'repeatable': f"{field.name}-repeatable"}
+    ctx = {
+        'repeatable': f" {field.name}-repeatable" if repeatable else '',
+        'required': " required" if 'required' in field.get_options() else '',
+        'floating': " form-floating" if 'floating' in field.get_options() else '',
+    }
     ctx.update(context.flatten())
 
     rendered = ""

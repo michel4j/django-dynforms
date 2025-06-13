@@ -2,7 +2,7 @@
 {% load icons %}
 {% with form.get_validation as validation %}
     {% svg_sprites %}
-    <form id="df-form-instance" method="post">
+    <form id="df-form-instance" method="post" novalidate>
         <div class="df-form">
 
             {% with form.form_type.get_pages as form_pages %}
@@ -39,12 +39,12 @@
                 <div class="df-form-footer d-flex align-items-center">
                     <div class="footer-progress">
                         <div class="d-flex flex-column align-items-stretch justify-content-center">
-                            <div class="lead">
+                            <div class="lead" id="df-progress-text">
                                {{ validation.progress|default:0 }}% complete
                             </div>
                             <div>
                                 <div class="progress" style="height: 0.75em;">
-                                    <div class="progress-bar {% if validation.progress < 99.5 %}bg-warning{% else %}bg-success{% endif %}"
+                                    <div id="df-progress-bar" class="progress-bar {% if validation.progress < 99.5 %}bg-warning{% else %}bg-success{% endif %}"
                                          role="progressbar"
                                          aria-valuenow="{{ validation.progress }}"
                                          aria-valuemin="0" aria-valuemax="100"
@@ -69,8 +69,20 @@
     $(document).ready(function () {
         guardDirtyForm('#df-form-instance');
         $('#df-form-instance').formProgress({
-            update: function(percent) {
-                console.log(`Form progress: ${percent}%`);
+            update: function(percentAll, percentRequired) {
+                const progressBar = $('#df-progress-bar');
+                const progressText = $('#df-progress-text');
+                const submitButton = $('#df-form-instance input[value="submit"]');
+                progressText.html(`${percentAll.toFixed(1)}% complete`);
+                progressBar.css('width', percentAll + '%');
+                if (percentRequired < 99) {
+                    progressBar.removeClass('bg-success').addClass('bg-warning');
+                    submitButton.createAttribute('disabled');
+                } else {
+                    submitButton.removeAttr('disabled');
+                    progressBar.removeClass('bg-warning').addClass('bg-success');
+                }
+                console.log($(this), `Form progress: ${percentAll}% / ${percentRequired}%`);
             },
         });
     });

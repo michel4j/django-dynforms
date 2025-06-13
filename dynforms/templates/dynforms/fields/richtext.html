@@ -41,7 +41,11 @@ $('#{{field.name}}-controls .rich-text-input').trumbowyg({
         ['viewHTML']
     ]
 
+}).on('tbwchange', function () {
+    let text = $(this).trumbowyg('html');
+	$(this).html(text).trigger('change');
 });
+
 {% if "counter" in field.options %}
 $('#{{field.name}}-controls .trumbowyg-editor').counter({ // this is a class from the div with contenteditable="true"
 	type: 'word',

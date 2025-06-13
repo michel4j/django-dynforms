@@ -1,4 +1,3 @@
-
 function createMultiSelect(selector) {
     let sel = $(selector);
     sel.selectize({plugins: ['remove_button'],});
@@ -518,11 +517,11 @@ function guardDirtyForm(selector) {
  * Usage:
  * $(document).ready(function() {
  * $('#myForm').formProgress({
- * update: function(percentage) {
+ * update: function(percentAll, percentRequired) {
  * // 'this' inside this function refers to the form element.
  * // You can update a progress bar or text here.
- * $('#progressBar').css('width', percentage + '%').text(Math.round(percentage) + '% Complete');
- * console.log('Form completion: ' + percentage.toFixed(2) + '%');
+ * $('#progressBar').css('width', percentRequired + '%').text(Math.round(percentRequired) + '% Complete');
+ * console.log('Form completion: ' + percentRequired.toFixed(2) + '%');
  * }
  * });
  * });
@@ -530,12 +529,12 @@ function guardDirtyForm(selector) {
  * @param {object} options - Configuration options for the plugin.
  * @param {function} [options.update] - A callback function that is executed
  * whenever the form's completion percentage changes.
- * It receives the calculated percentage as its
- * first argument. 'this' inside the callback
+ * It receives the total percentage as it's first argument, and the percentage of required fields
+ * as it's second argument 'this' inside the callback
  * will refer to the form DOM element.
  */
-(function($) {
-    $.fn.formProgress = function(options) {
+(function ($) {
+    $.fn.formProgress = function (options) {
 
         // Default options
         let settings = $.extend({
@@ -543,7 +542,7 @@ function guardDirtyForm(selector) {
         }, options);
 
         // Iterate over each form selected by the jQuery object
-        return this.each(function() {
+        return this.each(function () {
             const $form = $(this); // Current form element
 
             /**
@@ -552,53 +551,62 @@ function guardDirtyForm(selector) {
              */
             function calculateProgress() {
                 let totalFields = 0;
+                let totalRequiredFields = 0;
                 let completedFields = 0;
+                let completedRequiredFields = 0;
 
                 // Select all relevant input fields within the form
                 // Exclude buttons, resets, submits, and hidden fields
                 $form.find('input:not([type="button"], [type="submit"], [type="reset"], [type="hidden"]), select, textarea')
-                     .each(function() {
-                         const $field = $(this);
-                         totalFields++; // Increment total fields for each relevant element
+                    .each(function () {
+                        const $field = $(this);
+                        totalFields++; // Increment total fields for each relevant element
+                        // Check if the field is required
+                        if ($field.is[':input[required]']) {
+                            totalRequiredFields++; // Increment required fields if the field is required
+                        }
+                        let fieldValue = ""; // Initialize fieldValue to an empty string
 
-                    // Check if the field is completed
-                    if ($field.is('input[type="text"], input[type="password"], input[type="email"], input[type="tel"], input[type="url"], input[type="number"], textarea')) {
-                        // For text-based inputs and textareas, check if they have a value
-                        if ($field.val() && $field.val().trim() !== '') {
+                        // Check if the field is completed
+                        if ($field.is('input[type="text"], input[type="password"], input[type="email"], input[type="tel"], input[type="url"], input[type="number"], textarea')) {
+                            // For text-based inputs and textareas, check if they have a value
+                            fieldValue = $field.val() ? $field.val().trim() : ""; // Get the trimmed value of the field
+                        } else if ($field.is('input[type="checkbox"], input[type="radio"]')) {
+                            // For checkboxes and radio buttons, check if they are checked
+                            fieldValue = $field.is(':checked') ? $field.val() : ""; // Get the value if checked, otherwise empty
+                        } else if ($field.is('select')) {
+                            // For select elements, check if a value is selected
+                            fieldValue = $field.val() ? `${$field.val()}`.trim() : ""; // Get the trimmed value of the selected option
+                        }
+
+                        // Add more field types here if necessary
+                        if (fieldValue !== "") {
+                            // If the field has a value, consider it completed
                             completedFields++;
+                            if ($field.is[':input[required]']) {
+                                completedRequiredFields++; // Increment required fields if the field is required
+                            }
                         }
-                    } else if ($field.is('input[type="checkbox"], input[type="radio"]')) {
-                        // For checkboxes and radio buttons, check if they are checked
-                        if ($field.is(':checked')) {
-                            completedFields++;
-                        }
-                    } else if ($field.is('select')) {
-                        // For select elements, check if an option other than the default (index 0) is selected
-                        // or if the value is not empty (handles cases where option 0 might have a real value)
-                        if ($field.val() && $field.val().trim() !== '' && $field.prop('selectedIndex') !== 0) {
-                             completedFields++;
-                        }
-                    }
-                    // Add more field types here if necessary
-                });
+                    });
 
                 // Calculate the percentage
-                const percentage = (totalFields > 0) ? (completedFields / totalFields) * 100 : 0;
+                const percentAll = (totalFields > 0) ? (completedFields / totalFields) * 100 : 100;
+                const percentRequired = (totalRequiredFields > 0) ? (completedRequiredFields / totalRequiredFields) * 100 : 100;
 
                 // If an update callback is provided in options, call it
                 if (typeof settings.update === 'function') {
                     // Call the update function with 'this' pointing to the form element
                     // and passing the calculated percentage
-                    settings.update.call($form[0], percentage);
+                    settings.update.call($form[0], percentAll, percentRequired);
                 }
 
-                return percentage;
+                return percentAll;
             }
 
             // Bind events to trigger progress calculation
             // 'input' event for text fields; 'change' for selects/checkboxes/radios
             // 'keyup' is added for broader compatibility, though 'input' is generally preferred.
-            $form.on('input change keyup', 'input, select, textarea', function() {
+            $form.on('input change keyup', 'input, select, textarea', function () {
                 calculateProgress();
             });
 

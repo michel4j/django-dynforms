@@ -40,7 +40,7 @@
                     <div class="footer-progress">
                         <div class="d-flex flex-column align-items-stretch justify-content-center">
                             <div class="lead">
-                               {{ form.form_type.name }} &mdash; {{ validation.progress|default:0 }}% complete
+                               {{ validation.progress|default:0 }}% complete
                             </div>
                             <div>
                                 <div class="progress" style="height: 0.75em;">
@@ -68,6 +68,11 @@
 <script>
     $(document).ready(function () {
         guardDirtyForm('#df-form-instance');
+        $('#df-form-instance').formProgress({
+            update: function(percent) {
+                console.log(`Form progress: ${percent}%`);
+            },
+        });
     });
 </script>
 {% include "dynforms/form-rules.html" with form_type=form.form_type %}

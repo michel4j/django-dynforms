@@ -39,8 +39,8 @@
                 <div class="df-form-footer d-flex align-items-center">
                     <div class="footer-progress">
                         <div class="d-flex flex-column align-items-stretch justify-content-center">
-                            <div style="font-size: 95%;">
-                                {{ validation.progress|default:0 }}% complete &mdash; {{ object }}
+                            <div class="lead">
+                               {{ form.form_type.name }} &mdash; {{ validation.progress|default:0 }}% complete
                             </div>
                             <div>
                                 <div class="progress" style="height: 0.75em;">

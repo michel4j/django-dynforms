@@ -5,7 +5,6 @@
 {% block page-styles %}
     <link href="{% static 'dynforms/dynforms.min.css' %}" rel="stylesheet" media="screen"/>
     <link href="{% static 'dynforms/builder.min.css' %}" rel="stylesheet" media="screen"/>
-    <script src="{% static 'dynforms/theme-switcher.min.js' %}"></script>
 {% endblock %}
 
 {% block body %}
@@ -16,35 +15,6 @@
                 {% svg_icon "left-sidebar-expand" size="lg" stroke="1" %}
             </a>
             <h5><span class="text-secondary">Dynamic Forms</span>{% if form_type %} &mdash; {{ form_type.name }}{% endif %}</h5>
-            <div class="dropdown ms-auto">
-                <button class="btn btn-link nav-link px-0 px-lg-2 py-2 dropdown-toggle d-flex align-items-center"
-                        id="bd-theme" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static"
-                        aria-label="Toggle theme">
-                    {% svg_icon "sun" styles="theme-icon-active" size="sm" %}
-                    <span class="d-none ms-2" id="bd-theme-text">Toggle theme</span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
-                    <li>
-                        <button type="button" class="dropdown-item d-flex align-items-center active"
-                                data-bs-theme-value="light" aria-pressed="true">
-                            {% svg_icon "sun" size="sm" styles="me-2" %} Light {% svg_icon "check" size="sm" styles="ms-auto d-none" %}
-                        </button>
-                    </li>
-                    <li>
-                        <button type="button" class="dropdown-item d-flex align-items-center"
-                                data-bs-theme-value="dark" aria-pressed="false">
-                            {% svg_icon "moon" size="sm" styles="me-2" %} Dark {% svg_icon "check" size="sm" styles="ms-auto d-none" %}
-                        </button>
-                    </li>
-                    <li>
-                        <button type="button" class="dropdown-item d-flex align-items-center"
-                                data-bs-theme-value="auto" aria-pressed="false">
-                            {% svg_icon "sun-moon" size="sm" styles="me-2" %} Auto {% svg_icon "sun-moon" size="sm" styles="ms-auto d-none" %}
-                        </button>
-                    </li>
-                </ul>
-            </div>
-
         </div>
 
         <div id="df-sidebar" class="border-end">

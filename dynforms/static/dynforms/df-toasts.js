@@ -1,5 +1,5 @@
 // heavily inspired by https://auct.github.io/b5toast
-const dfToasts = {
+var dfToasts = {
     createToastElement: function (html) {
         const template = document.createElement("template");
         html = html.trim();

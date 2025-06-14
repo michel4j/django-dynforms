@@ -23,14 +23,14 @@ const dfToasts = {
         let closeBtn = '<button type="button" class="btn-close ms-auto me-1" data-bs-dismiss="toast" aria-label="Close"></button>';
         if (options.title) {
             title = `
-                <div class="toast-header bg-transparent text-${options.textColor}">
-                <strong class="me-auto">${options.title}</strong>${closeBtn}</div>
+                <div class="toast-header d-flex flex-row bg-transparent text-${options.textColor}">
+                <strong>${options.title}</strong>${closeBtn}</div>
             `;
             closeBtn = ""; // if title is set, we don't need the close button in the body
         }
         const html = `
         <div data-bs-theme="${options.theme}" 
-            class="toast align-items-center mt-1 text-${options.textColor} bg-${options.color} border-0" role="alert" 
+            class="toast d-flex flex-column align-items-center mt-1 text-${options.textColor} bg-${options.color} border-0" role="alert" 
             aria-live="assertive" aria-atomic="true">
             ${title}
             <div class="toast-body d-flex"><div>${options.message}</div>${closeBtn}</div>

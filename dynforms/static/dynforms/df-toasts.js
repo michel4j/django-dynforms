@@ -1,6 +1,3 @@
-//change some settings
-const dfToastContainer = document.getElementById("toast-container");
-
 // heavily inspired by https://auct.github.io/b5toast
 const dfToasts = {
     createToastElement: function (html) {
@@ -10,6 +7,7 @@ const dfToasts = {
         return template.content.firstChild;
     },
     show: function (params) {
+        const dfToastContainer = document.getElementById("toast-container");
         let defaults = {
             theme: "light",     // default theme, can be "light" or "dark"
             color: "light",     // default background color, can be "light", "primary", "secondary", etc
@@ -33,7 +31,9 @@ const dfToasts = {
             class="toast d-flex flex-column align-items-stretch mt-1 text-${options.textColor} bg-${options.color} border-0" role="alert" 
             aria-live="assertive" aria-atomic="true">
             ${title}
-            <div class="toast-body d-flex"><div>${options.message}</div>${closeBtn}</div>
+            <div class="toast-body d-flex">
+                <div>${options.message}</div>${closeBtn}
+            </div>
         </div>`;
         const toastElement = dfToasts.createToastElement(html);
         dfToastContainer.appendChild(toastElement);

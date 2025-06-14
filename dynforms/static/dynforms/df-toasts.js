@@ -30,7 +30,7 @@ const dfToasts = {
         }
         const html = `
         <div data-bs-theme="${options.theme}" 
-            class="toast d-flex flex-column align-items-center mt-1 text-${options.textColor} bg-${options.color} border-0" role="alert" 
+            class="toast d-flex flex-column align-items-stretch mt-1 text-${options.textColor} bg-${options.color} border-0" role="alert" 
             aria-live="assertive" aria-atomic="true">
             ${title}
             <div class="toast-body d-flex"><div>${options.message}</div>${closeBtn}</div>

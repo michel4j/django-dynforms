@@ -34,6 +34,7 @@ class FormType(TimeStampedModel):
     name = models.CharField(max_length=100)
     code = models.SlugField(max_length=100, unique=True)
     description = models.TextField(null=True, blank=True)
+    header = models.BooleanField(default=False, help_text="Show header")
 
     pages = models.JSONField(default=default_pages, null=True, blank=True)
     actions = models.JSONField(default=default_actions, null=True, blank=True)

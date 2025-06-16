@@ -4,10 +4,16 @@
     {% svg_sprites %}
     <form id="df-form-instance" method="post" novalidate>
         <div class="df-form">
-
             {% with form.form_type.get_pages as form_pages %}
-                {% include "dynforms/form-tabs.html" %}
+                {% if form.form_type.header %}
+                    <!-- Header -->
+                    <div class="df-form-header">
+                        <h1 class="df-form-title">{{ form.form_type.name }}</h1>
+                        <div class="df-form-description">{{ form.form_type.description }}</div>
+                    </div>
+                {% endif %}
                 <!-- Nav tabs -->
+                {% include "dynforms/form-tabs.html" %}
 
                 <div class="df-form-body">
                     <!-- Tab panes -->

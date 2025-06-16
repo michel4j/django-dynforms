@@ -5,7 +5,7 @@
     {% if field.field_type != 'newsection' %}
         {% if 'no-label' in field.options %}
         {% else %}
-            <label class="control-label {% if field.is_required %}required{% endif %}" for="{{ field.name }}">
+            <label id="{{ field.name }}-label" class="control-label {% if field.is_required %}required{% endif %}">
                 {{ field.label }}
             </label>
         {% endif %}

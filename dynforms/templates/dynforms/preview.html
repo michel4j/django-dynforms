@@ -3,6 +3,13 @@
 
 <div id="df-form-preview" class="bg-light-subtle">
     {% with form_type.get_pages as form_pages %}
+        {% if form_type.header %}
+            <!-- Header -->
+            <div class="df-form-header">
+                <h1 class="df-form-title">{{ form_type.name }}</h1>
+                <div class="df-form-description">{{ form_type.description }}</div>
+            </div>
+        {% endif %}
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
             {% for page in form_pages %}

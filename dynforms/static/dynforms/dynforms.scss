@@ -17,7 +17,7 @@ html, body {
   display: grid;
   overflow-x: hidden;
   overflow-y: auto;
-  background: var(--bs-body-bg);
+  background: var(--bs-tertiary-bg);
   grid-template-columns: 1fr;
   grid-template-rows: auto auto 1fr auto;
   grid-template-areas:
@@ -27,16 +27,17 @@ html, body {
 		"form-footer";
 }
 .df-form-header {
+    --df-accent-color: var(--bs-emphasis-color);
+    --df-accent-bg: var(--bs-secondary-bg-subtle);
     grid-area: form-title;
     padding: 1em;
-    background: var(--bs-secondary-bg-subtle);
-    border-bottom: 1px solid var(--bs-border-color);
+    color: var(--df-accent-color);
+    background: var(--df-accent-bg);
 
     .df-form-title {
         font-size: 1.5em;
         font-weight: bold;
         margin: 0;
-        color: var(--bs-body-color);
     }
 
     .df-form-description {

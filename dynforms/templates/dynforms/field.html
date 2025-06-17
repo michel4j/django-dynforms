@@ -1,42 +1,49 @@
 {% load dynforms %}
 {% load markup %}
 {% load icons %}
-<div id="{{ field.name }}-group" data-field-width="{{ field.width_styles }}" class="form-group {{ field.hide_styles }} {{ field.extra_styles }}">
-    {% if field.field_type != 'newsection' %}
-        {% if 'no-label' in field.options %}
-        {% else %}
-            <label id="{{ field.name }}-label" class="control-label {% if field.is_required %}required{% endif %}">
-                {{ field.label }}
-            </label>
-        {% endif %}
-        {% if field.instructions and field.field_type != 'newsection' %}
-            <span class="df-info text-primary" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-trigger="hover"
-                  title="{{ field.label }}" data-bs-content="{{ field.instructions }}">{% svg_icon "info-circle" size="sm" %}</span>
-        {% endif %}
-        <div class="control-instructions text-narrow">
-            <div class="d-flex flex-row align-items-center">
-                {% svg_icon "info-circle" size="lg" %}
-                <strong class="flex-grow-1 ps-2">{{ field.label }}</strong>
-            </div>
-            <hr class="hr-xs"/>
-            <span class="text-body-secondary">
+<div id="{{ field.name }}-group" data-field-width="{{ field.width_styles }}"
+     class="form-group w-100 {{ field.hide_styles }} {{ field.extra_styles }}">
+    <div class="container-fluid">
+        {% if field.field_type != 'newsection' %}
+            {% if 'no-label' in field.options %}
+            {% else %}
+                <label id="{{ field.name }}-label" class="control-label {% if field.is_required %}required{% endif %}">
+                    {{ field.label }}
+                </label>
+            {% endif %}
+            {% if field.instructions and field.field_type != 'newsection' %}
+                <span class="df-info text-primary" data-bs-toggle="popover" data-bs-placement="bottom"
+                      data-bs-trigger="hover"
+                      title="{{ field.label }}"
+                      data-bs-content="{{ field.instructions }}">{% svg_icon "info-circle" size="sm" %}</span>
+            {% endif %}
+            <div class="control-instructions text-narrow">
+                <div class="d-flex flex-row align-items-center">
+                    {% svg_icon "info-circle" size="lg" %}
+                    <strong class="flex-grow-1 ps-2">{{ field.label }}</strong>
+                </div>
+                <hr class="hr-xs"/>
+                <span class="text-body-secondary">
                 {{ field.instructions|markdown }}
             </span>
-        </div>
-    {% endif %}
+            </div>
+        {% endif %}
 
-    {% if field.is_repeatable %}
-        {% render_field field repeatable=True %}
-        <button data-repeat-add=".{{ field.name }}-repeatable"
-                class="btn btn-success ms-auto mt-2" title="Add {{ field.label }}"
-                name="add" type="button">{% svg_icon "plus" size="xs" %}
-        </button>
-    {% else %}
-        {% render_field field %}
-    {% endif %}
+        {% if field.is_repeatable %}
+            {% render_field field repeatable=True %}
+            <button data-repeat-add=".{{ field.name }}-repeatable"
+                    class="btn btn-success ms-auto mt-2" title="Add {{ field.label }}"
+                    name="add" type="button">{% svg_icon "plus" size="xs" %}
+            </button>
+        {% else %}
+            {% render_field field %}
+        {% endif %}
+    </div>
 </div>
 <script>
-    {% if "repeat" in field.options %}
-        $('#{{field.name}}-group button[data-repeat-add]').repeatable();
-    {% endif %}
+    $(document).ready(function () {
+        {% if "repeat" in field.options %}
+            $('#{{field.name}}-group button[data-repeat-add]').repeatable();
+        {% endif %}
+    });
 </script>

@@ -3,7 +3,7 @@
 <div class="controls {{ repeatable }}" id="{{ field.name }}-controls">
     <div class="row">
         {% if 'department' in field.options %}
-            <div class="col-12 mb-2 {{ floating }}">
+            <div class="col-sm-12 mb-2 {{ floating }}">
                 <input id="{{ field.name }}-place" aria-label="Institution"
                        {% if not field|show_sublabels %}placeholder="Institution / Department"{% endif %}
                        name="{{ field.name }}.place" class="form-control" type="text" value="{{ data.place }}"
@@ -13,7 +13,7 @@
                 {% endif %}
             </div>
         {% endif %}
-        <div class="col-12 mb-2 {{ floating }}">
+        <div class="col-sm-12 mb-2 {{ floating }}">
             <input id="{{ field.name }}-street" name="{{ field.name }}.street"
                    aria-label="Street"
                    {% if not field|show_sublabels %}placeholder="Street"{% endif %}
@@ -23,7 +23,7 @@
                 <label for="{{ field.name }}-street">Street</label>
             {% endif %}
         </div>
-        <div class="col-6 mb-2 {{ floating }}">
+        <div class="col-sm-6 mb-2 {{ floating }}">
             <input id="{{ field.name }}-country" aria-label="Country" name="{{ field.name }}.country"
                    class="form-control {{ required }}" type="text" value="{{ data.country }}"
                    {% if  not field|show_sublabels %}placeholder="Country ..."{% endif %}
@@ -32,7 +32,7 @@
                 <label for="{{ field.name }}-country">Country</label>
             {% endif %}
         </div>
-        <div class="col-6 mb-2 {{floating}}">
+        <div class="col-sm-6 mb-2 {{floating}}">
 
             <input id="{{ field.name }}-region" aria-label="Province/State/Region" name="{{ field.name }}.region"
                    class="form-control {{ required }}" type="text" value="{{ data.region }}"
@@ -42,7 +42,7 @@
                 <label for="{{ field.name }}-region">Province / State / Region</label>
             {% endif %}
         </div>
-        <div class="col-6 mb-2 {% if 'floating' in field.options %}form-floating{% endif %}">
+        <div class="col-sm-6 mb-2 {% if 'floating' in field.options %}form-floating{% endif %}">
 
             <input id="{{ field.name }}-city" aria-label="City"
                    {% if not field|show_sublabels %}placeholder="City"{% endif %}
@@ -53,7 +53,7 @@
                 <label for="{{ field.name }}-city">City</label>
             {% endif %}
         </div>
-        <div class="col-6 mb-2 {% if 'floating' in field.options %}form-floating{% endif %}">
+        <div class="col-sm-6 mb-2 {% if 'floating' in field.options %}form-floating{% endif %}">
 
             <input id="{{ field.name }}-code" aria-label="Postal Code"
                    {% if not field|show_sublabels %}placeholder="Postal Code"{% endif %}

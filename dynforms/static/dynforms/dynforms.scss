@@ -68,22 +68,45 @@ html, body {
     padding: 1em;
     flex-grow: 1;
   }
+
   .df-form-help {
     flex-shrink: 0;
     display: none;
   }
 }
 
-.extended-help {
-  .df-info {
-    display: none !important;
+@media (min-width: 768px) {
+  .extended-help {
+    .df-info {
+      display: none !important;
+    }
+
+    .df-form-help {
+      --df-help-arrow-size: 1em;
+      --df-help-bg: var(--bs-secondary-bg-subtle);
+      --df-help-offset: 1em;
+      position: relative;
+      display: block;
+      max-width: 50%;
+      width: 25em;
+      border-left: 1px dotted var(--bs-border-color);
+      background: var(--df-help-bg, var(--bs-info-bg-subtle));
+
+      &::before {
+        content: " ";
+        position: absolute;
+        left: calc(-1 * var(--df-help-arrow-size));
+        top: calc(var(--df-help-offset) - var(--df-help-arrow-size) / 2);
+        width: 0;
+        height: 0;
+        border-top: var(--df-help-arrow-size) solid transparent;
+        border-bottom: var(--df-help-arrow-size) solid transparent;
+        border-right: var(--df-help-arrow-size) solid var(--df-help-bg);
+      }
+    }
   }
- .df-form-help {
-   display: block;
-   width: 25em;
-   border-left: 1px dotted var(--bs-border-color);
- }
 }
+
 
 .df-form-footer {
   grid-area: form-footer;

@@ -38,7 +38,7 @@
                             </div>
                         {% endfor %}
                     </div>
-                    <div class="df-form-help m-3 p-3"></div>
+                    <div class="df-form-help p-3"></div>
                 </div>
                 <div class="df-form-footer d-flex align-items-center">
                     <div class="footer-progress">
@@ -92,12 +92,21 @@
             },
         });
         $form.on('click', '.df-field', function () {
-            console.log('Setting help information')
             const $helpArea = $('.df-form-help');
+            const $helpContent = $(this).find('.control-instructions');
+            const fieldBox = this.getBoundingClientRect();
+            const offset = fieldBox.top - $helpArea[0].getBoundingClientRect().top + fieldBox.height / 2;
+            $helpArea.css('--df-help-offset', offset + 'px');
+
             if ($helpArea.length === 0) {
                 return;
             }
-            $helpArea.html($(this).find('.control-instructions').html());
+            $helpArea.html($helpContent.html());
+        });
+        $form.on('click', '.nav-link', function () {
+            const $helpArea = $('.df-form-help');
+            $helpArea.html('');
+            $helpArea.css('--df-help-offset', '0.5em');
         });
     });
 

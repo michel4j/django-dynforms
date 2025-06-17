@@ -15,11 +15,11 @@
         {% endif %}
         <div class="control-instructions text-narrow">
             <div class="d-flex flex-row align-items-center">
-                {% svg_icon "info-circle" %}
-                <div class="flex-grow-1 ps-2">{{ field.label }}</div>
+                {% svg_icon "info-circle" size="lg" %}
+                <strong class="flex-grow-1 ps-2">{{ field.label }}</strong>
             </div>
             <hr class="hr-xs"/>
-            <span class="fg-help">
+            <span class="text-body-secondary">
                 {{ field.instructions|markdown }}
             </span>
         </div>
@@ -34,7 +34,6 @@
     {% else %}
         {% render_field field %}
     {% endif %}
-
 </div>
 <script>
     {% if "repeat" in field.options %}

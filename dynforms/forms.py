@@ -205,18 +205,21 @@ ACTIONS_TEMPLATE = "{% include 'dynforms/form-actions.html' %}"
 
 
 class FormSettingsForm(forms.ModelForm):
-    header = forms.BooleanField(required=False, initial=False, label=_("Show Header"))
     page_names = RepeatableCharField(label=_("Pages"), required=True)
     action_names = RepeatableCharField(label=_("Action Buttons"), required=False)
     action_labels = RepeatableCharField(label=_("Action Buttons"), required=False)
 
     class Meta:
         model = models.FormType
-        fields = ('code', 'name', 'description', 'header', 'page_names', 'actions', 'pages', 'action_names', 'action_labels')
+        fields = (
+            'code', 'name', 'description', 'header', 'help_bar', 'page_names', 'actions', 'pages',
+            'action_names', 'action_labels'
+        )
         widgets = {
             'code': forms.TextInput(attrs={'placeholder': 'Unique slug, e.g. "feedback-form"'}),
             'name': forms.TextInput(attrs={'placeholder': 'Human friendly name'}),
             'header': forms.CheckboxInput(),
+            'help_bar': forms.CheckboxInput(),
             'description': forms.Textarea(
                 attrs={'rows': 4, 'placeholder': 'Please provide a description content.'}
             ),
@@ -234,7 +237,7 @@ class FormSettingsForm(forms.ModelForm):
                 Div('code', css_class='col-12'),
                 Div("name", css_class='col-12'),
                 Div("description", css_class='col-12'),
-                Div("header", css_class='col-12'),
+                Div("header", css_class='col-6'), Div("help_bar", css_class='col-6'),
                 css_class="row"
             ),
             HTML(PAGES_TEMPLATE),

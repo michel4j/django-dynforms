@@ -8,10 +8,12 @@ html, body {
   margin: 0;
   font-size: 11pt;
 }
+
 #df-form-instance {
   height: 100%;
   width: 100%
 }
+
 .df-form {
   height: 100%;
   display: grid;
@@ -25,40 +27,62 @@ html, body {
         "form-tabs"
 		"form-content"
 		"form-footer";
+
+
 }
+
 .df-form-header {
-    --df-accent-color: var(--bs-emphasis-color);
-    --df-accent-bg: var(--bs-secondary-bg-subtle);
-    grid-area: form-title;
-    padding: 1em;
-    color: var(--df-accent-color);
-    background: var(--df-accent-bg);
+  --df-accent-color: var(--bs-emphasis-color);
+  --df-accent-bg: var(--bs-secondary-bg-subtle);
+  grid-area: form-title;
+  padding: 1em;
+  color: var(--df-accent-color);
+  background: var(--df-accent-bg);
 
-    .df-form-title {
-        font-size: 1.5em;
-        font-weight: bold;
-        margin: 0;
-    }
+  .df-form-title {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin: 0;
+  }
 
-    .df-form-description {
-        font-size: small;
-        color: var(--bs-secondary-text);
-    }
+  .df-form-description {
+    font-size: small;
+    color: var(--bs-secondary-text);
+  }
 }
 
 .df-form-tabs {
-    grid-area: form-tabs;
+  grid-area: form-tabs;
 }
-.df-container {
-}
+
 .df-form-body {
   grid-area: form-content;
   overflow-y: auto;
   overflow-x: hidden;
+  display: flex;
+  flex-direction: row;
+
   background: var(--bs-body-bg);
+
   .tab-content {
-    padding: 0.5em 1.5em;
+    padding: 1em;
+    flex-grow: 1;
   }
+  .df-form-help {
+    flex-shrink: 0;
+    display: none;
+  }
+}
+
+.extended-help {
+  .df-info {
+    display: none !important;
+  }
+ .df-form-help {
+   display: block;
+   width: 25em;
+   border-left: 1px dotted var(--bs-border-color);
+ }
 }
 
 .df-form-footer {
@@ -201,6 +225,7 @@ svg {
     color: var(--bs-danger) !important;
   }
 }
+
 .tab-content {
   background: var(--bs-body-bg);
   height: 100%;
@@ -219,6 +244,7 @@ input[type=number] {
 .control-label {
   font-weight: 500;
   margin-top: 0.35em;
+
   &.required:after {
     content: "✱";
     color: var(--bs-danger);
@@ -263,31 +289,31 @@ ul.nav-tabs.small-tabs {
   display: none;
 }
 
-.extended-help {
-  .df-info {
-    display: none !important;
-  }
-
-  .df-field {
-    .control-instructions {
-      height: 100%;
-      right: 0;
-      position: fixed;
-      table-layout: fixed;
-      top: 0;
-      width: 25%;
-      z-index: 500;
-      padding: 95px 18px 0 30px;
-      display: none;
-    }
-  }
-
-  .df-field.activated {
-    .control-instructions {
-      display: block;
-    }
-  }
-}
+//.extended-help {
+//  .df-info {
+//    display: none !important;
+//  }
+//
+//  .df-field {
+//    .control-instructions {
+//      height: 100%;
+//      right: 0;
+//      position: fixed;
+//      table-layout: fixed;
+//      top: 0;
+//      width: 25%;
+//      z-index: 500;
+//      padding: 95px 18px 0 30px;
+//      display: none;
+//    }
+//  }
+//
+//  .df-field.activated {
+//    .control-instructions {
+//      display: block;
+//    }
+//  }
+//}
 
 .word-counter {
   padding: 0.5em;
@@ -336,24 +362,25 @@ ul.nav-tabs.small-tabs {
 
   .nav-item {
     margin-left: 0.25em;
+
     &:first-child {
       margin-left: 1em;
     }
   }
 }
+
 .clock-timepicker {
   flex-grow: 1;
 }
 
 #trumbowyg-icons {
-  display: none  !important;
+  display: none !important;
 }
 
 .trumbowyg-editor.trumbowyg-reset-css[contenteditable="true"] {
   background-color: var(--bs-body-bg) !important;
   color: var(--bs-body-color) !important;
 }
-
 
 
 // Typeahead styles

@@ -3,6 +3,7 @@ from collections import defaultdict
 from datetime import timedelta
 
 from django.db import models
+from django.utils.translation import gettext as _
 from django.utils.safestring import mark_safe
 
 from .fields import FieldType, ValidationError
@@ -34,7 +35,8 @@ class FormType(TimeStampedModel):
     name = models.CharField(max_length=100)
     code = models.SlugField(max_length=100, unique=True)
     description = models.TextField(null=True, blank=True)
-    header = models.BooleanField(default=False, help_text="Show header")
+    header = models.BooleanField(_("Show header"), default=False)
+    help_bar = models.BooleanField(_("Show help bar"), default=False)
 
     pages = models.JSONField(default=default_pages, null=True, blank=True)
     actions = models.JSONField(default=default_actions, null=True, blank=True)

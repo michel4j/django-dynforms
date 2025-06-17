@@ -1,7 +1,7 @@
 {% load dynforms %}
 {% load icons %}
 
-<div id="df-form-preview" class="bg-light-subtle">
+<div id="df-form-preview" class="bg-light-subtle {% if form.form_type.help_bar %}extended-help{% endif %}">
     {% with form_type.get_pages as form_pages %}
         {% if form_type.header %}
             <!-- Header -->

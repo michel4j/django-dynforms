@@ -505,6 +505,11 @@ function guardDirtyForm(selector) {
         $('.df-field').removeClass('activated');
         $(this).addClass('activated');
     });
+    $(window).bind('beforeunload', function () {
+        if ($("[data-df-dirty]").length) {
+            return 'The form contains unsaved changes.';
+        }
+    });
 }
 
 

@@ -3,7 +3,6 @@
 {% load icons %}
 <div id="{{ field.name }}-group" data-field-width="{{ field.width_styles }}"
      class="form-group w-100 {{ field.hide_styles }} {{ field.extra_styles }}">
-    <div class="container-fluid">
         {% if field.field_type != 'newsection' %}
             {% if 'no-label' in field.options %}
             {% else %}
@@ -38,7 +37,6 @@
         {% else %}
             {% render_field field %}
         {% endif %}
-    </div>
 </div>
 <script>
     $(document).ready(function () {

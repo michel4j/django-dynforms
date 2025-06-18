@@ -474,9 +474,9 @@ function valuesOnly(va) {
 }
 
 function guardDirtyForm(selector) {
-    let formInstance = $(selector);
-    formInstance.find("a[data-bs-toggle='tab']").click(function (e) {
-        formInstance.find(":input[name='active_page']").val($(this).data('page-number'));
+    let $formInstance = $(selector);
+    $formInstance.find("a[data-bs-toggle='tab']").click(function (e) {
+        $formInstance.find(":input[name='active_page']").val($(this).data('page-number'));
     });
 
     $("a[data-tab-proxy]").click(function (e) {
@@ -484,20 +484,20 @@ function guardDirtyForm(selector) {
     });
 
     //Save time when form was loaded
-    formInstance.attr('data-df-loaded', $.now());
+    $formInstance.attr('data-df-loaded', $.now());
 
     function monitorChanges(event) {
         // save time when any field was modified except while loading
-        let dur = Math.abs(event.timeStamp - formInstance.attr('data-df-loaded'));
+        let dur = Math.abs(event.timeStamp - $formInstance.attr('data-df-loaded'));
         if (dur > 2000) {
             $(selector).attr('data-df-dirty', dur);
         }
     }
 
-    formInstance.on('change', ':input', monitorChanges);
-    formInstance.on('click', '[data-repeat-add], .remove-repeat', monitorChanges);
+    $formInstance.on('change', ':input', monitorChanges);
+    $formInstance.on('click', '[data-repeat-add], .remove-repeat', monitorChanges);
 
-    formInstance.submit(function () {
+    $formInstance.submit(function () {
         $(this).removeAttr('data-df-dirty'); // No warning when saving dirty form
         $("input[disabled]").removeAttr("disabled");
     });
@@ -506,7 +506,7 @@ function guardDirtyForm(selector) {
         $(this).addClass('activated');
     });
     $(window).bind('beforeunload', function () {
-        if ($("[data-df-dirty]").length) {
+        if ($formInstance.is("[data-df-dirty]")) {
             return 'The form contains unsaved changes.';
         }
     });

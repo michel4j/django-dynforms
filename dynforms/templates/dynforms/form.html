@@ -2,7 +2,8 @@
 {% load icons %}
 {% with form.get_validation as validation %}
     {% svg_sprites %}
-    <form id="df-form-instance" method="post" novalidate class="{% if form.form_type.help_bar %}extended-help{% endif %}">
+    <form id="df-form-instance" method="post" novalidate
+          class="{% if form.form_type.help_bar %}extended-help{% endif %}">
         <div class="df-form">
             {% with form.form_type.get_pages as form_pages %}
                 {% if form.form_type.header %}
@@ -19,21 +20,27 @@
                     <!-- Tab panes -->
                     <div class="tab-content">
                         {% for page in form_pages %}
-                            <div class="tab-pane {% if page.number == active_page %}active{% endif %}" id="page{{ page.number }}">
-                                <div class="df-container row">
-                                    {% with validation|page_errors:page.number as errors %}
-                                        {% if errors or form.errors %}
-                                            <div class="alert {% if form.errors %} alert-danger{% else %}alert-warning{% endif %} alert-dismissible">
-                                                <button class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
-                                                {% include 'dynforms/form-errors.html' %}
-                                            </div>
-                                        {% endif %}
-                                        {% for field in page.fields %}
-                                            <div class="df-field {{ field.width_styles }}">
-                                                {% include "dynforms/field.html" %}
-                                            </div>
-                                        {% endfor %}
-                                    {% endwith %}
+                            <div class="tab-pane {% if page.number == active_page %}active{% endif %}"
+                                 id="page{{ page.number }}">
+                                <div class="container-fluid">
+                                    <div class="df-container row">
+                                        {% with validation|page_errors:page.number as errors %}
+                                            {% if errors or form.errors %}
+                                                <div class="col-12">
+                                                    <div class="alert {% if form.errors %} alert-danger{% else %}alert-warning{% endif %} alert-dismissible">
+                                                        <button class="btn-close ms-auto" data-bs-dismiss="alert"
+                                                                aria-label="Close"></button>
+                                                        {% include 'dynforms/form-errors.html' %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% for field in page.fields %}
+                                                <div class="df-field {{ field.width_styles }}">
+                                                    {% include "dynforms/field.html" %}
+                                                </div>
+                                            {% endfor %}
+                                        {% endwith %}
+                                    </div>
                                 </div>
                             </div>
                         {% endfor %}
@@ -44,11 +51,12 @@
                     <div class="footer-progress">
                         <div class="d-flex flex-column align-items-stretch justify-content-center">
                             <div id="df-progress-text">
-                               {{ validation.progress|default:0 }}% complete
+                                {{ validation.progress|default:0 }}% complete
                             </div>
                             <div>
                                 <div class="progress" style="height: 0.75em;">
-                                    <div id="df-progress-bar" class="progress-bar {% if validation.progress < 99.5 %}bg-warning{% else %}bg-success{% endif %}"
+                                    <div id="df-progress-bar"
+                                         class="progress-bar {% if validation.progress < 99.5 %}bg-warning{% else %}bg-success{% endif %}"
                                          role="progressbar"
                                          aria-valuenow="{{ validation.progress }}"
                                          aria-valuemin="0" aria-valuemax="100"
@@ -76,7 +84,7 @@
         guardDirtyForm('#df-form-instance');
         const $form = $('#df-form-instance');
         $form.formProgress({
-            update: function(percentAll, percentRequired) {
+            update: function (percentAll, percentRequired) {
                 const progressBar = $('#df-progress-bar');
                 const progressText = $('#df-progress-text');
                 const submitButton = $('#df-form-instance input[value="submit"]');

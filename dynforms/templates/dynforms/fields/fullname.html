@@ -1,5 +1,6 @@
 {% load icons %}
-<div class="controls row {{repeatable}}" id="{{field.name}}-controls">
+<div class="controls {{repeatable}}" id="{{field.name}}-controls">
+    <div class="row">
 	    <div class="col-sm-3 mb-2 {% if 'floating' in field.options %}form-floating{% endif %} ">
 		    <input id="{{field.name}}-first_name" aria-label="First name"
                    placeholder="First name"
@@ -48,4 +49,5 @@
         <label for="{{field.name}}-other_names">Other names</label>
         {% endif %}
         </div>
+    </div>
 </div>

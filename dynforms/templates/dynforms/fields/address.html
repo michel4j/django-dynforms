@@ -9,7 +9,7 @@
                        name="{{ field.name }}.place" class="form-control" type="text" value="{{ data.place }}"
                 >
                 {% if field|show_sublabels %}
-                    <label for="{{ field.name }}-place">Institution / Department</label>
+                    <label for="{{ field.name }}-place" class="sub-label">Institution / Department</label>
                 {% endif %}
             </div>
         {% endif %}
@@ -20,7 +20,7 @@
                    class="form-control {{ required }}" type="text" value="{{ data.street }}"
             >
             {% if field|show_sublabels %}
-                <label for="{{ field.name }}-street">Street</label>
+                <label for="{{ field.name }}-street"  class="sub-label">Street</label>
             {% endif %}
         </div>
         <div class="col-sm-6 mb-2 {{ floating }}">
@@ -29,7 +29,7 @@
                    {% if  not field|show_sublabels %}placeholder="Country ..."{% endif %}
             >
             {% if field|show_sublabels %}
-                <label for="{{ field.name }}-country">Country</label>
+                <label for="{{ field.name }}-country" class="sub-label">Country</label>
             {% endif %}
         </div>
         <div class="col-sm-6 mb-2 {{floating}}">
@@ -39,7 +39,7 @@
                    {% if  not field|show_sublabels %}placeholder="Province/State/Region ..."{% endif %}
             >
             {% if field|show_sublabels %}
-                <label for="{{ field.name }}-region">Province / State / Region</label>
+                <label for="{{ field.name }}-region" class="sub-label">Province / State / Region</label>
             {% endif %}
         </div>
         <div class="col-sm-6 mb-2 {% if 'floating' in field.options %}form-floating{% endif %}">
@@ -50,7 +50,7 @@
                    class="form-control {{ required }}" type="text" value="{{ data.city }}"
             >
             {% if field|show_sublabels %}
-                <label for="{{ field.name }}-city">City</label>
+                <label for="{{ field.name }}-city" class="sub-label">City</label>
             {% endif %}
         </div>
         <div class="col-sm-6 mb-2 {% if 'floating' in field.options %}form-floating{% endif %}">
@@ -60,7 +60,7 @@
                    name="{{ field.name }}.code" class="form-control {{ required }}" type="text" value="{{ data.code }}"
             >
             {% if field|show_sublabels %}
-                <label for="{{ field.name }}-code">Postal / Zip Code</label>
+                <label for="{{ field.name }}-code" class="sub-label">Postal / Zip Code</label>
             {% endif %}
         </div>
     </div>

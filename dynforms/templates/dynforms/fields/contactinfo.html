@@ -1,20 +1,26 @@
 {% load dynforms %}
 {% load icons %}
 
-<div class="controls row {{ repeatable }}" id="{{ field.name }}-controls">
-    <div class="input-group col">
-        <div class="input-group-text">{% svg_icon "email" size="sm" %}</div>
-        <input type="tel" name="{{ field.name }}.email"
-               id="{{ field.name }}-email" class="form-control {{ required }}" aria-label="Email"
-               placeholder="Email"
-               value="{{ data.email }}">
-    </div>
-    <div class="input-group col">
-        <div class="input-group-text">{% svg_icon "phone" size="sm" %}</div>
-        <input type="tel" name="{{ field.name }}.phone"
-               id="{{ field.name }}-phone" class="form-control{{ required }}" aria-label="Phone"
-                placeholder="Phone"
-               value="{{ data.phone }}">
+<div class="controls {{ repeatable }}" id="{{ field.name }}-controls">
+    <div class="row">
+        <div class="field-group-item  col-sm-6 mb-2">
+            <div class="input-group">
+                <div class="input-group-text">{% svg_icon "email" size="sm" %}</div>
+                <input type="tel" name="{{ field.name }}.email"
+                       id="{{ field.name }}-email" class="form-control {{ required }}" aria-label="Email"
+                       placeholder="Email"
+                       value="{{ data.email }}">
+            </div>
+        </div>
+        <div class="field-group-item  col-sm-6 mb-2">
+            <div class="input-group ">
+                <div class="input-group-text">{% svg_icon "phone" size="sm" %}</div>
+                <input type="tel" name="{{ field.name }}.phone"
+                       id="{{ field.name }}-phone" class="form-control{{ required }}" aria-label="Phone"
+                       placeholder="Phone"
+                       value="{{ data.phone }}">
+            </div>
+        </div>
     </div>
 </div>
 

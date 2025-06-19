@@ -266,13 +266,24 @@ input[type=number] {
 }
 
 .control-label {
+  opacity: 0.8;
   font-weight: 500;
-  margin-top: 0.35em;
+  margin-top: 1em;
 
   &.required:after {
     content: "✱";
     color: var(--bs-danger);
   }
+}
+
+.sub-label {
+    font-size: 0.9em;
+    opacity: 0.8;
+}
+
+.control-label, .form-label, .sub-label {
+  color: var(--bs-primary-text-emphasis);
+  opacity: 0.8;
 }
 
 .control-description {

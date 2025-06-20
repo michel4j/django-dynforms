@@ -543,6 +543,7 @@ function guardDirtyForm(selector) {
 
         // Default options
         let settings = $.extend({
+            completionMode: 'all', // one of ['all', 'required'], default mode is 'all'
             update: null // Default update function is null
         }, options);
 

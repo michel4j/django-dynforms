@@ -286,6 +286,16 @@ input[type=number] {
   opacity: 0.8;
 }
 
+.field-group-item {
+  margin-bottom: 0.5rem;
+
+  &:hover {
+    .sub-label {
+      font-weight: bold;
+    }
+  }
+}
+
 .control-description {
   font-size: small;
   line-height: 1.48;
@@ -323,32 +333,6 @@ ul.nav-tabs.small-tabs {
 .control-instructions {
   display: none;
 }
-
-//.extended-help {
-//  .df-info {
-//    display: none !important;
-//  }
-//
-//  .df-field {
-//    .control-instructions {
-//      height: 100%;
-//      right: 0;
-//      position: fixed;
-//      table-layout: fixed;
-//      top: 0;
-//      width: 25%;
-//      z-index: 500;
-//      padding: 95px 18px 0 30px;
-//      display: none;
-//    }
-//  }
-//
-//  .df-field.activated {
-//    .control-instructions {
-//      display: block;
-//    }
-//  }
-//}
 
 .word-counter {
   padding: 0.5em;

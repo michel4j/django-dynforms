@@ -318,7 +318,7 @@ function doBuilderLoad() {
         setupMenuForm("#form-settings .df-menu-form");
         setupMenuForm("#field-settings .df-menu-form");
 
-        $(document).on('click', "button[data-page-number]", function (e) {
+        $(document).on('click', "button.delete-page", function (e) {
             let page_number = $(this).data('page-number');
             e.preventDefault();
             $.ajax(`${document.URL}${page_number}/del/`, {
@@ -330,9 +330,18 @@ function doBuilderLoad() {
                     dfToasts.success({
                         message: `Page ${page_number} Deleted!`
                     });
+                    window.location.reload();
+                },
+                error: function (xhr, status, error) {
+                    const message = xhr.responseJSON;
+                    if (message && message.error) {
+                        dfToasts.error({
+                            message: message.error,
+                            title: "Error deleting page!"
+                        });
+                    }
                 }
             });
-            window.location.reload();
         });
 
         $("#df-form-preview").addClass("loaded");

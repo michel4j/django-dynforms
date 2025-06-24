@@ -65,13 +65,13 @@
                             </div>
                         </div>
                     </div>
-                    <span class="footer-buttons">
-                {% for name, label in form.form_type.actions reversed %}
-                    <input type="submit" id="{{ name }}-action"
-                           class="btn {% if forloop.last %}btn-primary{% else %}btn-secondary{% endif %}"
-                           value="{{ label }}" name="{{ name }}">
-                {% endfor %}
-            </span>
+                    <div class="footer-buttons">
+                    {% for name, label in form.form_type.actions reversed %}
+                        <input type="submit" id="{{ name }}-action"
+                               class="btn {% if forloop.last %}btn-primary{% else %}btn-secondary{% endif %}"
+                               value="{{ label }}" name="{{ name }}">
+                    {% endfor %}
+                    </div>
                 </div>
             {% endwith %}
         </div>

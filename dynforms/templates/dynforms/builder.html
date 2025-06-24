@@ -91,6 +91,15 @@
                     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
                 });
             });
+            $("#df-sidebar").on('shown.bs.tab', 'a[data-bs-toggle="tab"]', function (e) {
+                const activeTab = $(e.target).attr('href');
+                localStorage.setItem('dfBuilderTab', activeTab);
+            })
+
+            $("#df-sidebar").ready(function(){
+                const activeTab = localStorage.getItem('dfBuilderTab') || '#add-field';
+                $(`a[href="${activeTab}"]`).tab('show');
+            });
         });
     </script>
 {% endblock %}

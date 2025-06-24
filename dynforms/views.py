@@ -231,15 +231,17 @@ class FormBuilder(*EDIT_MIXINS, UpdateView):
         return self.request.get_full_path()
 
 
-class DeletePageView(*EDIT_MIXINS, TemplateView):
-    template_name = "dynforms/edit-settings.html"
+class DeletePageView(*EDIT_MIXINS, View):
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def post(self, request, **kwargs):
         page = int(self.kwargs.get('page'))
-        form = FormType.objects.get(pk=self.kwargs.get('pk'))
-        form.remove_page(page)
-        return context
+        form_type = FormType.objects.get(pk=self.kwargs.get('pk'))
+        try:
+            form_type.remove_page(page)
+        except ValueError as e:
+            return JsonResponse({'error': str(e)}, status=400)
+
+        return JsonResponse({})
 
 
 class CreateFormType(SuccessMessageMixin, *EDIT_MIXINS, ModalCreateView):

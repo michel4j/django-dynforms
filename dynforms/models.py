@@ -2,6 +2,7 @@
 from collections import defaultdict
 from datetime import timedelta
 
+from django.contrib import messages
 from django.db import models
 from django.utils.translation import gettext as _
 from django.utils.safestring import mark_safe
@@ -37,6 +38,7 @@ class FormType(TimeStampedModel):
     description = models.TextField(null=True, blank=True)
     header = models.BooleanField(_("Show header"), default=False)
     help_bar = models.BooleanField(_("Show help bar"), default=False)
+    wizard = models.BooleanField(_("Wizard Mode"), default=False)
 
     pages = models.JSONField(default=default_pages, null=True, blank=True)
     actions = models.JSONField(default=default_actions, null=True, blank=True)
@@ -78,11 +80,17 @@ class FormType(TimeStampedModel):
             self.pages.pop()
         self.save()
 
-    def remove_page(self, page):
+    def remove_page(self, page: int):
+        """
+        Remove a page from the form type.
+        :param page: The index of the page to remove (1-based).
+        """
         pg = page - 1
         if len(self.pages[pg]['fields']) == 0:
             self.pages.pop(pg)
             self.save()
+        else:
+            raise ValueError(f"Cannot remove page {page} as it contains fields. Please remove fields first.")
 
     def get_page(self, page):
         if page < len(self.pages):

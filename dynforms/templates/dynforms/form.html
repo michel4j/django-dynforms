@@ -99,26 +99,33 @@
 
         const activePage = $(sel).data('page-number');
         const lastPage = $(sel).data('last-page');
-        const nextPage = Math.max(activePage + 1, lastPage);
-        const prevPage = Math.max(activePage - 1, 1);
+        const nextPage = activePage + 1;
+        const prevPage = activePage - 1;
 
+        $nextButton.data('target-page', nextPage);
+        $prevButton.data('target-page', prevPage);
         $progressPrefix.html(`Page ${activePage} of ${lastPage} &mdash; `);
 
+        // update the state of the next, previous and action buttons
         if (lastPage === 1) {
             $prevButton.hide();
             $nextButton.hide();
             $actionButtons.show();
-        } else if (activePage === 1) {
-            $prevButton.hide();
-            $nextButton.attr('data-target-page', `#df-page-${nextPage}`);
-            $nextButton.show();
-            $actionButtons.hide();
-        } else if (activePage === lastPage) {
-            $nextButton.hide();
-            $prevButton.attr('data-target-page', `#df-page-${prevPage}`);
-            $prevButton.show();
-            $actionButtons.show();
+        } else {
+            if (activePage === 1) {
+                $prevButton.hide();
+            } else {
+                $prevButton.show();
+            }
+            if (activePage === lastPage) {
+                $nextButton.hide();
+                $actionButtons.show();
+            } else {
+                $nextButton.show();
+                $actionButtons.hide();
+            }
         }
+
     }
 
     $(document).ready(function () {
@@ -160,15 +167,12 @@
         {% if form.form_type.wizard %}
             // manage page navigation buttons for wizard forms
             updateWizard(".nav-link[href='#df-page-{{active_page}}']");
-            $("#df-form-instance").on('shown.bs.tab', function (e) {
+            $form.on('shown.bs.tab', function (e) {
                 updateWizard(e.target);
             });
-            $("button.df-switch-page").on('click', function (e) {;
-                e.preventDefault();
+            $form.on('click', '.df-switch-page', function (e) {
                 const targetPage = $(this).data('target-page');
-                if (targetPage) {
-                    $('#df-form-instance .nav-link[href="' + targetPage + '"]').tab('show');
-                }
+                $(`.nav-link[href="#df-page-${targetPage}"]`).tab('show');
             });
         {% endif %}
     });

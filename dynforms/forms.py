@@ -212,14 +212,15 @@ class FormSettingsForm(forms.ModelForm):
     class Meta:
         model = models.FormType
         fields = (
-            'code', 'name', 'description', 'header', 'help_bar', 'page_names', 'actions', 'pages',
-            'action_names', 'action_labels'
+            'code', 'name', 'description', 'header', 'help_bar', 'wizard', 'page_names',
+            'actions', 'pages', 'action_names', 'action_labels'
         )
         widgets = {
             'code': forms.TextInput(attrs={'placeholder': 'Unique slug, e.g. "feedback-form"'}),
             'name': forms.TextInput(attrs={'placeholder': 'Human friendly name'}),
             'header': forms.CheckboxInput(),
             'help_bar': forms.CheckboxInput(),
+            'wizard': forms.CheckboxInput(),
             'description': forms.Textarea(
                 attrs={'rows': 4, 'placeholder': 'Please provide a description content.'}
             ),
@@ -237,7 +238,9 @@ class FormSettingsForm(forms.ModelForm):
                 Div('code', css_class='col-12'),
                 Div("name", css_class='col-12'),
                 Div("description", css_class='col-12'),
-                Div("header", css_class='col-6'), Div("help_bar", css_class='col-6'),
+                Div("header", css_class='col-4'),
+                Div("help_bar", css_class='col-4'),
+                Div("wizard", css_class='col-4'),
                 css_class="row"
             ),
             HTML(PAGES_TEMPLATE),

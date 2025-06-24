@@ -14,14 +14,14 @@
                     </div>
                 {% endif %}
                 <!-- Nav tabs -->
-                {% include "dynforms/form-tabs.html" %}
+                {% include "dynforms/form-tabs.html" with form_type=form.form_type %}
 
                 <div class="df-form-body">
                     <!-- Tab panes -->
                     <div class="tab-content">
                         {% for page in form_pages %}
                             <div class="tab-pane {% if page.number == active_page %}active{% endif %}"
-                                 id="page{{ page.number }}">
+                                 id="df-page-{{ page.number }}">
                                 <div class="container-fluid">
                                     <div class="df-container row">
                                         {% with validation|page_errors:page.number as errors %}
@@ -50,8 +50,9 @@
                 <div class="df-form-footer d-flex align-items-center">
                     <div class="footer-progress">
                         <div class="d-flex flex-column align-items-stretch justify-content-center">
-                            <div id="df-progress-text">
-                                {{ validation.progress|default:0 }}% complete
+                            <div>
+                                <span id="df-progress-prefix" class="text-body-secondary"></span>
+                                <span id="df-progress-text">{{ validation.progress|default:0 }}% complete</span>
                             </div>
                             <div>
                                 <div class="progress" style="height: 0.75em;">
@@ -66,9 +67,15 @@
                         </div>
                     </div>
                     <div class="footer-buttons">
+                    {% if form.form_type.wizard %}
+                        <button type="button" class="df-switch-page btn btn-secondary" id="df-form-prev-page"
+                                >{% svg_icon "chevron-left" size="md" %} Previous</button>
+                        <button type="button" class="df-switch-page btn btn-secondary" id="df-form-next-page"
+                                >Next {% svg_icon "chevron-right" size="md" %}</button>
+                    {% endif %}
                     {% for name, label in form.form_type.actions reversed %}
                         <input type="submit" id="{{ name }}-action"
-                               class="btn {% if forloop.last %}btn-primary{% else %}btn-secondary{% endif %}"
+                               class="df-action-btn btn {% if forloop.last %}btn-primary{% else %}btn-secondary{% endif %}"
                                value="{{ label }}" name="{{ name }}">
                     {% endfor %}
                     </div>
@@ -80,6 +87,40 @@
     </form>
 {% endwith %}
 <script>
+    function updateWizard(sel) {
+        // This function updates the visibility of the page navigation buttons for wizard forms.
+        // It checks the current active page and the last page, then shows or hides buttons accordingly.
+        // sel: the selector for the active form_tab, e.g., '#df-form-instance'
+
+        const $prevButton = $('#df-form-prev-page');
+        const $nextButton = $('#df-form-next-page');
+        const $actionButtons = $('.df-action-btn');
+        const $progressPrefix = $('#df-progress-prefix');
+
+        const activePage = $(sel).data('page-number');
+        const lastPage = $(sel).data('last-page');
+        const nextPage = Math.max(activePage + 1, lastPage);
+        const prevPage = Math.max(activePage - 1, 1);
+
+        $progressPrefix.html(`Page ${activePage} of ${lastPage} &mdash; `);
+
+        if (lastPage === 1) {
+            $prevButton.hide();
+            $nextButton.hide();
+            $actionButtons.show();
+        } else if (activePage === 1) {
+            $prevButton.hide();
+            $nextButton.attr('data-target-page', `#df-page-${nextPage}`);
+            $nextButton.show();
+            $actionButtons.hide();
+        } else if (activePage === lastPage) {
+            $nextButton.hide();
+            $prevButton.attr('data-target-page', `#df-page-${prevPage}`);
+            $prevButton.show();
+            $actionButtons.show();
+        }
+    }
+
     $(document).ready(function () {
         guardDirtyForm('#df-form-instance');
         const $form = $('#df-form-instance');
@@ -116,7 +157,20 @@
             $helpArea.html('');
             $helpArea.css('--df-help-offset', '0.5em');
         });
+        {% if form.form_type.wizard %}
+            // manage page navigation buttons for wizard forms
+            updateWizard(".nav-link[href='#df-page-{{active_page}}']");
+            $("#df-form-instance").on('shown.bs.tab', function (e) {
+                updateWizard(e.target);
+            });
+            $("button.df-switch-page").on('click', function (e) {;
+                e.preventDefault();
+                const targetPage = $(this).data('target-page');
+                if (targetPage) {
+                    $('#df-form-instance .nav-link[href="' + targetPage + '"]').tab('show');
+                }
+            });
+        {% endif %}
     });
-
 </script>
 {% include "dynforms/form-rules.html" with form_type=form.form_type %}

@@ -1,11 +1,12 @@
 {% load dynforms %}
 <!-- Nav tabs -->
 {% if form_pages|length > 1 %}
-    <ul class="df-form-tabs nav nav-tabs">
+    <ul class="df-form-tabs nav nav-tabs {% if form_type.wizard %}d-none{% endif %}">
         {% for page in form_pages %}
             <li class="nav-item">
-                <a href="#page{{ page.number }}"
+                <a href="#df-page-{{ page.number }}"
                    data-page-number="{{ page.number }}"
+                   data-last-page="{{ form_pages|length }}"
                    class="nav-link {% if page.number == active_page %}active{% endif %}"
                    {% if page.number == active_page %}aria-current="page" {% endif %}
                    data-bs-toggle="tab">{{ page.name }}

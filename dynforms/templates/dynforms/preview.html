@@ -14,7 +14,7 @@
         <ul class="nav nav-tabs" role="tablist">
             {% for page in form_pages %}
                 <li class="nav-item" >
-                    <a href="#page{{ page.number }}"
+                    <a href="#df-page-{{ page.number }}"
                        class="nav-link {% if page.number == active_page %}active{% endif %}"
                        data-bs-toggle="tab">{{ page.name }}
                     </a>
@@ -26,7 +26,7 @@
         <div class="tab-content" >
             {% for page in form_pages %}
                 <div class="tab-pane df-page {% if page.number == active_page %}active{% endif %}"
-                     id="page{{ page.number }}" data-page-number="{{ page.number }}">
+                     id="df-page-{{ page.number }}" data-page-number="{{ page.number }}">
                     <div class="df-container row sortable-list">
                         {% for field in page.fields %}
                             <div class="df-field {{ field.width_styles }}"
@@ -57,6 +57,12 @@
             {% include 'dynforms/warnings.html' %}
         </div>
         <div class="vr ms-auto"></div>
+        {% if form_type.wizard %}
+            <button disabled type="button" class="df-switch-page btn btn-outline-secondary" id="df-form-prev-page"
+                    >{% svg_icon "chevron-left" size="md" %} Previous</button>
+            <button disabled type="button" class="df-switch-page btn btn-outline-secondary" id="df-form-next-page"
+                    >Next {% svg_icon "chevron-right" size="md" %}</button>
+        {% endif %}
         {% for name, label in form_type.actions %}
             <button type="button" id="{{ name }}-action" disabled class="btn btn-outline-secondary disabled"
                     name="{{ name }}">{{ label }}

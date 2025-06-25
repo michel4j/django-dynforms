@@ -82,31 +82,42 @@ html, body {
     }
 
     .df-form-help {
-      --df-help-arrow-size: 1em;
+      --df-help-arrow-size: 1.25em;
       --df-help-bg: var(--bs-secondary-bg-subtle);
       --df-help-offset: 1em;
+      --df-help-border-width: 1px;
       position: relative;
       display: block;
       max-width: 50%;
       width: 25em;
-      border-left: 1px dotted var(--bs-border-color);
+      border-left: 1px solid var(--bs-border-color-translucent);
       background: var(--df-help-bg, var(--bs-info-bg-subtle));
 
-      &::before {
-        content: " ";
-        position: absolute;
-        left: calc(-1 * var(--df-help-arrow-size));
-        top: calc(var(--df-help-offset) - var(--df-help-arrow-size) / 2);
-        width: 0;
+      &::before, &::after {
+        right: 100%;
+        top: calc(var(--df-help-offset) + var(--df-help-arrow-size) / 2);
+        border: solid transparent;
+        content: "";
         height: 0;
-        border-top: var(--df-help-arrow-size) solid transparent;
-        border-bottom: var(--df-help-arrow-size) solid transparent;
-        border-right: var(--df-help-arrow-size) solid var(--df-help-bg);
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+      }
+
+      &::before {
+        border-right-color: var(--bs-border-color-translucent);
+        border-width: calc(var(--df-help-arrow-size) + var(--df-help-border-width));
+        margin-top: calc(-1 * var(--df-help-arrow-size) - var(--df-help-border-width));
+      }
+
+      &::after {
+        border-right-color: var(--df-help-bg);
+        border-width: var(--df-help-arrow-size);
+        margin-top: calc(-1 * var(--df-help-arrow-size));
       }
     }
   }
 }
-
 
 .df-form-footer {
   grid-area: form-footer;
@@ -277,8 +288,8 @@ input[type=number] {
 }
 
 .sub-label {
-    font-size: 0.9em;
-    opacity: 0.8;
+  font-size: 0.9em;
+  opacity: 0.8;
 }
 
 .control-label, .form-label, .sub-label {

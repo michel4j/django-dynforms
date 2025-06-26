@@ -197,7 +197,8 @@ function adjustFieldWidth(selector) {
 // Load the form builder
 function doBuilderLoad() {
     $('body').attr('data-df-builder', 'true');
-    if (!$('#df-form-preview').is('.loaded')) {
+    const $formPreview = $("#df-form-preview");
+    if (!$formPreview.is('.loaded')) {
 
         // Make items within each df-container sortable
         $(".df-container").sortable({
@@ -344,7 +345,7 @@ function doBuilderLoad() {
             });
         });
 
-        $("#df-form-preview").addClass("loaded");
+        $formPreview.addClass("loaded");
 
         // handle deleting fields
         $(document).on('click', '#field-settings #delete-field', function (e) {
@@ -422,10 +423,8 @@ function doBuilderLoad() {
                 }
             });
         });
-
     }
-
-};
+}
 
 
 function testRule(first, operator, second) {

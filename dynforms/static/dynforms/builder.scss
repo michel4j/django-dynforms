@@ -67,6 +67,9 @@ html, body {
     display: inherit;
     opacity: 0.3;
   }
+  .df-field > * {
+    pointer-events: none !important;
+  }
 }
 
 .tab-drop-hover::before {

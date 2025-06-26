@@ -61,27 +61,6 @@ a, a:hover, a:active, a:visited {
   text-decoration: none;
 }
 
-.selectize-input {
-  border: 1px solid var(--demo-border-color);
-  padding: .375rem;
-  display: inline-block;
-  width: 100%;
-  position: relative;
-  z-index: 1;
-  box-sizing: border-box;
-  box-shadow: none;
-  border-radius: var(--bs-border-radius);
-}
-
-.selectize-control.multi .selectize-input > div {
-  border-radius: var(--demo-border-radius);
-  border: 1px solid var(--demo-border-color);
-}
-
-.selectize-control.multi .selectize-input.has-items {
-  padding: calc(.375rem - 2px) .375rem calc(.375rem - 5px);
-}
-
 .page-pretitle {
   font-size: .8rem;
   font-weight: 400;

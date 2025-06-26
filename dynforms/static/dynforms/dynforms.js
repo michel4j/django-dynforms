@@ -1,10 +1,11 @@
 function createMultiSelect(selector) {
-    let sel = $(selector);
-    sel.selectize({plugins: ['remove_button'],});
+    new SlimSelect({
+        select: selector
+    });
 }
 
 function destroyMultiSelect(selector) {
-    $(selector).selectize('destroy');
+    $(selector).slim.destroy();
 }
 
 

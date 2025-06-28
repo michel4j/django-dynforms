@@ -8,7 +8,7 @@ license = "MIT"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "django (>=4.2.20,<6.0.0)",
+    "django (==5.2.3)",
     "django-crisp-modals (>=2025.5.7,<2026.0.0)",
     "django-itemlist (>=2025.3.11,<2026.0.0)",
     "pyparsing (>=3.2.1,<4.0.0)",

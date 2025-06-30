@@ -107,8 +107,9 @@
 			if (!('vibrate' in navigator)) settings.vibrate = false;
 
 			if (typeof options == 'string') {
-				if (!$(this).parent().hasClass('clock-timepicker')) console.log('%c[jquery-clock-timepicker] Before calling a function, please initialize the ClockTimePicker!', 'color:red');
-				else {
+				if (!$(this).parent().hasClass('clock-timepicker')) {
+					console.log('%c[jquery-clock-timepicker] Before calling a function, please initialize the ClockTimePicker!', 'color:red');
+				} else {
 					options = options.toLowerCase();
 					if (options == 'dispose') disposeTimePicker($(this));
 					else if (options == 'value' || options == 'val') {
@@ -123,7 +124,9 @@
 						$(this).parent().find('.clock-timepicker-popup').css('display', 'none');
 						$(this).blur();
 					}
-					else console.log('%c[jquery-clock-timepicker] Invalid option passed to clockTimePicker: ' + options, 'color:red');
+					else {
+						console.log('%c[jquery-clock-timepicker] Invalid option passed to clockTimePicker: ' + options, 'color:red');
+					}
 				}
 				return;
 			} else {

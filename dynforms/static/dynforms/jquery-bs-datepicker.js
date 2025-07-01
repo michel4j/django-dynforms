@@ -34,9 +34,9 @@
                     titleText = `${startYear} - ${startYear + 19}`;
                     titleDataAction = 'noop'; // No further drill-up from years view title
                 }
-                return `<button type="button" class="btn btn-link btn-sm p-0 dp-action" data-action="prev" aria-label="Previous">${leftArrow}</button>
+                return `<button type="button" class="btn btn-link btn-sm px-2 py-1 dp-action" data-action="prev" aria-label="Previous">${leftArrow}</button>
                         <span class="dp-nav-title dp-action" data-action="${titleDataAction}">${titleText}</span>
-                        <button type="button" class="btn btn-link btn-sm p-0 dp-action" data-action="next" aria-label="Next">${rightArrow}</button>`;
+                        <button type="button" class="btn btn-link btn-sm px-2 py-1 dp-action" data-action="next" aria-label="Next">${rightArrow}</button>`;
             }
 
             // Generates the HTML for the calendar grid (days, months, or years)

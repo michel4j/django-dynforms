@@ -251,10 +251,11 @@
                     }
                 });
 
-                // Close popover if user clicks outside of it.
+                // Close popover if a user clicks outside of it.
                 $(document).on('click', function(e) {
                     const popoverTip = document.getElementById($input.attr('aria-describedby'));
                     if (popoverTip && !$(popoverTip).is(e.target) && !$.contains(popoverTip, e.target) && !$(e.target).is($input)) {
+                        console.log('closing date popover');
                         popover.hide();
                     }
                 });

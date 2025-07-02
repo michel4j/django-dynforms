@@ -98,7 +98,7 @@ class CheckBoxes(StandardMixin, FieldType):
 class DropDown(MultipleChoice):
     name = _("Dropdown")
     icon = "dropdown"
-    options = ['required', 'randomize', 'inline', 'hide', 'multiple']
+    options = ['required', 'randomize', 'inline', 'hide', 'multiple', 'repeat']
     settings = ['choices']
 
 

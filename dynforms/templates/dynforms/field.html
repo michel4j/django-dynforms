@@ -1,5 +1,6 @@
 {% load dynforms %}
 {% load icons %}
+{% spaceless %}
 <div id="{{ field.name }}-group" data-field-width="{{ field.width_styles }}"
      class="form-group w-100 {{ field.hide_styles }} {{ field.extra_styles }}">
         {% if field.field_type != 'newsection' %}
@@ -21,18 +22,16 @@
                     <strong class="flex-grow-1 ps-2">{{ field.label }}</strong>
                 </div>
                 <hr class="hr-xs"/>
-                <span class="text-body-secondary">
-                {{ field.instructions|markdown }}
-            </span>
+                <span class="text-body-secondary">{{ field.instructions|markdown }}</span>
             </div>
         {% endif %}
 
         {% if field.is_repeatable %}
             {% render_field field repeatable=True %}
-            <button data-repeat-add=".{{ field.name }}-repeatable"
-                    class="btn btn-success ms-auto mt-2" title="Add {{ field.label }}"
-                    name="add" type="button">{% svg_icon "plus" size="xs" %}
-            </button>
+                <button data-repeat-add=".{{ field.name }}-repeatable"
+                        class="btn btn-success btn-sm ms-auto mt-2" title="Add {{ field.label }}"
+                        name="add" type="button">{% svg_icon "plus" size="xs" %}
+                </button>
         {% else %}
             {% render_field field %}
         {% endif %}
@@ -40,7 +39,10 @@
 <script>
     $(document).ready(function () {
         {% if "repeat" in field.options %}
-            $('#{{field.name}}-group button[data-repeat-add]').repeatable();
+            $('#{{field.name}}-group button[data-repeat-add]').repeatable({
+                maxRepeats: {{ field.get_max_repeat }}
+            });
         {% endif %}
     });
 </script>
+{% endspaceless %}

@@ -5,127 +5,151 @@ function createMultiSelect(selector) {
 }
 
 function destroyMultiSelect(selector) {
-    $(selector).slim.destroy();
+    let element = $(selector)[0];
+    if (element.slim) {
+        element.slim.destroy();
+    }
+}
+
+function clearInputs(selector) {
+    $(selector).find(':input').each(function () {
+        if ($(this).is('select[multiple]')) {
+            destroyMultiSelect(this);
+            $(this).val([]).trigger('change');
+            createMultiSelect(this);
+        } else if ($(this).is(':checkbox, :radio')) {
+            $(this).prop('checked', false);
+        } else {
+            $(this).val('');
+        }
+    });
 }
 
 
-// Handle Repeats
 (function ($) {
-    $.fn.extend({
-        repeatable: function (options) {
-            options = $.extend({}, $.repeatable.defaults, options);
-            this.each(function () {
-                new $.repeatable(this, options);
-            });
-            return this;
-        }
-    });
+    $.fn.repeatable = function (parameters) {
 
-    // ctl is the element, options is the set of defaults + user options
-    $.repeatable = function (ctl, options) {
+        // Default options
+        let options = $.extend({
+            remove: ".remove-repeat",
+            clearIfLast: true,
+            clearNew: true,
+            maxRepeats: 0
+        }, parameters);
 
-        let rp_sel = $(ctl).data("repeat-add");
-        let all_rp = $(ctl).siblings(rp_sel);
-        let all_rp_rm = all_rp.find(options.remove);
+        // Iterate over each form selected by the jQuery object
+        return this.each(function () {
+            const $control = $(this);
+            const repeatSelector = $control.data("repeat-add");
+            let $allRepeats = $control.siblings(repeatSelector);
+            let $removeButtons = $allRepeats.find(options.remove);
 
-        function updateRepeat(section) {
-
-            section.find('.repeat-html-index').each(function () {
-                $(this).html(section.index());
-            });
-            section.find('.repeat-value-index').each(function () {
-                $(this).attr('value', section.index());
-            });
-            section.find('[data-repeat-index]').each(function () {
-                $(this).attr('data-repeat-index', section.index());
-            });
-            section.find(':input').each(function () {
-                $(this).attr('id', $(this).attr('id') + "_" + section.index());
-            });
-            section.find('label').each(function () {
-                let lbl = $(this);
-                if (lbl.attr('for')) {
-                    lbl.attr('for', lbl.attr('for') + "_" + section.index());
-                }
-            });
-            section.attr('id', section.attr('id') + "_" + section.index())
-
-            all_rp = $(ctl).siblings(rp_sel);
-
-            all_rp_rm = all_rp.find(options.remove);
-
-            if (all_rp.length > 1) {
-                all_rp_rm.removeAttr("disabled");
-            } else {
-                all_rp_rm.attr("disabled", "disabled");
-            }
-
-            // rename multivalued field names so values are kept separate
-            all_rp.each(function (idx, obj) {
-                $(this).find("[data-repeat-name]").each(function () {
-                    $(this).attr("name", $(this).data("repeat-name") + "." + idx);
+            function updateRepeat($section, index) {
+                $section.find('.repeat-html-index').each(function () {
+                    $(this).html(index);
                 });
-            });
-        }
+                $section.find('.repeat-value-index').each(function () {
+                    $(this).attr('value', index);
+                });
+                $section.find('[data-repeat-index]').each(function () {
+                    $(this).attr('data-repeat-index', index);
+                });
+                $section.find(':input').each(function () {
+                    if ($(this).attr('id')) {
+                        let idParts = $(this).attr('id').split('--');
+                        $(this).attr('id', `${idParts.at(0)}--${index}`);
+                    }
+                });
+                $section.find('label').each(function () {
+                    let $label = $(this);
+                    if ($label.attr('for')) {
+                        if ($label.attr('for')) {
+                            let idParts = $label.attr('for').split('--');
+                            $label.attr('for', `${idParts.at(0)}--${index}`);
+                        }
+                    }
+                });
+                let idParts = $section.attr('id').split('--');
+                $section.attr('id', `${idParts.at(0)}--${index}`)
+                $allRepeats = $($control).siblings(repeatSelector);
 
-        $(ctl).click(function (e) {
-            let rp_el = all_rp.last();
-            let cloned = rp_el.clone(true);
-            cloned.insertAfter(rp_el);
-            if (options.clearNew) {
+                $removeButtons = $allRepeats.find(options.remove);
+                if ($allRepeats.length > 1) {
+                    $removeButtons.removeAttr("disabled");
+                } else {
+                    $removeButtons.attr("disabled", "disabled");
+                }
 
+                if (options.maxRepeats && ($allRepeats.length >= options.maxRepeats)) {
+                    $control.attr("disabled", "disabled");
+                } else {
+                    $control.removeAttr("disabled");
+                }
+
+                // rename multivalued field names so values are kept separate
+                $allRepeats.each(function (idx, obj) {
+                    $(this).find("[data-repeat-name]").each(function () {
+                        $(this).attr("name", $(this).data("repeat-name") + "." + idx);
+                    });
+                });
             }
-            updateRepeat(cloned);
-            // reset select fields
-            cloned.find("select option").removeAttr('selected');
-            cloned.find("select").each(function () {
-                $(this).val('');
-                $(this).trigger('change')
-            });
-        });
 
-        all_rp_rm.each(function () {
-            $(this).click(function (e) {
-                let del_el = $(this).closest(rp_sel);
-                let others = del_el.siblings(rp_sel);
+            $control.click(function (e) {
+                let $targetElement = $allRepeats.last();
+                if (options.maxRepeats && $allRepeats.length >= options.maxRepeats) {
+                    dfToasts.error({
+                        message: `Maximum number of items is ${options.maxRepeats}!`,
+                        title: "Error adding item!"
+                    });
+                    return;
+                }
+                $targetElement.find("select[multiple]").each(function () {
+                    destroyMultiSelect(this);
+                });
+                let $cloned = $targetElement.clone(false);
+                $targetElement.find("select[multiple]").each(function () {
+                    createMultiSelect(this);
+                });
+                if (options.clearNew) {
+                    clearInputs($cloned[0])
+                }
+                let repeatIndex = $allRepeats.length;
+                $cloned.insertAfter($targetElement);
+                updateRepeat($cloned, repeatIndex);
+            });
+
+            $(document).on('click', `${repeatSelector} ${options.remove}`, function (e) {
+                let $toDelete = $(this).closest(repeatSelector);
+                let others = $toDelete.siblings(repeatSelector);
                 if (others.length > 0) {
-                    del_el.slideUp('fast', function () {
-                        del_el.remove();
-                        others.each(function () {
-                            updateRepeat($(this));
+                    $toDelete.slideUp('fast', function () {
+                        $toDelete.remove();
+                        others.each(function (index, obj) {
+                            updateRepeat($(this), index);
                         });
                     });
                 } else if (options.clearIfLast) {
-                    del_el.find(":input").each(function () {
+                    $toDelete.find(":input").each(function () {
                         $(this).val('').removeAttr('checked').removeAttr('selected');
                     })
                 }
-                ;
+            });
+
+            if ($allRepeats.length > 1) {
+                $removeButtons.removeAttr("disabled");
+            } else {
+                $removeButtons.attr("disabled", "disabled");
+            }
+
+            // Keep multivalued fields separate, by renaming them, __# can be stripped when cleaning
+            // the data
+            $allRepeats.each(function (idx, obj) {
+                $(obj).find("select[multiple]:not([data-repeat-name])").each(function () {
+                    $(this).data("repeat-name", $(this).attr("name"));
+                    $(this).attr("name", $(this).data("repeat-name") + "__" + idx);
+                });
             });
         });
-
-        if (all_rp.length > 1) {
-            all_rp_rm.removeAttr("disabled");
-        } else {
-            all_rp_rm.attr("disabled", "disabled");
-        }
-
-        // Keep multivalued fields separate, by renaming them, __# can be stripped when cleaning
-        // the data
-        all_rp.each(function (idx, obj) {
-            $(obj).find("select[multiple]:not([data-repeat-name])").each(function () {
-                $(this).data("repeat-name", $(this).attr("name"));
-                $(this).attr("name", $(this).data("repeat-name") + "." + idx);
-            });
-        });
-
-    };
-
-    // option defaults
-    $.repeatable.defaults = {
-        remove: ".remove-repeat",
-        clearIfLast: true,
-        clearNew: true
     };
 })(jQuery);
 
@@ -590,7 +614,7 @@ function guardDirtyForm(selector) {
                         } else if ($field.is('input[type="text"], input[type="password"], input[type="email"], input[type="tel"], input[type="url"], input[type="number"], textarea')) {
                             // For text-based inputs and text areas, check if they have a value
                             fieldValue = $field.val() ? $field.val().trim() : "";
-                        } else  if ($field.is('select')) {
+                        } else if ($field.is('select')) {
                             // For select elements, check if a value is selected
                             fieldValue = $field.val() ? `${$field.val()}`.trim() : ""; // Get the trimmed value of the selected option
                         }

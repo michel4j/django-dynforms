@@ -63,7 +63,7 @@ OPTION_TYPE = Literal[
     'required', 'randomize', 'hide', 'inline', 'other', 'counter', 'switch', 'floating', 'repeat', 'no-label'
 ]
 
-SETTING_TYPE = Literal['size', 'choices', 'minimum', 'maximum', 'units', 'default']
+SETTING_TYPE = Literal['size', 'choices', 'minimum', 'maximum', 'units', 'default', 'max_repeat']
 SIZE_TYPE = Literal['medium', 'small', 'large']
 UNITS_TYPE = Literal['chars', 'words', 'value', 'digits']
 

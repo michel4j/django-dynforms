@@ -1,5 +1,6 @@
 {% load dynforms %}
 {% load icons %}
+{% load static %}
 {% with form.get_validation as validation %}
     {% svg_sprites %}
     <form id="df-form-instance" method="post" novalidate
@@ -86,6 +87,7 @@
         <input id="active-page-input" type='hidden' name='active_page' value='{{ active_page }}'/>
     </form>
 {% endwith %}
+<script src="{% static 'dynforms/df-toasts.min.js' %}" defer></script>
 <script>
     function updateWizard(sel) {
         // This function updates the visibility of the page navigation buttons for wizard forms.

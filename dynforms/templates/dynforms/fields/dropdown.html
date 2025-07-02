@@ -1,11 +1,21 @@
 {% load dynforms %}
-<div class="controls {{repeatable}}" id="{{field.name}}-controls">
-   <select name="{{field.name}}" id="{{field.name}}" class="form-select{% if 'multiple' in field.options %}-multiple{% endif %} {{ required }}" aria-label="{{ field.label }}" {% if 'multiple' in field.options %}multiple{% endif %}>
-       {% if not 'multiple' in field.options %}<option {% if 'required' in field.options %}disabled{% else %}value=""{% endif %} {% if not data %}selected{% endif %}></option>{% endif %}
-        {% for choice in field|group_choices:data|randomize_choices:field %}
-           <option value="{{choice.value}}" {% if choice.selected %}selected="selected"{% endif %} >{{choice.label}}</option>
-       {% endfor %}
-   </select>
+{% load icons %}
+<div class="controls row {{repeatable}}" id="{{field.name}}-controls">
+    <div class="field-group-item col">
+       <select name="{{field.name}}" id="{{field.name}}" class="form-select{% if 'multiple' in field.options %}-multiple{% endif %} {{ required }}" aria-label="{{ field.label }}" {% if 'multiple' in field.options %}multiple{% endif %}>
+           {% if not 'multiple' in field.options %}<option {% if 'required' in field.options %}disabled{% else %}value=""{% endif %} {% if not data %}selected{% endif %}></option>{% endif %}
+            {% for choice in field|group_choices:data|randomize_choices:field %}
+               <option value="{{choice.value}}" {% if choice.selected %}selected="selected"{% endif %} >{{choice.label}}</option>
+           {% endfor %}
+       </select>
+    </div>
+    {% if "repeat" in field.options %}
+    <div class="field-group-item col-auto">
+        <button type="button" title="Remove {{ field.label }}" class="btn btn-danger remove-repeat">
+            {% svg_icon "x" size="xs" %}
+        </button>
+    </div>
+    {% endif %}
 </div>
 {% if 'multiple' in field.options %}
 <script>

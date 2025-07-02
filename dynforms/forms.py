@@ -49,6 +49,7 @@ FIELD_SETTINGS = {
     'instructions': (forms.CharField, {'label': _("Instructions"), 'widget': forms.Textarea(attrs={'rows': 2})}),
     'tags': (forms.CharField, {'label': _("Style tags")}),
     'size': (forms.ChoiceField, {'label': _("Size")}),
+    'max_repeat': (forms.IntegerField, {'label': _("Max Repeat"), 'required': False}),
     'width': (forms.ChoiceField, {'label': _("Width")}),
     'options': (forms.MultipleChoiceField, {'label': _("Options"), 'widget': forms.CheckboxSelectMultiple}),
     'minimum': (forms.IntegerField, {'label': _("Min")}),
@@ -99,19 +100,23 @@ class FieldSettingsForm(forms.Form):
             Field('instructions', rows=2)
         )
 
+        if field_type.options:
+            self.add_custom_field('options', choices=field_type.get_choices('options'))
+            fieldset.append(InlineCheckboxes('options'))
+
         row = Div(
-            Div(Field('width', css_class='select'), css_class='col'),
+            Div('width', css_class='col'),
             css_class="row"
         )
+        if 'repeat' in field_type.options:
+            self.add_custom_field('max_repeat', min_value=1)
+            row.append(Div('max_repeat', css_class='col'))
+
         if 'size' in field_type.settings:
             self.add_custom_field('size', choices=field_type.get_choices('size'))
             row.append(Div(Field('size', css_class='select'), css_class='col'))
 
         fieldset.append(row)
-
-        if field_type.options:
-            self.add_custom_field('options', choices=field_type.get_choices('options'))
-            fieldset.append(InlineCheckboxes('options'))
 
         if {'minimum', 'maximum', 'units'} & set(field_type.settings):
             self.add_custom_field('minimum')

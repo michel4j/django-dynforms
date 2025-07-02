@@ -7,7 +7,13 @@ var dfToasts = {
         return template.content.firstChild;
     },
     show: function (params) {
-        const dfToastContainer = document.getElementById("toast-container");
+        let dfToastContainer = document.getElementById("toast-container");
+        if (!dfToastContainer) {
+            dfToastContainer = document.createElement("div");
+            dfToastContainer.id = "toast-container";
+            dfToastContainer.className = "position-fixed bottom-0 end-0 p-3";
+            document.body.appendChild(dfToastContainer);
+        }
         let defaults = {
             theme: "light",     // default theme, can be "light" or "dark"
             color: "light",     // default background color, can be "light", "primary", "secondary", etc

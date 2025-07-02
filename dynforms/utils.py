@@ -378,6 +378,16 @@ class FormField:
             'auto': 'col-auto',
         }.get(width, 'col-12')
 
+    def get_max_repeat(self):
+        """
+        Returns the maximum number of times this field can be repeated.
+        If 'repeat' is not in options, returns 1.
+        """
+        print(self.attrs)
+        if 'repeat' in self.options:
+            return self.attrs.get('max_repeat', 0)
+        return 0
+
     def hide_styles(self):
         return 'df-hide' if 'hide' in self.options else ''
 
@@ -422,26 +432,6 @@ class FormField:
 
         value = form.initial.get(self.name, default)
         return '' if value is None else value
-
-    def get_choice_data(self):
-        """
-        Get the choice data for this field, if applicable.
-        """
-        defaults = self.get_data(context)
-        if not defaults:
-            defaults = field.get('default', [])
-        if field.get('values') and field.get('choices'):
-            choices = list(zip(field['choices'], field['values']))
-        elif field.get('choices'):
-            choices = list(zip(field['choices'], field['choices']))
-        else:
-            choices = []
-        ch = [{
-            'label': l,
-            'value': l if v is None else v,
-            'selected': v in defaults or v == defaults
-        } for l, v in choices]
-        return ch
 
 
 class FormPage:

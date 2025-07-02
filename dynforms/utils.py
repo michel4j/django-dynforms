@@ -383,7 +383,6 @@ class FormField:
         Returns the maximum number of times this field can be repeated.
         If 'repeat' is not in options, returns 1.
         """
-        print(self.attrs)
         if 'repeat' in self.options:
             return self.attrs.get('max_repeat', 0)
         return 0

@@ -146,7 +146,7 @@ function clearInputs(selector) {
             $allRepeats.each(function (idx, obj) {
                 $(obj).find("select[multiple]:not([data-repeat-name])").each(function () {
                     $(this).data("repeat-name", $(this).attr("name"));
-                    $(this).attr("name", $(this).data("repeat-name") + "__" + idx);
+                    $(this).attr("name", $(this).data("repeat-name") + "." + idx);
                 });
             });
         });

@@ -17,6 +17,8 @@ function clearInputs(selector) {
             destroyMultiSelect(this);
             $(this).val([]).trigger('change');
             createMultiSelect(this);
+        }else if ($(this).is('select')) {
+            $(this).find('option[disabled]').removeAttr('disabled');
         } else if ($(this).is(':checkbox, :radio')) {
             $(this).prop('checked', false);
         } else {

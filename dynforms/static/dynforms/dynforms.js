@@ -19,6 +19,7 @@ function clearInputs(selector) {
             createMultiSelect(this);
         }else if ($(this).is('select')) {
             $(this).find('option[disabled]').removeAttr('disabled');
+            $(this).val('').trigger('change');
         } else if ($(this).is(':checkbox, :radio')) {
             $(this).prop('checked', false);
         } else {
@@ -113,7 +114,10 @@ function clearInputs(selector) {
                     createMultiSelect(this);
                 });
                 if (options.clearNew) {
-                    clearInputs($cloned[0])
+                    clearInputs($cloned[0]);
+                    $cloned.find('.repeat-html-clear').each(function () {
+                        $(this).html('');
+                    });
                 }
                 let repeatIndex = $allRepeats.length;
                 $cloned.insertAfter($targetElement);

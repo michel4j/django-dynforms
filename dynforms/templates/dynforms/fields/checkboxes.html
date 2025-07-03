@@ -1,5 +1,5 @@
 {% load dynforms %}
-<div class="controls {{repeatable}}" id="{{field.name}}-controls">
+<div class="controls" id="{{field.name}}__controls" data-repeat-name="{{ repeat_name }}__controls">
 	{% for choice in field|group_choices:data|randomize_choices:field %}
         <div class="form-check {% if 'switch' in field.options %}form-switch{% endif %} {% if 'inline' in field.options %}form-check-inline{% endif %}">
             <input name="{{field.name}}" id="{{field.name}}_{{forloop.counter}}" class="form-check-input {{ required }}"

@@ -1,13 +1,14 @@
 {% load dynforms %}
 {% load icons %}
 
-<div class="controls {{ repeatable }}" id="{{ field.name }}-controls">
+<div class="controls {{ repeatable }}" id="{{ field.name }}__controls" data-repeat-name="{{ repeat_name }}__controls">
     <div class="row">
         <div class="field-group-item  col-sm-6 mb-2">
             <div class="input-group">
                 <div class="input-group-text">{% svg_icon "email" size="sm" %}</div>
-                <input type="tel" name="{{ field.name }}.email"
-                       id="{{ field.name }}-email" class="form-control {{ required }}" aria-label="Email"
+                <input type="email" name="{{ field.name }}__email"
+                       data-repeat-name="{{ repeat_name }}__email"
+                       id="{{ field.name }}__email" class="form-control {{ required }}" aria-label="Email"
                        placeholder="Email"
                        value="{{ data.email }}">
             </div>
@@ -15,10 +16,16 @@
         <div class="field-group-item  col-sm-6 mb-2">
             <div class="input-group ">
                 <div class="input-group-text">{% svg_icon "phone" size="sm" %}</div>
-                <input type="tel" name="{{ field.name }}.phone"
-                       id="{{ field.name }}-phone" class="form-control{{ required }}" aria-label="Phone"
+                <input type="tel" name="{{ field.name }}__phone"
+                       data-repeat-name="{{ repeat_name }}__phone"
+                       id="{{ field.name }}__phone" class="form-control{{ required }}" aria-label="Phone"
                        placeholder="Phone"
                        value="{{ data.phone }}">
+                {% if "repeat" in field.options %}
+                    <button type="button" class="btn btn-danger remove-repeat" title="Remove item">
+                        {% svg_icon "x" size="sm" %}
+                    </button>
+                {% endif %}
             </div>
         </div>
     </div>

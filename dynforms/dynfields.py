@@ -31,7 +31,7 @@ class SingleLineText(StandardMixin, FieldType):
 class ParagraphText(SingleLineText):
     name = _("Paragraph")
     icon = "paragraph"
-    options = ['hide', 'required', 'repeat', 'counter']
+    options = ['hide', 'required', 'counter']
     settings = ['size', 'minimum', 'maximum', 'units', 'default']
 
 
@@ -118,7 +118,7 @@ class Time(SingleLineText):
     name = _("Time")
     icon = "clock"
     settings = []
-    options = ['hide', 'required', 'repeat', 'no-label']
+    options = ['hide', 'required', 'no-label']
 
 
 class Email(SingleLineText):

@@ -1,8 +1,16 @@
 {% load icons %}
-<div class="controls input-group {% if 'floating' in field.options %}form-floating{% endif %} {{repeatable}}" id="{{field.name}}-controls">
+<div class="controls input-group {% if 'floating' in field.options %}form-floating{% endif %} {{ repeatable }}"
+     id="{{ field.name }}__controls" data-repeat-name="{{ repeat_name }}__controls">
     <span class="input-group-text">{% svg_icon "mail" size="sm" %}</span>
-    <input type="email" aria-label="{{ field.label }}" name="{{field.name}}" id="{{field.name}}" class="form-control {{ required }}" value="{{data}}">
+    <input type="email" aria-label="{{ field.label }}" name="{{ field.name }}" id="{{ field.name }}"
+           class="form-control {{ required }}" value="{{ data }}"
+           data-repeat-name="{{ repeat_name }}"
+    >
     {% if 'floating' in field.options %}
-    <label for="{{field.name}}">{{ field.label }}</label>
+        <label for="{{ field.name }}" data-repeat-for="{{ repeat_name }}">{{ field.label }}</label>
+    {% elif 'repeat' in field.options %}
+        <button type="button" class="btn btn-danger remove-repeat" title="Remove item">
+            {% svg_icon "x" size="sm" %}
+        </button>
     {% endif %}
 </div>	

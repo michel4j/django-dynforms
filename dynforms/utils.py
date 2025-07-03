@@ -1,5 +1,6 @@
 import itertools
 import operator
+import re
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -111,7 +112,7 @@ class DotExpandedDict(dict):
         super().__init__()
         for k, v in list(key_to_list_mapping.items()):
             current = self
-            bits = k.split('.') if '.' in k else k.split('__')
+            bits = re.split(rf'\.|{FIELD_SEPARATOR}', k)
             for bit in bits[:-1]:
                 current = current.setdefault(bit, {})
             # Now assign value to current position
@@ -351,9 +352,9 @@ class FormField:
         self.attrs = attrs
         self.options = options or []
 
-    def specs(self):
+    def specs(self, repeatable=False, index=0):
         return {
-            'name': self.name,
+            'name': self.name if not repeatable else f"{self.name}{FIELD_SEPARATOR}{index}",
             'index': self.index,
             'field_type': self.field_type,
             'label': self.label,
@@ -383,9 +384,9 @@ class FormField:
         Returns the maximum number of times this field can be repeated.
         If 'repeat' is not in options, returns 1.
         """
-        if 'repeat' in self.options:
-            return self.attrs.get('max_repeat', 0)
-        return 0
+        if not self.is_repeatable() or self.attrs.get('max_repeat', None) is None:
+            return 0
+        return self.attrs.get('max_repeat', 0)
 
     def hide_styles(self):
         return 'df-hide' if 'hide' in self.options else ''

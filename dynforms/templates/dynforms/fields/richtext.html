@@ -1,5 +1,5 @@
 {% load static %}
-<div class="controls {{repeatable}}" id="{{field.name}}-controls">
+<div class="controls {{repeatable}}" id="{{field.name}}__controls">
        <textarea cols="40" name="{{field.name}}" id="{{field.name}}"  aria-label="{{ field.label }}"
        		rows="{% if field.size == 'large' %}20{% elif field.size == 'medium' %}10{% else %}5{% endif %}"
        		class="textarea form-control rich-text-input {{ required }}">{{data}}</textarea>
@@ -10,7 +10,7 @@
 <script src="https://cdn.jsdelivr.net/npm/jquery-word-and-character-counter-plugin@2.5.1/jquery.word-and-character-counter.min.js" integrity="sha256-R3xsjghNyf1dhYHTuhD00fb0tJ5fD9x5T8RODwID5X8=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.27.3/plugins/mathml/trumbowyg.mathml.min.js" integrity="sha512-7rcet/E130H48MXwETMC+N8H/gOTF16eqqUQS9+nTE4vR4myIZgf4gLGr39nRa1xr5yzSY9mZBe1BzytXJLzPQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
-$('#{{field.name}}-controls .rich-text-input').trumbowyg({
+$('#{{field.name}}__controls .rich-text-input').trumbowyg({
     resetCss: true,
     removeformatPasted: true,
     fullscreenable: false,
@@ -41,13 +41,12 @@ $('#{{field.name}}-controls .rich-text-input').trumbowyg({
         ['viewHTML']
     ]
 
-}).on('tbwchange', function () {
-    let text = $(this).trumbowyg('html');
-	$(this).html(text).trigger('change');
+}).on('tbwpaste', function () {
+    $(this).trigger('tbwchange');
 });
 
 {% if "counter" in field.options %}
-$('#{{field.name}}-controls .trumbowyg-editor').counter({ // this is a class from the div with contenteditable="true"
+$('#{{field.name}}__controls .trumbowyg-editor').counter({ // this is a class from the div with contenteditable="true"
 	type: 'word',
 	goal: {{field.maximum|default:10000}},
     count: 'up',

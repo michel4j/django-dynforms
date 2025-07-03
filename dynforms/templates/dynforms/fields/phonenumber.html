@@ -1,5 +1,14 @@
-<div class="controls input-group {{repeatable}}" id="{{field.name}}-controls">
+{% load icons %}
+<div class="controls input-group {{repeatable}}" id="{{field.name}}__controls" data-repeat-name="{{ repeat_name }}__controls">
 	<span class="input-group-addon"><i class="bi-telephone"></i></span>
-    <input type="text" name="{{field.name}}" id="{{field.name}}" class="form-control {{ required }}" value="{{data}}" aria-label="{{ field.label }}">
+    <input type="text" name="{{field.name}}" id="{{field.name}}"
+           class="form-control {{ required }}" value="{{data}}" aria-label="{{ field.label }}"
+           data-repeat-name="{{ repeat_name }}"
+    >
+    {% if 'repeat' in field.options %}
+        <button type="button" title="Remove Item" class="btn btn-danger remove-repeat">
+            {% svg_icon "x" size="sm" %}
+        </button>
+    {% endif %}
 </div>	
 	

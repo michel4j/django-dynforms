@@ -44,7 +44,7 @@ function clearInputs(selector) {
         return this.each(function () {
             const $control = $(this);
             const repeatSelector = $control.data("repeat-add");
-            let $allRepeats = $control.siblings(repeatSelector);
+            let $allRepeats = $control.closest('.repeatable-control').siblings(repeatSelector);
             let $removeButtons = $allRepeats.find(options.remove);
 
             function updateRepeat($section, index) {
@@ -57,25 +57,25 @@ function clearInputs(selector) {
                 $section.find('[data-repeat-index]').each(function () {
                     $(this).attr('data-repeat-index', index);
                 });
-                $section.find(':input').each(function () {
-                    if ($(this).attr('id')) {
-                        let idParts = $(this).attr('id').split('--');
-                        $(this).attr('id', `${idParts.at(0)}--${index}`);
+                // rename multivalued field names so values are kept separate
+                $section.find('[data-repeat-name]').each(function () {
+                    let name = $(this).data("repeat-name").replace(/\?/i, index);
+                    if ($(this).is("[name]")) {
+                        $(this).attr("name", name);
+                        $(this).attr("id", name);
                     }
                 });
-                $section.find('label').each(function () {
-                    let $label = $(this);
-                    if ($label.attr('for')) {
-                        if ($label.attr('for')) {
-                            let idParts = $label.attr('for').split('--');
-                            $label.attr('for', `${idParts.at(0)}--${index}`);
-                        }
+                $section.find('label[data-repeat-for]').each(function () {
+                    let name = $(this).data("repeat-for").replace(/\?/i, index);
+                    if ($(this).is("[for]")) {
+                        $(this).attr("for", name);
                     }
                 });
-                let idParts = $section.attr('id').split('--');
-                $section.attr('id', `${idParts.at(0)}--${index}`)
-                $allRepeats = $($control).siblings(repeatSelector);
+                if ($section.is('[data-repeat-name]')) {
+                    $section.attr('id', $section.data("repeat-name").replace(/\?/i, index))
+                }
 
+                $allRepeats = $($control).siblings(repeatSelector);
                 $removeButtons = $allRepeats.find(options.remove);
                 if ($allRepeats.length > 1) {
                     $removeButtons.removeAttr("disabled");
@@ -88,13 +88,6 @@ function clearInputs(selector) {
                 } else {
                     $control.removeAttr("disabled");
                 }
-
-                // rename multivalued field names so values are kept separate
-                $allRepeats.each(function (idx, obj) {
-                    $(this).find("[data-repeat-name]").each(function () {
-                        $(this).attr("name", $(this).data("repeat-name") + "." + idx);
-                    });
-                });
             }
 
             $control.click(function (e) {
@@ -137,7 +130,7 @@ function clearInputs(selector) {
                 } else if (options.clearIfLast) {
                     $toDelete.find(":input").each(function () {
                         $(this).val('').removeAttr('checked').removeAttr('selected');
-                    })
+                    });
                 }
             });
 
@@ -146,15 +139,6 @@ function clearInputs(selector) {
             } else {
                 $removeButtons.attr("disabled", "disabled");
             }
-
-            // Keep multivalued fields separate, by renaming them, __# can be stripped when cleaning
-            // the data
-            $allRepeats.each(function (idx, obj) {
-                $(obj).find("select[multiple]:not([data-repeat-name])").each(function () {
-                    $(this).data("repeat-name", $(this).attr("name"));
-                    $(this).attr("name", $(this).data("repeat-name") + "." + idx);
-                });
-            });
         });
     };
 })(jQuery);

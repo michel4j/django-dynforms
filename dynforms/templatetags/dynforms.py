@@ -7,7 +7,7 @@ from django.utils.encoding import smart_str
 from django.utils.safestring import mark_safe
 
 from dynforms.fields import FieldType
-from dynforms.utils import FormField
+from dynforms.utils import FormField, FIELD_SEPARATOR
 
 register = template.Library()
 
@@ -38,6 +38,7 @@ def _get_field_value(context, field):
 @register.simple_tag(takes_context=True)
 def render_field(context, field: FormField, repeatable: bool = False):
     all_data = field.get_data(context)
+
     if field.type:
         if field.type.multi_valued:
             all_data = [] if all_data == '' else all_data
@@ -54,6 +55,7 @@ def render_field(context, field: FormField, repeatable: bool = False):
         'repeatable': f" {field.name}-repeatable" if repeatable else '',
         'required': " required" if 'required' in field.get_options() else '',
         'floating': " form-floating" if 'floating' in field.get_options() else '',
+        'repeat_name': f'{field.name}{FIELD_SEPARATOR}?' if repeatable else f'{field.name}',
     }
     ctx.update(context.flatten())
 
@@ -67,7 +69,7 @@ def render_field(context, field: FormField, repeatable: bool = False):
                 field.set_attr('other_choice', next(iter(oc_set)))
         repeat_index = i if repeatable else ""
 
-        ctx.update({'field': field.specs(), 'data': data, 'repeat_index': repeat_index})
+        ctx.update({'field': field.specs(repeatable=repeatable, index=i), 'data': data, 'repeat_index': repeat_index})
         rendered += field_type.render(ctx)
     return mark_safe(rendered)
 
@@ -94,7 +96,7 @@ def group_choices(field, defaults):
 def show_sublabels(field):
     """
     Returns whether the field should show sublabels based on its options.
-    :param field: The field dictionary containing options.
+    :param field: The field dictionary which contains options.
     :return: True if 'sublabels' is in options, otherwise False.
     """
     return bool({'labels', 'floating'} & set(field.get('options', [])))

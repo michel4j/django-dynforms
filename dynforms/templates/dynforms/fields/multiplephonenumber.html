@@ -1,25 +1,32 @@
 {% load dynforms %}
 {% load icons %}
-<div class="controls {{ repeatable }}" id="{{ field.name }}-controls">
+<div class="controls {{ repeatable }}" id="{{ field.name }}__controls" data-repeat-name="{{ repeat_name }}__controls">
     <div class="row">
         <div class="field-group-item col-sm-6 mb-2">
             <div class="input-group ">
                 <div class="input-group-text">{% svg_icon "phone" size="sm" %}</div>
-                <input type="tel" name="{{ field.name }}.primary"
-                       id="{{ field.name }}-primary" class="form-control {{ required }}" aria-label="Primary"
+                <input type="tel" name="{{ field.name }}__primary"
+                       id="{{ field.name }}__primary" class="form-control {{ required }}" aria-label="Primary"
+                       data-repeat-name="{{ repeat_name }}__primary"
                        placeholder="Primary Phone"
                        value="{{ data.primary }}"
                 >
             </div>
         </div>
         <div class="field-group-item col-sm-6 mb-2">
-            <div class="input-group col-sm-6 mb-2">
+            <div class="input-group">
                 <div class="input-group-text">{% svg_icon "phone" size="sm" %}</div>
-                <input type="tel" name="{{ field.name }}.alternate"
-                       id="{{ field.name }}-alternate" class="form-control" aria-label="Alternate"
+                <input type="tel" name="{{ field.name }}__alternate"
+                       id="{{ field.name }}__alternate" class="form-control" aria-label="Alternate"
+                       data-repeat-name="{{ repeat_name }}__alternate"
                        placeholder="Alternate Phone"
                        value="{{ data.alternate }}"
                 >
+                {% if 'repeat' in field.options %}
+                    <button type="button" class="btn btn-danger remove-repeat" title="Remove item">
+                        {% svg_icon "x" size="sm" %}
+                    </button>
+                {% endif %}
             </div>
         </div>
     </div>

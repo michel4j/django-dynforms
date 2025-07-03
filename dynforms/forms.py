@@ -327,6 +327,7 @@ class DynFormMixin:
 
         # convert lists (same as dotted notation but with an integer key)
         data = data.with_lists()
+
         self.cleaned_data['form_type'] = self.form_type
         cleaned_data, errors = self.custom_clean(data)
         self.cleaned_data['details'] = cleaned_data
@@ -358,7 +359,12 @@ class DynFormMixin:
             field_type = FieldType.get_type(field_spec['field_type'])
             if field_type is None:
                 continue
-            multiple = "repeat" in field_spec.get('options', []) or field_type.multi_valued
+
+            multiple = (
+                "repeat" in field_spec.get('options', []) or
+                "multiple" in field_spec.get('options', []) or
+                field_type.multi_valued
+            )
             required = "required" in field_spec.get('options', [])
 
             if field_name in data:

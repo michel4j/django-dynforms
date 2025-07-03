@@ -1,4 +1,4 @@
-<div class="controls {{repeatable}}" id="{{field.name}}-controls">
+<div class="controls {{repeatable}}" id="{{field.name}}__controls" data-repeat-name="{{ repeat_name }}__controls">
     <input type="range" name="{{field.name}}" id="{{field.name}}" aria-label="{{ field.label }}" class="form-range"
            value="{{data}}" min="{{ field.minimum|default:0 }}" max="{{ field.maximum|default:100 }}"
     >

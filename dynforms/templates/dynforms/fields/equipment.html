@@ -1,14 +1,18 @@
 {% load icons %}
-<div class="controls {{ repeatable }}" id="{{ field.name }}-controls">
+<div class="controls {{ repeatable }}" id="{{ field.name }}__controls" data-repeat-name="{{ repeat_name }}__controls">
     <div class="input-group mb-2">
-        <input id="{{ field.name }}-name" aria-label="Name" placeholder="Name" name="{{ field.name }}.name"
+        <input id="{{ field.name }}__name" aria-label="Name" placeholder="Name" name="{{ field.name }}__name"
+               data-repeat-name="{{ repeat_name }}__name"
                class="form-control {{ required }}" type="text" value="{{ data.name }}">
-        <input id="{{ field.name }}-description" aria-label="Description" placeholder="Description"
-               name="{{ field.name }}.description"
+        <input id="{{ field.name }}__description" aria-label="Description" placeholder="Description"
+               data-repeat-name="{{ repeat_name }}__description"
+               name="{{ field.name }}__description"
                class="form-control" type="text" value="{{ data.description }}">
-        <input id="{{ field.name }}-manufacturer" aria-label="Manufacturer" name="{{ field.name }}.manufacturer"
+        <input id="{{ field.name }}__manufacturer" aria-label="Manufacturer" name="{{ field.name }}__manufacturer"
+               data-repeat-name="{{ repeat_name }}__manufacturer"
                placeholder="Manufacturer" class="form-control {{ required }}" type="text" value="{{ data.manufacturer }}">
-        <input id="{{ field.name }}-model" aria-label="Model" name="{{ field.name }}.model" class="form-control {{ required }}"
+        <input id="{{ field.name }}__model" aria-label="Model" name="{{ field.name }}__model" class="form-control {{ required }}"
+               data-repeat-name="{{ repeat_name }}__model"
                placeholder="Model" type="text" value="{{ data.model }}">
         <button type="button" class="btn btn-danger remove-repeat" title="Delete entry">
             {% svg_icon "x" size="sm" %}

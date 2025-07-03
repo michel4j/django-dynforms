@@ -18,6 +18,8 @@ from .forms import FieldSettingsForm, FormSettingsForm, RulesForm, DynModelForm,
 from .models import DynEntry
 from .utils import FormField
 
+import yaml
+
 MIXINS = getattr(settings, 'DYNFORMS_MIXINS', {})
 
 VIEW_MIXINS = [import_string(mixin) for mixin in MIXINS.get('VIEW', [])]
@@ -394,6 +396,8 @@ class DynFormView(FormView):
 
 class TestFormView(DynFormView):
     def form_valid(self, form):
-        import pprint
-        pprint.pprint(form.cleaned_data)
-        return HttpResponseRedirect(self.get_success_url())
+        print('-'*79)
+        print(yaml.dump(form.cleaned_data['details']))
+        print('-'*79)
+        return self.form_invalid(form)
+

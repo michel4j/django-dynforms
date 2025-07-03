@@ -28,10 +28,12 @@
 
         {% if field.is_repeatable %}
             {% render_field field repeatable=True %}
+            <div class="repeatable-control d-flex flex-row align-items-center">
                 <button data-repeat-add=".{{ field.name }}-repeatable"
-                        class="btn btn-success btn-sm ms-auto mt-2" title="Add {{ field.label }}"
+                        class="btn btn-success ms-auto mt-2" title="Add {{ field.label }}"
                         name="add" type="button">{% svg_icon "plus" size="xs" %}
                 </button>
+            </div>
         {% else %}
             {% render_field field %}
         {% endif %}

@@ -1,4 +1,4 @@
-<div class="controls {{repeatable}}" id="{{field.name}}-controls">
+<div class="controls" id="{{field.name}}__controls">
        <textarea cols="40" name="{{field.name}}" id="{{field.name}}"  aria-label="{{ field.label }}"
        		rows="{% if field.size == 'large' %}20{% elif field.size == 'medium' %}8{% else %}3{% endif %}"
        		class="textarea form-control {{ required }}">{{data}}</textarea>
@@ -14,7 +14,7 @@ $('#{{field.name}}').counter({
 	type: 'word',
     count: 'up',
 	goal: {{field.maximum|default:10000}},
-    target: '#{{field.name}}-controls > .word-counter'
+    target: '#{{field.name}}__controls > .word-counter'
 });
 </script>
 {% endif %}

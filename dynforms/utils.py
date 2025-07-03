@@ -7,6 +7,7 @@ import urllib.request
 from base64 import b64decode, b64encode
 from collections.abc import MutableMapping
 from importlib import import_module
+from typing import Any
 
 from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
@@ -400,6 +401,9 @@ class FormField:
     def is_inline(self) -> bool:
         return 'inline' in self.options
 
+    def is_multi_valued(self) -> bool:
+        return 'multiple' in self.options or self.type.multi_valued
+
     def is_repeatable(self) -> bool:
         return 'repeat' in self.options
 
@@ -432,6 +436,64 @@ class FormField:
 
         value = form.initial.get(self.name, default)
         return '' if value is None else value
+
+    def normalize_data(self, data, multi: bool = False) -> Any:
+        """
+        Normalize the data for this field. make sure lists are present when needed and not
+        present if not needed.
+        :param data: The data to normalize.
+        :param multi: If True, the data is expected to be multi-valued.
+        """
+        if multi and isinstance(data, list):
+            data = [self.normalize_data(item) for item in data if item is not None]
+        elif multi and not isinstance(data, list):
+            data = [self.normalize_data(data)]
+        elif isinstance(data, dict):
+            for key, value in list(data.items()):
+                subfield = self.type.subfields.get(key, None)
+                if subfield:
+                    data[key] = self.normalize_data(value, multi=subfield.multi_valued)
+                else:
+                    data[key] = self.normalize_data(value)
+        elif isinstance(data, list) and len(data) == 1:
+            data = self.normalize_data(data[0])
+        elif isinstance(data, str):
+            data = data.strip()
+        else:
+            data = data if data is not None else ''
+
+        return data
+
+    def clean(self, data):
+        """
+        Clean the data for this field. This method should be overridden by subclasses
+        to implement specific cleaning logic.
+        """
+        multi = self.is_multi_valued() or self.is_repeatable()
+        data = self.normalize_data(data, multi=multi)
+
+        # if the field has subfields, clean them
+        if self.type.subfields and isinstance(data, dict):
+            cleaned_data = {}
+            for key, subfield in self.type.subfields.items():
+                if key not in data:
+                    continue
+
+                # run the clean method of the subfield
+                if subfield.multi_valued:
+                    cleaned_data[key] = [subfield.clean(value) for value in data[key]]
+                else:
+                    cleaned_data[key] = subfield.clean(data.get(key, None))
+
+                # if a custom clean method is defined for the field type, call it
+                clean_method = getattr(self.type, f'clean_{key}', lambda v: v)
+                if callable(clean_method):
+                    cleaned_data[key] = clean_method(cleaned_data[key])
+        else:
+            cleaned_data = data
+
+        # finally call the type's clean method
+        return self.type.clean(cleaned_data)
 
 
 class FormPage:

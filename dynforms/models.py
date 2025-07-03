@@ -185,8 +185,8 @@ class FormType(TimeStampedModel):
                 cleaned_data["form_action"] = name
 
         # active page is a special numeric field, increment if save_continue
-        field_type = FieldType.get_type('number')
-        active_page = field_type.clean(data.get('active_page', 1), multi=False, validate=True)
+        page_field = FieldType.get_field(name='active_page', field_type='number')
+        active_page = page_field.clean(data.get('active_page', 1))
         if cleaned_data.get('form_action') == 'save_continue':
             cleaned_data['active_page'] = min(active_page + 1, len(self.pages))
         else:
@@ -198,25 +198,19 @@ class FormType(TimeStampedModel):
             field_type = FieldType.get_type(field_spec['field_type'])
             if field_type is None:
                 continue
-
-            multiple = "multiple" in field_spec.get('options', [])
-            repeat = "repeat" in field_spec.get('options', [])
-            required = "required" in field_spec.get('options', [])
+            field = field_type.get_field(**field_spec)
 
             if field_name in data:
-                field_data = data.get(field_name)
-
                 try:
-                    cleaned_value = field_type.clean_all(
-                        field_data, repeat=repeat, multiple=multiple, validate=validate
-                    )
-                except (ValidationError, ValueError, KeyError) as err:
+                    cleaned_value = field.clean(data[field_name])
+                except (ValidationError, ValueError, KeyError, AttributeError) as err:
                     failures[page_no][field_name] = str(err)
-                    cleaned_value = field_type.clean_all(field_data, repeat=repeat, multiple=multiple, validate=False)
+                    cleaned_value = cleaned_data
 
                 if cleaned_value is not None:
                     cleaned_data[field_name] = cleaned_value
 
+            required = "required" in field_spec.get('options', [])
             if validate and required and not cleaned_data.get(field_name):
                 failures[page_no][field_name] = "required"
 

@@ -22,11 +22,6 @@ class SingleLineText(StandardMixin, FieldType):
     units = ['chars', 'words']
     settings = ['minimum', 'maximum', 'units', 'default']
 
-    def coerce(self, value: Any, *flags):
-        if isinstance(value, str):
-            return value.strip()
-        return value
-
 
 class ParagraphText(SingleLineText):
     name = _("Paragraph")
@@ -57,7 +52,7 @@ class ScoreChoices(StandardMixin, FieldType):
     settings = ['choices']
     choices_type = 'radio'
 
-    def coerce(self, value: Any, *flags):
+    def clean(self, value):
         return int(value)
 
 
@@ -67,8 +62,8 @@ class Number(SingleLineText):
     units = ['digits', 'value']
     settings = ['minimum', 'maximum', 'units', 'default']
 
-    def coerce(self, value: Any, *flags):
-        return int(super().coerce(value, *flags))
+    def clean(self, value):
+        return int(value)
 
 
 class Range(Number):
@@ -154,10 +149,24 @@ class FullName(FancyMixin, FieldType):
     settings = []
     required_subfields = ['first_name', 'last_name']
 
-    def coerce(self, value: Any, *flags):
-        if isinstance(value, list) and len(value) == 1:
+    @staticmethod
+    def clean_subfield(value, name, required=True):
+        if isinstance(value, str):
+            value = value.strip()
+        elif isinstance(value, list) and len(value) == 1:
             value = value[0].strip()
+        if not value and required:
+            raise ValidationError(_(f"{name} is required."))
         return value
+
+    def clean_first_name(self, value):
+        return self.clean_subfield(value, _("First Name"), required=True)
+
+    def clean_last_name(self, value):
+        return self.clean_subfield(value, _("Last Name"), required=True)
+
+    def clean_other_names(self, value):
+        return self.clean_subfield(value, _("Other Names"), required=False)
 
 
 class Address(FullName):
@@ -167,6 +176,24 @@ class Address(FullName):
     settings = []
     required_subfields = ['street', 'city', 'region', 'country', 'code']
 
+    def clean_department(self, value):
+        return self.clean_subfield(value, _("Department"), required=False)
+
+    def clean_street(self, value):
+        return self.clean_subfield(value, _("Street"), required=True)
+
+    def clean_city(self, value):
+        return self.clean_subfield(value, _("City"), required=True)
+
+    def clean_region(self, value):
+        return self.clean_subfield(value, _("Region"), required=True)
+
+    def clean_country(self, value):
+        return self.clean_subfield(value, _("Country"), required=True)
+
+    def clean_code(self, value):
+        return self.clean_subfield(value, _("Postal Code"), required=True)
+
 
 class MultiplePhoneNumber(FancyMixin, FieldType):
     name = _("Phone #s")
@@ -174,22 +201,12 @@ class MultiplePhoneNumber(FancyMixin, FieldType):
     options = ['required', 'hide', 'repeat']
     settings = []
 
-    def coerce(self, value: Any, *flags):
-        if isinstance(value, list) and len(value) == 1:
-            value = value[0].strip()
-        return value.strip()
-
 
 class Equipment(FancyMixin, FieldType):
     name = _("Equipment")
     icon = "plug"
     options = ['required', 'hide', 'repeat']
     settings = []
-
-    def coerce(self, value: Any, *flags):
-        if isinstance(value, list) and len(value) == 1:
-            value = value[0].strip()
-        return value.strip()
 
 
 class ContactInfo(FullName):
@@ -229,7 +246,7 @@ class Throttle(FancyMixin, FieldType):
     options = ['hide']
     settings = []
 
-    def clean(self, value, validate=True, multi=False):
+    def clean(self, value):
         if isinstance(value, list):
             value = value[0]
 
@@ -237,8 +254,7 @@ class Throttle(FancyMixin, FieldType):
         try:
             message = Crypt.decrypt(value)
         except ValueError:
-            if validate:
-                raise ValidationError('Something funny happened with the form. Reload the page and start again.')
+            raise ValidationError('Something funny happened with the form. Reload the page and start again.')
         else:
             start = parser.parse(message)
         now = datetime.now()

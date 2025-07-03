@@ -93,6 +93,25 @@ def group_choices(field, defaults):
 
 
 @register.filter
+def likert_choices(field, defaults):
+    if not defaults:
+        defaults = field.get('default', [])
+    if field.get('values') and field.get('choices'):
+        choices = list(zip(field['choices'], field['values']))
+    elif field.get('choices'):
+        choices = list(zip(field['choices'], field['choices']))
+    else:
+        choices = []
+    choices = [{
+        'label': l,
+        'value': l if v is None else v,
+        'selected': v in defaults or v == defaults
+    } for l, v in choices]
+    return choices
+
+
+
+@register.filter
 def show_sublabels(field):
     """
     Returns whether the field should show sublabels based on its options.

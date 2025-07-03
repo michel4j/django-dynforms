@@ -14,15 +14,39 @@
         </tr>
         </thead>
         <tbody>
-        {% for choice in field|group_choices:data %}
+        {% for choice in field|likert_choices:data %}
             <tr>
                 <td class="text-left">{{ choice.label }}</td>
-                <td class="text-center"><input type="radio" class="{{ required }}" aria-label="Excellent" name="{{ field.name }}__{{ choice.value }}" value="5"/></td>
-                <td class="text-center"><input type="radio" class="{{ required }}" aria-label="Good" name="{{ field.name }}__{{ choice.value }}" value="4"/></td>
-                <td class="text-center"><input type="radio" class="{{ required }}" aria-label="Fair" name="{{ field.name }}__{{ choice.value }}" value="3"/></td>
-                <td class="text-center"><input type="radio" class="{{ required }}" aria-label="Poor" name="{{ field.name }}__{{ choice.value }}" value="2"/></td>
-                <td class="text-center"><input type="radio" class="{{ required }}" aria-label="Very Poor" name="{{ field.name }}__{{ choice.value }}" value="1"/></td>
-                <td class="text-center"><input type="radio" class="{{ required }}" aria-label="Don't Know" name="{{ field.name }}__{{ choice.value }}"/></td>
+                <td class="text-center">
+                        <input type="radio" class="form-check-input {{ required }}" aria-label="Excellent"
+                               name="{{ field.name }}__{{ choice.value }}" value="5"
+                        />
+                </td>
+                <td class="text-center">
+                    <input type="radio" class="form-check-input {{ required }}" aria-label="Good"
+                           name="{{ field.name }}__{{ choice.value }}" value="4"
+                    />
+                </td>
+                <td class="text-center">
+                    <input type="radio" class="form-check-input {{ required }}" aria-label="Fair"
+                           name="{{ field.name }}__{{ choice.value }}" value="3"
+                    />
+                </td>
+                <td class="text-center">
+                    <input type="radio" class="form-check-input {{ required }}" aria-label="Poor"
+                           name="{{ field.name }}__{{ choice.value }}" value="2"
+                    />
+                </td>
+                <td class="text-center">
+                    <input type="radio" class="form-check-input {{ required }}" aria-label="Very Poor"
+                           name="{{ field.name }}__{{ choice.value }}" value="1"
+                    />
+                </td>
+                <td class="text-center">
+                    <input type="radio" class="form-check-input {{ required }}" aria-label="Don't Know"
+                           name="{{ field.name }}__{{ choice.value }}"
+                    />
+                </td>
             </tr>
         {% endfor %}
         </tbody>

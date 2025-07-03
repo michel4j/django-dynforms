@@ -360,32 +360,34 @@ class DynFormMixin:
             if field_type is None:
                 continue
 
-            multiple = (
-                "repeat" in field_spec.get('options', []) or
-                "multiple" in field_spec.get('options', []) or
-                field_type.multi_valued
-            )
+            multiple = "multiple" in field_spec.get('options', [])
+            repeat = "repeat" in field_spec.get('options', [])
             required = "required" in field_spec.get('options', [])
 
             if field_name in data:
                 field_data = data.get(field_name)
+
                 try:
-                    cleaned_value = field_type.clean(field_data, multi=multiple, validate=submitting)
-                except ValidationError as err:
-                    failures[field_name] = err.message
-                    cleaned_value = field_type.clean(field_data, multi=multiple, validate=False)
-                if cleaned_value:
+                    cleaned_value = field_type.clean_all(
+                        field_data, repeat=repeat, multiple=multiple, validate=submitting
+                    )
+                except (ValidationError, ValueError, KeyError) as err:
+                    failures[field_name] = str(err)
+                    cleaned_value = field_type.clean(field_data, repeat=repeat, multiple=multiple, validate=False)
+
+                if cleaned_value is not None:
                     cleaned_data[field_name] = cleaned_value
+
             if submitting and required and not cleaned_data.get(field_name):
                 failures[field_name] = "required"
 
-        # second loop to check other validation
-        q_data = Queryable(cleaned_data)
+        # Second loop to check other validation
+        query_data = Queryable(cleaned_data)
         for field_name, field_spec in list(self.field_specs.items()):
-            req_rules = [r for r in field_spec.get('rules', []) if r['action'] == 'require']
-            if req_rules:
-                req_Q = build_Q(req_rules)
-                if submitting and q_data.matches(req_Q) and not cleaned_data.get(field_name):
+            required_rules = [r for r in field_spec.get('rules', []) if r['action'] == 'require']
+            if required_rules:
+                required_queryable = build_Q(required_rules)
+                if submitting and query_data.matches(required_queryable) and not cleaned_data.get(field_name):
                     failures[field_name] = "required together with another field you have filled."
 
         return cleaned_data, failures

@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Literal, Any
 
 from django.forms import ValidationError
 from django.utils.text import slugify
@@ -187,35 +187,93 @@ class FieldType(object, metaclass=FieldTypeMeta):
                 total = len(self.required_subfields)
             return 1.0 if total == 0 else (1.0 - len(invalid_fields) / float(total))
 
-    def coerce(self, val):
+    def clean_all(self, data, multiple=False, repeat=False, validate=False):
+        """
+        Clean all values in the data, optionally repeating them if specified.
+        :param data: The data to clean, can be a single value or a list.
+        :param multiple: Multi-value flag passed to fields which optionally allows multiple values like selects.
+        :param repeat: If True, repeat the cleaning for each item in the data. Data is expected to be a list.
+        :param validate: If True, raise ValidationError on invalid values.
+        """
+
+        if repeat and not isinstance(data, list):
+            data = [data]
+        if repeat:
+            cleaned_value = [
+                self.clean(item, multi=multiple, validate=validate)
+                for item in data
+            ]
+        else:
+            cleaned_value = self.clean(data, multi=multiple, validate=validate)
+        return cleaned_value
+
+    def coerce(self, value: Any, *flags) -> Any:
         """
         Coerce value to a valid type
+        :param value: The value to coerce.
+        :param flags: Additional flags to guide the conversion.
         """
-        if isinstance(val, dict):
-            clean_val = {k: v[0] for k, v in list(val.items()) if isinstance(v, list)}
-            val.update(clean_val)
-            val = {k: v for k, v in list(val.items()) if v}
-        return val
+        return value
 
-    def clean(self, val, multi=False, validate=False):
+    def clean_sub_field(self, value: Any, name: str, validate=False):
+        """
+        Clean a sub-field value, typically used for sub-fields in complex fields.
+        :param value: The value to clean.
+        :param name: The name of the sub-field, used for error messages.
+        :param validate: If True, raise ValidationError on invalid values.
+        :return: Cleaned value.
+        """
+
+        try:
+            if isinstance(value, dict):
+                return {k: self.clean_sub_field(v, f'{name}__{k}') for k, v in value.items()}
+            else:
+                return self.coerce(value, name)
+        except Exception as e:
+            if validate:
+                raise ValidationError(
+                    _(f'Invalid value for {name}: {value}: {e}'),
+                    code='invalid',
+                    params={'name': name, 'value': value},
+                )
+            return None
+
+    def clean(self, value: Any, multi: bool = False, validate: bool = False) -> Any:
         """
         Parse and Validate field and return clean value
+        :param value: The value to clean, can be a single value or a list.
+        :param multi: If True, the value is expected to be a list of values or a single value to be converted to a list.
+        :param validate: If True, raise ValidationError on invalid values.
+        :return: Cleaned value, either a single value or a list of values.
         """
-        try:
-            if isinstance(val, dict) and (multi or self.multi_valued):
-                val = list(map(dict, zip(*[[(k, v) for v in value] for k, value in val.items()])))
-            elif not isinstance(val, list):
-                val = [val]
-            val = list(map(self.coerce, val))
-        except ValueError:
-            if validate:
-                raise ValidationError(_('Invalid value: %(value)s'), code='invalid', params={'value': val}, )
-            return None
-        else:
-            if not (multi or self.multi_valued) and val:
-                return val[0]
+
+        if isinstance(value, list) and len(value) == 1 and not multi:
+            # if value is a single item in a list and not multi, take the first item
+            value = value[0]
+
+        if value is None or (isinstance(value, str) and not value.strip()):
+            # if value is None or an empty string, return None or empty list based on multi
+            if not (multi or self.multi_valued):
+                value = None
             else:
-                return [v for v in val if v]
+                value = []
+
+        if multi and isinstance(value, (list, tuple)):
+            # handle multi-valued fields
+            value = [self.coerce(v) for v in value]
+        elif multi:
+            value = [self.coerce(value)]
+
+        # handle dictionaries
+        if isinstance(value, dict):
+            value = {
+                k: self.clean_sub_field(v, k, validate=validate)
+                for k, v in value.items()
+            }
+        else:
+            value = self.coerce(value)
+
+        return value
 
     def get_default(self, page=None, pos=None):
         """

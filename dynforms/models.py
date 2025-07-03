@@ -1,4 +1,4 @@
-
+import re
 from collections import defaultdict
 from datetime import timedelta
 
@@ -135,13 +135,21 @@ class FormType(TimeStampedModel):
         missing = set()
         for i, page in enumerate(self.pages):
             for field in page['fields']:
+                print(field['name'])
                 if field['name'] in exists:
-                    warnings.append(f'Page {i + 1}: Field `{field["name"]}` defined more than once')
+                    warnings.append(f'Page {i + 1}: Field `{field["name"]}` defined more than once!')
                 if field['name'] in missing:
                     missing.remove(field['name'])
+                if re.search(r'\.', field['name']):
+                    warnings.append(f'Page {i + 1}: Field `{field["name"]}` contains invalid character `.`!')
+                if re.search(r'_{2,}', field['name']):
+                    warnings.append(
+                        f'Page {i + 1}: Field `{field["name"]}` should not have multiple underscores!'
+                    )
                 exists.add(field['name'])
         if missing:
             warnings.extend([f'Missing field `{f}`' for f in missing])
+        print(warnings)
         return warnings
 
     def get_pages(self):

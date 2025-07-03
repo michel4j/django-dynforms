@@ -1,6 +1,9 @@
 {% load icons %}
-<div class="controls input-group {{repeatable}}" id="{{field.name}}__controls" data-repeat-name="{{ repeat_name }}__controls">
-	<span class="input-group-addon"><i class="bi-telephone"></i></span>
+<div class="controls input-group {{repeatable}}"
+     id="{{field.name}}__controls"
+     data-repeat-name="{{ repeat_name }}__controls"
+>
+	<span class="input-group-text">{% svg_icon "phone" size="sm" %}</span>
     <input type="text" name="{{field.name}}" id="{{field.name}}"
            class="form-control {{ required }}" value="{{data}}" aria-label="{{ field.label }}"
            data-repeat-name="{{ repeat_name }}"

@@ -1,5 +1,6 @@
 from collections import OrderedDict
 from datetime import datetime, timedelta
+from typing import Any
 
 from dateutil import parser
 from django.core.exceptions import ValidationError
@@ -21,11 +22,8 @@ class SingleLineText(StandardMixin, FieldType):
     units = ['chars', 'words']
     settings = ['minimum', 'maximum', 'units', 'default']
 
-    def clean(self, val, multi=False, validate=True):
-        val = super().clean(val, multi=multi, validate=validate)
-        if isinstance(val, str):
-            val = val.strip()
-        return val
+    def coerce(self, value: Any, *flags):
+        return value.strip()
 
 
 class ParagraphText(SingleLineText):
@@ -57,12 +55,8 @@ class ScoreChoices(StandardMixin, FieldType):
     settings = ['choices']
     choices_type = 'radio'
 
-    def coerce(self, value):
-        try:
-            val = int(value)
-        except (TypeError, ValueError):
-            val = 0
-        return val
+    def coerce(self, value: Any, *flags):
+        return int(value)
 
 
 class Number(SingleLineText):
@@ -71,12 +65,8 @@ class Number(SingleLineText):
     units = ['digits', 'value']
     settings = ['minimum', 'maximum', 'units', 'default']
 
-    def coerce(self, value):
-        try:
-            val = int(value)
-        except (TypeError, ValueError):
-            val = 0
-        return val
+    def coerce(self, value: Any, *flags):
+        return int(super().coerce(value, *flags))
 
 
 class Range(Number):
@@ -162,6 +152,11 @@ class FullName(FancyMixin, FieldType):
     settings = []
     required_subfields = ['first_name', 'last_name']
 
+    def coerce(self, value: Any, *flags):
+        if isinstance(value, list) and len(value) == 1:
+            value = value[0].strip()
+        return value.strip()
+
 
 class Address(FullName):
     name = _("Address")
@@ -170,21 +165,6 @@ class Address(FullName):
     settings = []
     required_subfields = ['street', 'city', 'region', 'country', 'code']
 
-    def clean(self, val, multi=False, validate=True):
-        val = super().clean(val, multi=multi, validate=validate)
-
-        if validate:
-            invalid_fields = set()
-            if isinstance(val, list):
-                for entry in val:
-                    invalid_fields |= {k for k, v in list(self.check_entry(entry).items()) if not v}
-            else:
-                invalid_fields |= {k for k, v in list(self.check_entry(val).items()) if not v}
-
-            if invalid_fields:
-                raise ValidationError("Must complete {}".format(', '.join(invalid_fields)))
-        return val
-
 
 class MultiplePhoneNumber(FancyMixin, FieldType):
     name = _("Phone #s")
@@ -192,12 +172,22 @@ class MultiplePhoneNumber(FancyMixin, FieldType):
     options = ['required', 'hide', 'repeat']
     settings = []
 
+    def coerce(self, value: Any, *flags):
+        if isinstance(value, list) and len(value) == 1:
+            value = value[0].strip()
+        return value.strip()
+
 
 class Equipment(FancyMixin, FieldType):
     name = _("Equipment")
     icon = "plug"
     options = ['required', 'hide', 'repeat']
     settings = []
+
+    def coerce(self, value: Any, *flags):
+        if isinstance(value, list) and len(value) == 1:
+            value = value[0].strip()
+        return value.strip()
 
 
 class ContactInfo(FullName):
@@ -222,28 +212,6 @@ class NameEmail(FullName):
     options = ['required', 'hide', 'repeat']
     settings = []
     required_subfields = ['first_name', 'last_name', 'email']
-
-    def clean(self, val, multi=False, validate=True):
-        val = super().clean(val, multi=multi, validate=validate)
-        invalid_fields = set()
-        if isinstance(val, list):
-            entries = OrderedDict()
-            for entry in val:
-                key = "{}{}{}".format(
-                    entry.get('first_name', '').strip(),
-                    entry.get('last_name', '').strip(),
-                    entry.get('email', '').strip()
-                )
-                entries[key.lower()] = entry
-                invalid_fields |= {k for k, v in list(self.check_entry(entry).items()) if not v}
-            val = list(entries.values())
-        else:
-            invalid_fields |= {k for k, v in list(self.check_entry(val).items()) if not v}
-
-        if validate and invalid_fields:
-            raise ValidationError("Must provide {} for all entries".format(', '.join(invalid_fields)))
-
-        return val
 
 
 class Likert(FancyMixin, FieldType):

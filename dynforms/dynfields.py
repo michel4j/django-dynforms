@@ -23,7 +23,9 @@ class SingleLineText(StandardMixin, FieldType):
     settings = ['minimum', 'maximum', 'units', 'default']
 
     def coerce(self, value: Any, *flags):
-        return value.strip()
+        if isinstance(value, str):
+            return value.strip()
+        return value
 
 
 class ParagraphText(SingleLineText):

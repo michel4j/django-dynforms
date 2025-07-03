@@ -187,7 +187,7 @@ class FormType(TimeStampedModel):
         # active page is a special numeric field, increment if save_continue
         field_type = FieldType.get_type('number')
         active_page = field_type.clean(data.get('active_page', 1), multi=False, validate=True)
-        if cleaned_data['form_action'] == 'save_continue':
+        if cleaned_data.get('form_action') == 'save_continue':
             cleaned_data['active_page'] = min(active_page + 1, len(self.pages))
         else:
             cleaned_data['active_page'] = active_page
@@ -212,7 +212,7 @@ class FormType(TimeStampedModel):
                     )
                 except (ValidationError, ValueError, KeyError) as err:
                     failures[page_no][field_name] = str(err)
-                    cleaned_value = field_type.clean(field_data, repeat=repeat, multiple=multiple, validate=False)
+                    cleaned_value = field_type.clean_all(field_data, repeat=repeat, multiple=multiple, validate=False)
 
                 if cleaned_value is not None:
                     cleaned_data[field_name] = cleaned_value

@@ -442,3 +442,4 @@ class FormPage:
         self.fields = [
             FormField(**field, index=i) for i, field in enumerate(fields) if isinstance(field, dict)
         ]
+

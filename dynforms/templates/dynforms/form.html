@@ -53,16 +53,16 @@
                         <div class="d-flex flex-column align-items-stretch justify-content-center">
                             <div>
                                 <span id="df-progress-prefix" class="text-body-secondary"></span>
-                                <span id="df-progress-text">{{ validation.progress|default:0 }}% complete</span>
+                                <span id="df-progress-text">0% complete</span>
                             </div>
                             <div>
                                 <div class="progress" style="height: 0.75em;">
                                     <div id="df-progress-bar"
-                                         class="progress-bar {% if validation.progress < 99.5 %}bg-warning{% else %}bg-success{% endif %}"
+                                         class="progress-bar"
                                          role="progressbar"
-                                         aria-valuenow="{{ validation.progress }}"
+                                         aria-valuenow="0"
                                          aria-valuemin="0" aria-valuemax="100"
-                                         style="width: {{ validation.progress }}%"></div>
+                                         style="width: 0 }}%"></div>
                                 </div>
                             </div>
                         </div>

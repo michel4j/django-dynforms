@@ -298,10 +298,9 @@ class RulesForm(ModalForm):
 
 
 class DynFormMixin:
-    form_type: FormType = None
     field_specs: dict
     instance: models.DynEntry = None
-    form_type: models.FormType
+    form_type: models.FormType = None
     initial: dict
     cleaned_data: dict
 
@@ -329,68 +328,16 @@ class DynFormMixin:
         data = data.with_lists()
 
         self.cleaned_data['form_type'] = self.form_type
-        cleaned_data, errors = self.custom_clean(data)
-        self.cleaned_data['details'] = cleaned_data
+        processed_data, errors = self.form_type.clean_data(data)
+        self.cleaned_data['details'] = processed_data
         if errors:
-            for field, error in errors.items():
+            [
                 self.add_error(None, f'{field}: {error}')
+                for page, field_errors in errors.items()
+                for field, error in field_errors.items()
+            ]
+
         return self.cleaned_data
-
-    def custom_clean(self, data):
-        cleaned_data = {}
-        failures = {}
-        submitting = False
-        for name, label in self.form_type.actions:
-            if label in data.get(name, []):
-                cleaned_data["form_action"] = name
-                submitting = (name == "submit")
-                break
-
-        # active page is a special numeric field, increment if save_continue
-        field_type = FieldType.get_type('number')
-        active_page = field_type.clean(data.get('active_page', 1), multi=False, validate=True)
-        if cleaned_data['form_action'] == 'save_continue':
-            cleaned_data['active_page'] = min(active_page + 1, len(self.form_type.pages))
-        else:
-            cleaned_data['active_page'] = active_page
-
-        # extract field data
-        for field_name, field_spec in self.field_specs.items():
-            field_type = FieldType.get_type(field_spec['field_type'])
-            if field_type is None:
-                continue
-
-            multiple = "multiple" in field_spec.get('options', [])
-            repeat = "repeat" in field_spec.get('options', [])
-            required = "required" in field_spec.get('options', [])
-
-            if field_name in data:
-                field_data = data.get(field_name)
-
-                try:
-                    cleaned_value = field_type.clean_all(
-                        field_data, repeat=repeat, multiple=multiple, validate=submitting
-                    )
-                except (ValidationError, ValueError, KeyError) as err:
-                    failures[field_name] = str(err)
-                    cleaned_value = field_type.clean(field_data, repeat=repeat, multiple=multiple, validate=False)
-
-                if cleaned_value is not None:
-                    cleaned_data[field_name] = cleaned_value
-
-            if submitting and required and not cleaned_data.get(field_name):
-                failures[field_name] = "required"
-
-        # Second loop to check other validation
-        query_data = Queryable(cleaned_data)
-        for field_name, field_spec in list(self.field_specs.items()):
-            required_rules = [r for r in field_spec.get('rules', []) if r['action'] == 'require']
-            if required_rules:
-                required_queryable = build_Q(required_rules)
-                if submitting and query_data.matches(required_queryable) and not cleaned_data.get(field_name):
-                    failures[field_name] = "required together with another field you have filled."
-
-        return cleaned_data, failures
 
 
 class DynModelForm(DynFormMixin, forms.ModelForm):

@@ -1,6 +1,7 @@
 import re
 from collections import defaultdict
 from datetime import timedelta
+from typing import Any
 
 from django.contrib import messages
 from django.db import models
@@ -127,7 +128,18 @@ class FormType(TimeStampedModel):
         return None
 
     def field_specs(self):
+        """
+        Get a mapping of field names to their specifications.
+        """
         return {f['name']: f for p in self.pages for f in p['fields']}
+
+    def field_pages(self):
+        """
+        Get a mapping of field names to their respective page numbers.
+        """
+        return {
+            f['name']: i + 1 for i, page in enumerate(self.pages) for f in page['fields']
+        }
 
     def check_form(self):
         warnings = []
@@ -149,11 +161,76 @@ class FormType(TimeStampedModel):
                 exists.add(field['name'])
         if missing:
             warnings.extend([f'Missing field `{f}`' for f in missing])
-        print(warnings)
         return warnings
 
     def get_pages(self):
         return [FormPage(**page, number=(i + 1)) for i, page in enumerate(self.pages)]
+
+    def clean_data(self, data: Any, validate: bool = False) -> Any:
+        """
+        Clean the data for the form, ensuring it is in the correct format.
+        :param data: The data to clean.
+        :param validate: Whether to validate the data.
+        :return: The cleaned data.
+        """
+
+        cleaned_data = {}
+        failures = defaultdict(dict)
+        field_pages = self.field_pages()
+        if not validate:
+            validate = any((name == 'submit' for name, _ in self.actions if name in data))
+
+        for name, label in self.actions:
+            if label in data.get(name, []):
+                cleaned_data["form_action"] = name
+
+        # active page is a special numeric field, increment if save_continue
+        field_type = FieldType.get_type('number')
+        active_page = field_type.clean(data.get('active_page', 1), multi=False, validate=True)
+        if cleaned_data['form_action'] == 'save_continue':
+            cleaned_data['active_page'] = min(active_page + 1, len(self.pages))
+        else:
+            cleaned_data['active_page'] = active_page
+
+        # extract field data
+        for field_name, field_spec in self.field_specs().items():
+            page_no = field_pages.get(field_name, 0)
+            field_type = FieldType.get_type(field_spec['field_type'])
+            if field_type is None:
+                continue
+
+            multiple = "multiple" in field_spec.get('options', [])
+            repeat = "repeat" in field_spec.get('options', [])
+            required = "required" in field_spec.get('options', [])
+
+            if field_name in data:
+                field_data = data.get(field_name)
+
+                try:
+                    cleaned_value = field_type.clean_all(
+                        field_data, repeat=repeat, multiple=multiple, validate=validate
+                    )
+                except (ValidationError, ValueError, KeyError) as err:
+                    failures[page_no][field_name] = str(err)
+                    cleaned_value = field_type.clean(field_data, repeat=repeat, multiple=multiple, validate=False)
+
+                if cleaned_value is not None:
+                    cleaned_data[field_name] = cleaned_value
+
+            if validate and required and not cleaned_data.get(field_name):
+                failures[page_no][field_name] = "required"
+
+        # Second loop to check other validation
+        query_data = Queryable(cleaned_data)
+        for field_name, field_spec in list(self.field_specs().items()):
+            page_no = field_pages.get(field_name, 0)
+            required_rules = [r for r in field_spec.get('rules', []) if r['action'] == 'require']
+            if required_rules:
+                required_queryable = build_Q(required_rules)
+                if validate and query_data.matches(required_queryable) and not cleaned_data.get(field_name):
+                    failures[page_no][field_name] = "required together with another field you have filled."
+
+        return cleaned_data, failures
 
     def __str__(self):
         return self.name
@@ -198,58 +275,10 @@ class BaseFormModel(TimeStampedModel):
 
         # Do not validate if item has not been modified since creation
         if not all((self.modified, self.created)) or (self.modified - self.created) < timedelta(seconds=1):
-            return {'progress': 0.0}
+            return {}
 
-        field_specs = {
-            field['name']: (page_no + 1, field)
-            for page_no, page in enumerate(self.form_type.pages) for field in page['fields']
-        }
-        report = {'pages': defaultdict(dict), 'progress': 0}
-
-        num_req = 0.0
-        valid_req = 0.0
-        # extract field data
-        for field_name, (page_no, field_spec) in list(field_specs.items()):
-            field_type = FieldType.get_type(field_spec['field_type'])
-            if not field_type:
-                continue
-            try:
-                if "required" in field_spec.get('options', []):
-                    num_req += 1.0
-                    if not (data.get(field_name, None)):
-                        raise ValidationError("required", code="required")
-                    else:
-                        valid_req += field_type.get_completeness(data.get(field_name))
-
-                if field_name in data:
-                    field_type.clean(data[field_name], validate=True)
-                    if "repeat" in field_spec.get('options', []):
-                        field_type.clean(data[field_name], multi=True, validate=True)
-                    else:
-                        field_type.clean(data[field_name], validate=True)
-
-            except ValidationError as e:
-                report['pages'][page_no][field_name] = mark_safe(
-                    f'{field_spec.get("label")}:&nbsp;<strong>{"; ".join(e.messages)}</strong>'
-                )
-
-        # second loop to check other validation
-        q_data = Queryable(data)
-        for field_name, (page_no, field_spec) in list(field_specs.items()):
-            req_rules = [r for r in field_spec.get('rules', []) if r['action'] == 'require']
-            if req_rules:
-                req_Q = build_Q(req_rules)
-                if q_data.matches(req_Q):
-                    num_req += 1.0
-                    if not (data.get(field_name, None)):
-                        report['pages'][page_no][field_name] = mark_safe(
-                            f"{field_spec.get('label')}:&nbsp;<strong>required "
-                            f"together with another field you have filled.</strong>"
-                        )
-                    else:
-                        valid_req += 1.0
-        report['progress'] = 100.0 if num_req == 0.0 else round(100.0 * valid_req / num_req, 0)
-        return {'pages': dict(report['pages']), 'progress': report['progress']}
+        cleaned_data, errors = self.form_type.clean_data(data, validate=True)
+        return {'pages': dict(errors)}
 
 
 class DynEntry(BaseFormModel):

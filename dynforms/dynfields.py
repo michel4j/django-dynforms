@@ -155,7 +155,7 @@ class FullName(FancyMixin, FieldType):
     def coerce(self, value: Any, *flags):
         if isinstance(value, list) and len(value) == 1:
             value = value[0].strip()
-        return value.strip()
+        return value
 
 
 class Address(FullName):

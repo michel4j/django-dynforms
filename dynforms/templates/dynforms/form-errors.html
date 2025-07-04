@@ -1,7 +1,7 @@
 {% load dynforms %}
 {% load icons %}
-<h5 class="pt-0">Please fix the following issues before submitting:</h5>
-<ul class="list-unstyled">
+<p class="pt-0">Please fix the following issues before submitting:</p>
+<ul class="list-unstyled small">
 {% if form.errors %}
     {% for error in form.errors.values %}
     {{ error }}

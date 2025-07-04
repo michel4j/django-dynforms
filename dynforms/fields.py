@@ -28,6 +28,8 @@ class FieldTypeMeta(type):
     def get_all(self, *args, **kwargs):
         info = {}
         for p in list(self.plugins.values()):
+            if p.hidden:
+                continue
             section = getattr(p, 'section', _("Custom"))
             if section not in info:
                 info[section] = []
@@ -125,6 +127,7 @@ class UnitType(TextChoices):
 class FieldType(object, metaclass=FieldTypeMeta):
     template_theme = "dynforms/fields"
     template_name = ""
+    hidden = False
     section = _("Custom")
     name = _("Noname Field")
     icon = "bi-input-cursor"

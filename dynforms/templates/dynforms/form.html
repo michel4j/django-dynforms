@@ -85,7 +85,7 @@
         </div>
         {% csrf_token %}
         <input id="active-page-input" type='hidden' name='active_page' value='{{ active_page }}'/>
-        <input id="all-progress-input" type='hidden' name='progress__all' value='{{ progress }}'/>
+        <input id="total-progress-input" type='hidden' name='progress__total' value='{{ progress }}'/>
         <input id="required-progress-input" type='hidden' name='progress__required' value='{{ progress }}'/>
     </form>
 {% endwith %}
@@ -142,7 +142,7 @@
                 const progressText = $('#df-progress-text');
                 const submitButton = $('#df-form-instance input[value="submit"]');
 
-                $('#all-progress-input').val(percentAll.toFixed(1));
+                $('#total-progress-input').val(percentAll.toFixed(1));
                 $('#required-progress-input').val(percentRequired.toFixed(1));
 
                 progressText.html(`${percentAll.toFixed(1)}% complete`);

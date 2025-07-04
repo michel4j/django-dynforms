@@ -184,7 +184,7 @@ class FormType(TimeStampedModel):
             if label in data.get(name, []):
                 cleaned_data["form_action"] = name
 
-        # active page is a special numeric field, increment if save_continue
+        # active_page and progress are a special numeric fields, increment active_page, if save_continue
         page_field = FieldType.get_field(name='active_page', field_type='number')
         active_page = page_field.clean(data.get('active_page', 1))
         if cleaned_data.get('form_action') == 'save_continue':
@@ -192,7 +192,10 @@ class FormType(TimeStampedModel):
         else:
             cleaned_data['active_page'] = active_page
 
-        # extract field data
+        progress_field = FieldType.get_field(name='progress', field_type='progress')
+        cleaned_data["progress"] = progress_field.clean(data.get('progress', {}))
+
+        # extract remaining field data
         for field_name, field_spec in self.field_specs().items():
 
             page_no = field_pages.get(field_name, 0)

@@ -66,6 +66,28 @@ class Number(SingleLineText):
         return int(value)
 
 
+class Progress(FieldType):
+    hidden = True
+    name = _("Form Progress")
+    settings = []
+    options = []
+    multi_valued = False
+
+    @staticmethod
+    def clean_total(value: Any) -> Any:
+        try:
+            return float(value)
+        except (ValueError, TypeError):
+            return 0.0
+
+    @staticmethod
+    def clean_required(value: Any) -> Any:
+        try:
+            return float(value)
+        except (ValueError, TypeError):
+            return 0.0
+
+
 class Range(Number):
     name = _("Range")
     icon = "range"

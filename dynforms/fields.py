@@ -146,7 +146,7 @@ class FieldType(object, metaclass=FieldTypeMeta):
         :param subfield: Optional subfield name to check.
         :return: True if multivalued, False otherwise.
         """
-        return subfield in self.multi_valued
+        return self.multi_valued if isinstance(self.multi_valued, bool) else subfield in self.multi_valued
 
     @classmethod
     def get_template_name(cls):

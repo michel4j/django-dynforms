@@ -147,7 +147,6 @@ class FormType(TimeStampedModel):
         missing = set()
         for i, page in enumerate(self.pages):
             for field in page['fields']:
-                print(field['name'])
                 if field['name'] in exists:
                     warnings.append(f'Page {i + 1}: Field `{field["name"]}` defined more than once!')
                 if field['name'] in missing:

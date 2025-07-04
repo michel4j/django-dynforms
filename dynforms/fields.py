@@ -128,7 +128,7 @@ class FieldType(object, metaclass=FieldTypeMeta):
     section = _("Custom")
     name = _("Noname Field")
     icon = "bi-input-cursor"
-    multi_valued = False
+    multi_valued = []
     sizes: list[str] = ["medium", "small", "large"]
     units: list[UNITS_TYPE] = []
     options: list[OPTION_TYPE] = ["required", "hide", "repeat"]
@@ -136,6 +136,14 @@ class FieldType(object, metaclass=FieldTypeMeta):
     settings: list[SETTING_TYPE] = []
     required_subfields: list[str] = []
     subfields = {}
+
+    def is_multi_valued(self, subfield: str = None) -> bool:
+        """
+        Check if the field type is multivalued or if a specific subfield is multivalued.
+        :param subfield: Optional subfield name to check.
+        :return: True if multivalued, False otherwise.
+        """
+        return subfield in self.multi_valued
 
     @classmethod
     def get_template_name(cls):

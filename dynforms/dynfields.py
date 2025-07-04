@@ -79,7 +79,9 @@ class CheckBoxes(StandardMixin, FieldType):
     options = ['required', 'randomize', 'inline', 'switch', 'hide', 'other', 'no-label']
     settings = ['choices']
     choices_type = 'checkbox'
-    multi_valued = True
+
+    def is_multi_valued(self, subfield: str = None) -> bool:
+        return True
 
 
 class DropDown(MultipleChoice):

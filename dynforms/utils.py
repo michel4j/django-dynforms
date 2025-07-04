@@ -15,6 +15,7 @@ from django.conf import settings
 from django.db.models import Q
 from django.urls import reverse
 
+from dynforms.fields import value_to_list
 
 FIELD_SEPARATOR = '__'
 
@@ -50,7 +51,7 @@ def load(modname, verbose=False, failfast=False):
 
     If verbose is True, debug information will be printed to stdout.
 
-    If failfast is True, import errors will not be surpressed.
+    If failfast is True, import errors will not be suppressed.
     """
     for app in settings.INSTALLED_APPS:
         get_module(app, modname, verbose, failfast)
@@ -172,22 +173,22 @@ def get_nested_list(obj, field_names, required=True):
     return [get_nested(obj, field_name, required) for field_name in field_names]
 
 
-def flatten_dict(d: dict, parent_key='') -> dict:
+def flatten_dict(data: dict, parent: str = '') -> dict:
     """
     Flatten a nested dictionary by replacing the keys with a dots or double-underscore
-    :param d: Dictionary to flatten
-    :param parent_key: optional parent key to prepend to the keys
+    :param data: Dictionary to flatten
+    :param parent: optional parent key to prepend to the keys
     :return: flattened dictionary
     """
-    items = []
-    for k, v in list(d.items()):
-        k = k.replace('-', '_')
-        new_key = parent_key + FIELD_SEPARATOR + k if parent_key else k
-        if isinstance(v, MutableMapping):
-            items.extend(list(flatten_dict(v, new_key).items()))
+    items = {}
+    for key, value in data.items():
+        key = key.replace('-', '_')
+        new_key = f"{parent}{FIELD_SEPARATOR}{key}" if parent else key
+        if isinstance(value, dict):
+            items.update(flatten_dict(value, new_key))
         else:
-            items.append((new_key, v))
-    return dict(items)
+            items[new_key] = value
+    return items
 
 
 def expand_dict(d: dict) -> dict:
@@ -245,8 +246,8 @@ class Queryable(object):
     """Converts a dictionary into an object which can be queried using django 
     Q objects"""
 
-    def __init__(self, D):
-        self.data = flatten_dict(D)
+    def __init__(self, data):
+        self.data = flatten_dict(data)
 
     def matches(self, q):
         if isinstance(q, tuple):
@@ -402,7 +403,7 @@ class FormField:
         return 'inline' in self.options
 
     def is_multi_valued(self) -> bool:
-        return 'multiple' in self.options or self.type.multi_valued
+        return 'multiple' in self.options or self.type.is_multi_valued()
 
     def is_repeatable(self) -> bool:
         return 'repeat' in self.options
@@ -442,25 +443,31 @@ class FormField:
         Normalize the data for this field. make sure lists are present when needed and not
         present if not needed.
         :param data: The data to normalize.
-        :param multi: If True, the data is expected to be multi-valued.
+        :param multi: If True, the data is expected to be multivalued.
         """
+
         if multi and isinstance(data, list):
             data = [self.normalize_data(item) for item in data if item is not None]
-        elif multi and not isinstance(data, list):
+        elif multi:
             data = [self.normalize_data(data)]
         elif isinstance(data, dict):
-            for key, value in list(data.items()):
-                subfield = self.type.subfields.get(key, None)
-                if subfield:
-                    data[key] = self.normalize_data(value, multi=subfield.multi_valued)
+            # clean subfields
+            new_data = {}
+            for key, value in data.items():
+                value = self.normalize_data(value, multi=self.type.is_multi_valued(key))
+                if value in [None, '', [], {}]:
+                    continue
+                clean_method = getattr(self.type, f'clean_{key}', None)
+                if callable(clean_method):
+                    new_data[key] = clean_method(value)
                 else:
-                    data[key] = self.normalize_data(value)
+                    new_data[key] = value
+
+            data = {k: v for k, v in new_data.items() if v not in [None, '', [], {}]}
         elif isinstance(data, list) and len(data) == 1:
             data = self.normalize_data(data[0])
         elif isinstance(data, str):
             data = data.strip()
-        else:
-            data = data if data is not None else ''
 
         return data
 
@@ -469,45 +476,10 @@ class FormField:
         Clean the data for this field. This method should be overridden by subclasses
         to implement specific cleaning logic.
         """
-
         multi = self.is_multi_valued() or self.is_repeatable()
         data = self.normalize_data(data, multi=multi)
+        return self.type.clean(data)
 
-        # if the field has subfields, clean them
-
-        if isinstance(data, dict):
-            cleaned_data = {**data}
-
-            # clean each specified subfield, subfields is a dictionary mapping field names to FieldType instances
-            # if the subfield is multi-valued, clean each value in the list
-            for key, subfield in self.type.subfields.items():
-                if key not in cleaned_data:
-                    continue
-
-                # run the clean method of the subfield
-                if subfield.multi_valued:
-                    cleaned_data[key] = [subfield.clean(value) for value in cleaned_data[key]]
-                else:
-                    cleaned_data[key] = subfield.clean(cleaned_data.get(key, None))
-
-            # If a custom clean method is defined for the field type, call it.
-            # Note: For multi-valued subfields, the full list of values is passed as is.
-            for key, value in list(cleaned_data.items()):
-                clean_method = getattr(self.type, f'clean_{key}', lambda v: v)
-                if callable(clean_method):
-                    cleaned_data[key] = clean_method(value)
-
-                # remove empty values
-                if cleaned_data[key] in [None, '', [], {}]:
-                    del cleaned_data[key]
-        elif isinstance(data, list):
-            print("Cleaning a list of values, not implemented yet.")
-            cleaned_data = data
-        else:
-            cleaned_data = data
-
-        # Finally, call the type's clean method
-        return self.type.clean(cleaned_data)
 
 class FormPage:
     def __init__(self, name='', fields=None, number=1):

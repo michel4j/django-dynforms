@@ -40,7 +40,7 @@ def render_field(context, field: FormField, repeatable: bool = False):
     all_data = field.get_data(context)
 
     if field.type:
-        if field.type.multi_valued:
+        if field.type.is_multi_valued():
             all_data = [] if all_data == '' else all_data
         field_type = field.type
     else:

@@ -194,10 +194,12 @@ class FormType(TimeStampedModel):
 
         # extract field data
         for field_name, field_spec in self.field_specs().items():
+
             page_no = field_pages.get(field_name, 0)
             field_type = FieldType.get_type(field_spec['field_type'])
             if field_type is None:
                 continue
+
             field = field_type.get_field(**field_spec)
 
             if field_name in data:

@@ -202,10 +202,7 @@ class FormType(TimeStampedModel):
 
             if field_name in data:
                 try:
-                    if field.is_multi_valued() or field.is_repeatable():
-                        cleaned_value = [field.clean(item) for item in data[field_name]]
-                    else:
-                        cleaned_value = field.clean(data[field_name])
+                    cleaned_value = field.clean(data[field_name])
                 except (ValidationError, ValueError, KeyError, AttributeError) as err:
                     failures[page_no][field_name] = str(err)
                     cleaned_value = cleaned_data

@@ -472,7 +472,9 @@ class FormField:
 
         multi = self.is_multi_valued() or self.is_repeatable()
         data = self.normalize_data(data, multi=multi)
+
         # if the field has subfields, clean them
+
         if isinstance(data, dict):
             cleaned_data = {**data}
 
@@ -498,12 +500,14 @@ class FormField:
                 # remove empty values
                 if cleaned_data[key] in [None, '', [], {}]:
                     del cleaned_data[key]
+        elif isinstance(data, list):
+            print("Cleaning a list of values, not implemented yet.")
+            cleaned_data = data
         else:
             cleaned_data = data
 
-        # finally call the type's clean method
+        # Finally, call the type's clean method
         return self.type.clean(cleaned_data)
-
 
 class FormPage:
     def __init__(self, name='', fields=None, number=1):

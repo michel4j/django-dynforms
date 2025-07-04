@@ -12,7 +12,7 @@
         <a href="#{{ name }}-group" title="Go to field">
             {% svg_icon "arrow-circle-right" %}
         </a>
-        {{ error|safe }}{% if not forloop.last %} &middot; {% endif %}
+        {{ name }} {{ error|safe }}{% if not forloop.last %} &middot; {% endif %}
     </li>
 {% endfor %}
 </ul>

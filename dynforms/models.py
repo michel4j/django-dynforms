@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import re
 from collections import defaultdict
 from datetime import timedelta
@@ -277,6 +279,19 @@ class BaseFormModel(TimeStampedModel):
 
         cleaned_data, errors = self.form_type.clean_data(data, validate=True)
         return {'pages': dict(errors)}
+
+    def get_progress(self, data: dict = None) -> dict[str, float]:
+        """
+        Fetch the progress of the form based on the number of completed fields and required fields.
+        :param data: The data to calculate progress from. If None, use the instance's details.
+        :return: A dictionary with progress information containing keys for "total" and "required" progress as floats.
+        """
+
+        data = data or self.details
+        progress = data.get('progress', {})
+        if isinstance(progress, dict):
+            return {'total': progress.get('total', 0.0), 'required': progress.get('required', 0.0)}
+        return {'total': 0.0, 'required': 0.0}
 
 
 class DynEntry(BaseFormModel):

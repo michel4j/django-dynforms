@@ -202,7 +202,10 @@ class FormType(TimeStampedModel):
 
             if field_name in data:
                 try:
-                    cleaned_value = field.clean(data[field_name])
+                    if field.is_multi_valued() or field.is_repeatable():
+                        cleaned_value = [field.clean(item) for item in data[field_name]]
+                    else:
+                        cleaned_value = field.clean(data[field_name])
                 except (ValidationError, ValueError, KeyError, AttributeError) as err:
                     failures[page_no][field_name] = str(err)
                     cleaned_value = cleaned_data
@@ -214,7 +217,7 @@ class FormType(TimeStampedModel):
             if validate and required and not cleaned_data.get(field_name):
                 failures[page_no][field_name] = "required"
 
-        # Second loop to check other validation
+        # Second loop to check other validations
         query_data = Queryable(cleaned_data)
         for field_name, field_spec in list(self.field_specs().items()):
             page_no = field_pages.get(field_name, 0)

@@ -469,26 +469,35 @@ class FormField:
         Clean the data for this field. This method should be overridden by subclasses
         to implement specific cleaning logic.
         """
+
         multi = self.is_multi_valued() or self.is_repeatable()
         data = self.normalize_data(data, multi=multi)
-
         # if the field has subfields, clean them
-        if self.type.subfields and isinstance(data, dict):
-            cleaned_data = {}
+        if isinstance(data, dict):
+            cleaned_data = {**data}
+
+            # clean each specified subfield, subfields is a dictionary mapping field names to FieldType instances
+            # if the subfield is multi-valued, clean each value in the list
             for key, subfield in self.type.subfields.items():
-                if key not in data:
+                if key not in cleaned_data:
                     continue
 
                 # run the clean method of the subfield
                 if subfield.multi_valued:
-                    cleaned_data[key] = [subfield.clean(value) for value in data[key]]
+                    cleaned_data[key] = [subfield.clean(value) for value in cleaned_data[key]]
                 else:
-                    cleaned_data[key] = subfield.clean(data.get(key, None))
+                    cleaned_data[key] = subfield.clean(cleaned_data.get(key, None))
 
-                # if a custom clean method is defined for the field type, call it
+            # If a custom clean method is defined for the field type, call it.
+            # Note: For multi-valued subfields, the full list of values is passed as is.
+            for key, value in list(cleaned_data.items()):
                 clean_method = getattr(self.type, f'clean_{key}', lambda v: v)
                 if callable(clean_method):
-                    cleaned_data[key] = clean_method(cleaned_data[key])
+                    cleaned_data[key] = clean_method(value)
+
+                # remove empty values
+                if cleaned_data[key] in [None, '', [], {}]:
+                    del cleaned_data[key]
         else:
             cleaned_data = data
 

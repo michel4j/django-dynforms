@@ -176,7 +176,7 @@ def check_error(context, field_name, errors, label='error'):
 
 @register.simple_tag(takes_context=True)
 def field_label(context, field_name):
-    names = {f['name']: f['label'] for f in context['page']['fields']}
+    names = {f.name: f.label for f in context['page'].fields}
     return names.get(field_name, '')
 
 

@@ -51,6 +51,9 @@ function clearInputs(selector) {
                 $section.find('.repeat-html-index').each(function () {
                     $(this).html(index);
                 });
+                $section.find('.repeat-html-count').each(function () {
+                    $(this).html(index + 1);
+                });
                 $section.find('.repeat-value-index').each(function () {
                     $(this).attr('value', index);
                 });

@@ -12,7 +12,7 @@
         <a href="#{{ name }}-group" title="Go to field">
             {% svg_icon "arrow-circle-right" size="sm"%}
         </a>
-        {% if name != '__all__' %}<var>{{ name }}:</var>{% endif %}
+        {% if name != '__all__' %}<var>{% field_label name %}:</var>{% endif %}
         <div>{{ error|safe }}{% if not forloop.last %} &middot; {% endif %}</div>
     </li>
 {% endfor %}

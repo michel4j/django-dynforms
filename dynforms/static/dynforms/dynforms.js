@@ -17,7 +17,7 @@ function clearInputs(selector) {
             destroyMultiSelect(this);
             $(this).val([]).trigger('change');
             createMultiSelect(this);
-        }else if ($(this).is('select')) {
+        } else if ($(this).is('select')) {
             $(this).find('option[disabled]').removeAttr('disabled');
             $(this).val('').trigger('change');
         } else if ($(this).is(':checkbox, :radio')) {
@@ -67,7 +67,7 @@ function clearInputs(selector) {
             }
 
             function updateRepeat($section, index) {
-                $section.find('.repeat-html-index').each(function () {
+                $section.find('.repeat-html-index, .repeat-html-count0').each(function () {
                     $(this).html(index);
                 });
                 $section.find('.repeat-html-count').each(function () {
@@ -149,7 +149,7 @@ function clearInputs(selector) {
                 popover.show();
 
                 // single click on popover button removes the item, click outside closes the popover
-                $(document).one('click', '.popover button', function(){
+                $(document).one('click', '.popover button', function () {
                     if ($(this).is("[data-confirmed-remove]")) {
                         if ($others.length > 0) {
                             $toDelete.slideUp('fast', function () {

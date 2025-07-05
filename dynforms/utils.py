@@ -489,4 +489,15 @@ class FormPage:
         self.fields = [
             FormField(**field, index=i) for i, field in enumerate(fields) if isinstance(field, dict)
         ]
+        self.field_indices = {field.name: i for i, field in enumerate(self.fields)}
+
+    def get_field(self, name):
+        """
+        Get a field by its name.
+        :param name: The name of the field to retrieve.
+        :return: The FormField object if found, otherwise None.
+        """
+        return self.fields[self.field_indices[name]] if name in self.field_indices else None
+
+
 

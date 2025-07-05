@@ -123,6 +123,7 @@ class Date(SingleLineText):
     name = _("Date")
     icon = "calendar"
     settings = []
+    options = ['hide', 'required', 'multiple', 'floating', 'no-label']
 
 
 class Time(SingleLineText):

@@ -47,6 +47,25 @@ function clearInputs(selector) {
             let $allRepeats = $control.closest('.repeatable-control').siblings(repeatSelector);
             let $removeButtons = $allRepeats.find(options.remove);
 
+            function updateButtons($ctrl, $rptItems, $rmBtns) {
+                // Disable/enable the remove buttons based on the number of repeats
+                // prevent removal of the last repeatable section
+
+                $rmBtns = $rptItems.find(options.remove);
+                if ($allRepeats.length > 1) {
+                    $rmBtns.removeAttr("disabled");
+                } else {
+                    $rmBtns.attr("disabled", "disabled");
+                }
+
+                // Disable/enable the add button based on maxRepeats is set and reached
+                if (options.maxRepeats && ($rptItems.length >= options.maxRepeats)) {
+                    $ctrl.attr("disabled", "disabled");
+                } else {
+                    $ctrl.removeAttr("disabled");
+                }
+            }
+
             function updateRepeat($section, index) {
                 $section.find('.repeat-html-index').each(function () {
                     $(this).html(index);
@@ -78,20 +97,11 @@ function clearInputs(selector) {
                     $section.attr('id', $section.data("repeat-name").replace(/\?/i, index))
                 }
 
-                $allRepeats = $($control).siblings(repeatSelector);
-                $removeButtons = $allRepeats.find(options.remove);
-                if ($allRepeats.length > 1) {
-                    $removeButtons.removeAttr("disabled");
-                } else {
-                    $removeButtons.attr("disabled", "disabled");
-                }
-
-                if (options.maxRepeats && ($allRepeats.length >= options.maxRepeats)) {
-                    $control.attr("disabled", "disabled");
-                } else {
-                    $control.removeAttr("disabled");
-                }
+                $allRepeats = $control.closest('.repeatable-control').siblings(repeatSelector);
+                updateButtons($control, $allRepeats, $removeButtons);
             }
+
+            updateButtons($control, $allRepeats, $removeButtons);
 
             $control.click(function (e) {
                 let $targetElement = $allRepeats.last();
@@ -122,26 +132,43 @@ function clearInputs(selector) {
 
             $(document).on('click', `${repeatSelector} ${options.remove}`, function (e) {
                 let $toDelete = $(this).closest(repeatSelector);
-                let others = $toDelete.siblings(repeatSelector);
-                if (others.length > 0) {
-                    $toDelete.slideUp('fast', function () {
-                        $toDelete.remove();
-                        others.each(function (index, obj) {
-                            updateRepeat($(this), index);
-                        });
-                    });
-                } else if (options.clearIfLast) {
-                    $toDelete.find(":input").each(function () {
-                        $(this).val('').removeAttr('checked').removeAttr('selected');
-                    });
-                }
-            });
+                let $others = $toDelete.siblings(repeatSelector);
 
-            if ($allRepeats.length > 1) {
-                $removeButtons.removeAttr("disabled");
-            } else {
-                $removeButtons.attr("disabled", "disabled");
-            }
+                // show confirmation popover
+                const popover = new bootstrap.Popover(this, {
+                    trigger: 'focus',
+                    html: true,
+                    placement: 'right',
+                    sanitize: false,
+                    title: "Delete Item?",
+                    content: `<div class="w-100 d-flex flex-row gap-3">
+                                <button class="btn btn-xs btn-secondary" role="button">Cancel</button>
+                                <button data-confirmed-remove="1" class="btn btn-xs btn-danger" role="button">Delete</button>
+                              </div>`,
+                });
+                popover.show();
+
+                // single click on popover button removes the item, click outside closes the popover
+                $(document).one('click', '.popover button', function(){
+                    if ($(this).is("[data-confirmed-remove]")) {
+                        if ($others.length > 0) {
+                            $toDelete.slideUp('fast', function () {
+                                $toDelete.remove();
+                                $others.each(function (index, obj) {
+                                    updateRepeat($(this), index);
+                                });
+                            });
+                        } else if (options.clearIfLast) {
+                            $toDelete.find(":input").each(function () {
+                                $(this).val('').removeAttr('checked').removeAttr('selected');
+                            });
+                        }
+                    }
+                    popover.dispose();
+                    $allRepeats = $control.closest('.repeatable-control').siblings(repeatSelector);
+                    updateButtons($control, $allRepeats, $removeButtons);
+                });
+            });
         });
     };
 })(jQuery);

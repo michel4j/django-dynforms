@@ -17,7 +17,10 @@
     <script src="{% static 'dynforms/jquery-bs-datepicker.min.js' %}"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#{{field.name}}').datePicker();
+            $('#{{field.name}}').datePicker({
+                format: 'YYYY-MM-DD',
+                multiple: {% if 'multiple' in field.options %}true{% else %}false{% endif %}
+            });
         });
     </script>
 </div>

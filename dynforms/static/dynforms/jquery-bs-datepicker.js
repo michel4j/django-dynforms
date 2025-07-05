@@ -4,6 +4,7 @@
             const settings = $.extend({
                 dateFormat: 'YYYY-MM-DD',
                 initialDate: new Date(), // Date object or string parsable by new Date()
+                multiple: false // Currently only single date selection is supported
             }, options);
 
             const leftArrow = '<svg  xmlns="http://www.w3.org/2000/svg"  width="1em"  height="1em"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="3"  stroke-linecap="round"  stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 6l-6 6l6 6" /></svg>';
@@ -16,6 +17,24 @@
                 const month = ('0' + (d.getMonth() + 1)).slice(-2);
                 const day = ('0' + d.getDate()).slice(-2);
                 return formatStr.replace('YYYY', year).replace('MM', month).replace('DD', day);
+            }
+
+            // Helper function to parse date from string
+            function parseDates(dateStr) {
+                const parts = dateStr.trim().split(/\s*,\s+/);
+                let dates = [];
+                for (const part of parts) {
+                    try {
+                        console.log(Date.parse(part));
+                        let date = new Date(Date.parse(part));
+                        if (!isNaN(date.getTime())) {
+                            dates.push(date);
+                        }
+                    } catch(err) {
+                        console.error('Invalid date format:', part, 'Error:', err);
+                    }
+                }
+                return dates;
             }
 
             // Generates the HTML for the popover title (navigation)
@@ -70,8 +89,11 @@
                                 cellDate.setHours(0,0,0,0);
                                 let classes = 'dp-action';
                                 if (cellDate.getTime() === today.getTime()) classes += ' table-info'; // Today
-                                if (state.selectedDates.length > 0 && cellDate.getTime() === state.selectedDates[0].getTime()) {
-                                    classes += ' table-primary'; // Selected
+                                for (const selectedDate of state.selectedDates) {
+                                    if (selectedDate.getTime() === cellDate.getTime()) {
+                                        classes += ' table-primary'; // Selected
+                                        break; // No need to check further if already selected
+                                    }
                                 }
                                 html += `<td class="${classes}" data-action="select-day" data-day="${date}">${date}</td>`;
                                 date++;
@@ -110,8 +132,7 @@
                 } else if (state.currentView === 'years') {
                     html += '<tbody>';
                     const currentYearInView = state.currentDate.getFullYear();
-                    const startDecadeYear = Math.floor(currentYearInView / 20) * 20;
-                    let yearVal = startDecadeYear;
+                    let yearVal = Math.floor(currentYearInView / 20) * 20;
                     for (let i = 0; i < 5; i++) { // 5 rows
                         html += '<tr>';
                         for (let j = 0; j < 4; j++) { // 4 years per row
@@ -129,14 +150,18 @@
             // Updates the input field value
             function updateInputValue($input) {
                 const state = $input.data('datepickerState');
-                if (state.selectedDates.length > 0) {
-                    // For now, single select
-                    const formatted = formatDate(state.selectedDates[0], state.settings.dateFormat);
-                    $input.val(formatted);
-                    $input.change(); // Trigger change event to notify any listeners
+                let formattedDates = [];
+                for (const selectedDate of state.selectedDates) {
+                    formattedDates.push(formatDate(selectedDate, state.settings.dateFormat));
+                }
+                const formatted = formattedDates.join(', '); // Join multiple dates if needed
+                $input.val(formatted);
+                $input.change(); // Trigger change event to notify any listeners
+                if (state.settings.multiple) {
+                    $input.attr('data-selected-dates', JSON.stringify(state.selectedDates.map(d => d.toISOString())));
+                } else if (state.selectedDates.length > 0) {
                     $input.trigger('changeDate', state.selectedDates[0]); // Trigger change event for any listeners
                 } else {
-                    $input.val('');
                     $input.trigger('changeDate', null); // Trigger change event for any listeners
                 }
             }
@@ -162,7 +187,11 @@
                     const day = parseInt($target.data('day'));
                     // Ensure month and year are from currentDate to avoid issues if it changed
                     const selectedDate = new Date(state.currentDate.getFullYear(), state.currentDate.getMonth(), day);
-                    state.selectedDates = [selectedDate]; // Single select
+                    if (state.settings.multiple) {
+                        state.selectedDates.push(selectedDate); // Add to selection
+                    } else {
+                        state.selectedDates = [selectedDate]; // Single select
+                    }
                     updateInputValue($input);
                     bootstrap.Popover.getInstance($input[0]).hide();
                     return; // Exit early as popover is hidden
@@ -196,8 +225,12 @@
             // Initialize for each element in the jQuery selection
             return this.each(function() {
                 const $input = $(this);
-                // Try to parse initial date from input value if it's set and valid, otherwise use settings.initialDate
-                let initialDateFromInput = new Date($input.val());
+                // Try to parse the initial date from input value if it's set and valid, otherwise use settings.initialDate
+                let initialDates = parseDates($input.val());
+                let initialDateFromInput;
+                if (initialDates.length > 0) {
+                    initialDateFromInput = new Date(initialDates[0]);
+                }
                 let initialPickerDate = settings.initialDate;
 
                 if ($input.val() && !isNaN(initialDateFromInput.getTime())) {
@@ -211,16 +244,9 @@
                      initialPickerDate = new Date(); // Fallback if not a Date object
                 }
 
-
-                let currentSelectedDate = [];
-                if ($input.val() && !isNaN(initialDateFromInput.getTime())) {
-                    currentSelectedDate = [initialDateFromInput];
-                }
-
-
                 const state = {
                     currentDate: new Date(initialPickerDate.getFullYear(), initialPickerDate.getMonth(), 1), // Start view at 1st of month
-                    selectedDates: currentSelectedDate, // Initialize with date from input if valid
+                    selectedDates: initialDates, // Initialize with date from input if valid
                     currentView: 'days', // 'days', 'months', 'years'
                     settings: settings,
                     inputElement: $input[0]
@@ -251,11 +277,16 @@
                     }
                 });
 
+                $input.on('change', function() {
+                    state.selectedDates = parseDates($input.val());
+                    $input.data('datepickerState', state); // Update state with new selected dates
+                    console.log(state.selectedDates); // Debugging output
+                });
+
                 // Close popover if a user clicks outside of it.
                 $(document).on('click', function(e) {
                     const popoverTip = document.getElementById($input.attr('aria-describedby'));
                     if (popoverTip && !$(popoverTip).is(e.target) && !$.contains(popoverTip, e.target) && !$(e.target).is($input)) {
-                        console.log('closing date popover');
                         popover.hide();
                     }
                 });

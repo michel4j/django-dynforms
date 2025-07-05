@@ -188,30 +188,19 @@ class FieldType(object, metaclass=FieldTypeMeta):
         }
         return validity
 
-    def get_completeness(self, data) -> float:
-        """
-        Calculate the completeness of the field based on the provided data.
-        """
-        if not data:
-            return 0.0
-        elif len(self.required_subfields) == 0:
-            return 1.0
-        else:
-            invalid_fields = []
-            if isinstance(data, list):
-                for entry in data:
-                    invalid_fields += [k for k, v in list(self.check_entry(entry).items()) if not v]
-                total = len(data) * len(self.required_subfields)
-            else:
-                invalid_fields += [k for k, v in list(self.check_entry(data).items()) if not v]
-                total = len(self.required_subfields)
-            return 1.0 if total == 0 else (1.0 - len(invalid_fields) / float(total))
-
     def clean(self, data: Any) -> Any:
         """
         Clean the data for this field type. This is called on a single instance of the field even if it is multi-valued.
         :param data: The data to clean
         :return: Cleaned data.
+        """
+        return data
+
+    def compress(self, data: Any) -> Any:
+        """
+        Compress the data for this field type. This is called on a single instance of the field even if it is multi-valued.
+        :param data: The data to compress
+        :return: Compressed data.
         """
         return data
 

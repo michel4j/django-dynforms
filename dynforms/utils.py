@@ -428,15 +428,15 @@ class FormField:
             data = form.cleaned_data.get('details', {})
             value = data.get(self.name)
             if value is not None:
-                return value
+                return self.type.compress(value)
 
         if getattr(form, 'instance', None) and hasattr(form.instance, 'get_field_value') and form.instance.pk:
             value = form.instance.get_field_value(self.name)
             if value is not None:
-                return value
+                return self.type.compress(value)
 
         value = form.initial.get(self.name, default)
-        return '' if value is None else value
+        return '' if value is None else self.type.compress(value)
 
     def normalize_data(self, data, multi: bool = False) -> Any:
         """

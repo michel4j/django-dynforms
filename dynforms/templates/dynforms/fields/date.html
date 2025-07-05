@@ -19,7 +19,7 @@
         $(document).ready(function () {
             $('#{{field.name}}').datePicker({
                 format: 'YYYY-MM-DD',
-                multiple: {% if 'multiple' in field.options %}true{% else %}false{% endif %}
+                multiple: {% if 'list' in field.options %}true{% else %}false{% endif %}
             });
         });
     </script>

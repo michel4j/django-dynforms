@@ -13,9 +13,9 @@
             // Helper function to format date
             function formatDate(date, formatStr) {
                 const d = new Date(date);
-                const year = d.getFullYear();
-                const month = ('0' + (d.getMonth() + 1)).slice(-2);
-                const day = ('0' + d.getDate()).slice(-2);
+                const year = d.getUTCFullYear();
+                const month = ('0' + (d.getUTCMonth() + 1)).slice(-2);
+                const day = ('0' + d.getUTCDate()).slice(-2);
                 return formatStr.replace('YYYY', year).replace('MM', month).replace('DD', day);
             }
 
@@ -25,10 +25,9 @@
                 let dates = [];
                 for (const part of parts) {
                     try {
-                        console.log(Date.parse(part));
-                        let date = new Date(Date.parse(part));
-                        if (!isNaN(date.getTime())) {
-                            dates.push(date);
+                        let d = new Date(part);
+                        if (!isNaN(d.getTime())) {
+                            dates.push(d);
                         }
                     } catch(err) {
                         console.error('Invalid date format:', part, 'Error:', err);
@@ -44,11 +43,11 @@
                 let titleDataAction = 'title';
 
                 if (state.currentView === 'days') {
-                    titleText = state.currentDate.toLocaleString('default', { month: 'long' }) + ' ' + state.currentDate.getFullYear();
+                    titleText = state.currentDate.toLocaleString('default', { month: 'long' }) + ' ' + state.currentDate.getUTCFullYear();
                 } else if (state.currentView === 'months') {
-                    titleText = state.currentDate.getFullYear().toString();
+                    titleText = state.currentDate.getUTCFullYear().toString();
                 } else if (state.currentView === 'years') {
-                    const currentYear = state.currentDate.getFullYear();
+                    const currentYear = state.currentDate.getUTCFullYear();
                     const startYear = Math.floor(currentYear / 20) * 20;
                     titleText = `${startYear} - ${startYear + 19}`;
                     titleDataAction = 'noop'; // No further drill-up from years view title
@@ -69,11 +68,11 @@
                 if (state.currentView === 'days') {
                     html += '<thead><tr><th>Su</th><th>Mo</th><th>Tu</th><th>We</th><th>Th</th><th>Fr</th><th>Sa</th></tr></thead>';
                     html += '<tbody>';
-                    const year = state.currentDate.getFullYear();
-                    const month = state.currentDate.getMonth();
+                    const year = state.currentDate.getUTCFullYear();
+                    const month = state.currentDate.getUTCMonth();
                     const firstDayOfMonth = new Date(year, month, 1);
                     const lastDayOfMonth = new Date(year, month + 1, 0);
-                    const numDays = lastDayOfMonth.getDate();
+                    const numDays = lastDayOfMonth.getUTCDate();
                     let startDayOfWeek = firstDayOfMonth.getDay(); // 0 (Sun) - 6 (Sat)
 
                     let date = 1;
@@ -131,7 +130,7 @@
                     html += '</tbody>';
                 } else if (state.currentView === 'years') {
                     html += '<tbody>';
-                    const currentYearInView = state.currentDate.getFullYear();
+                    const currentYearInView = state.currentDate.getUTCFullYear();
                     let yearVal = Math.floor(currentYearInView / 20) * 20;
                     for (let i = 0; i < 5; i++) { // 5 rows
                         html += '<tr>';
@@ -169,16 +168,17 @@
             // Handles clicks on actions within the popover
             function handlePopoverAction($input, $target) {
                 let state = $input.data('datepickerState');
+                state.selectedDates = parseDates($input.val());
                 const action = $target.data('action');
 
                 if (action === 'prev') {
-                    if (state.currentView === 'days') state.currentDate.setMonth(state.currentDate.getMonth() - 1);
-                    else if (state.currentView === 'months') state.currentDate.setFullYear(state.currentDate.getFullYear() - 1);
-                    else if (state.currentView === 'years') state.currentDate.setFullYear(state.currentDate.getFullYear() - 20);
+                    if (state.currentView === 'days') state.currentDate.setMonth(state.currentDate.getUTCMonth() - 1);
+                    else if (state.currentView === 'months') state.currentDate.setFullYear(state.currentDate.getUTCFullYear() - 1);
+                    else if (state.currentView === 'years') state.currentDate.setFullYear(state.currentDate.getUTCFullYear() - 20);
                 } else if (action === 'next') {
-                    if (state.currentView === 'days') state.currentDate.setMonth(state.currentDate.getMonth() + 1);
-                    else if (state.currentView === 'months') state.currentDate.setFullYear(state.currentDate.getFullYear() + 1);
-                    else if (state.currentView === 'years') state.currentDate.setFullYear(state.currentDate.getFullYear() + 20);
+                    if (state.currentView === 'days') state.currentDate.setMonth(state.currentDate.getUTCMonth() + 1);
+                    else if (state.currentView === 'months') state.currentDate.setFullYear(state.currentDate.getUTCFullYear() + 1);
+                    else if (state.currentView === 'years') state.currentDate.setFullYear(state.currentDate.getUTCFullYear() + 20);
                 } else if (action === 'title') {
                     if (state.currentView === 'days') state.currentView = 'months';
                     else if (state.currentView === 'months') state.currentView = 'years';
@@ -186,7 +186,7 @@
                 } else if (action === 'select-day') {
                     const day = parseInt($target.data('day'));
                     // Ensure month and year are from currentDate to avoid issues if it changed
-                    const selectedDate = new Date(state.currentDate.getFullYear(), state.currentDate.getMonth(), day);
+                    const selectedDate = new Date(state.currentDate.getUTCFullYear(), state.currentDate.getUTCMonth(), day);
                     if (state.settings.multiple) {
                         state.selectedDates.push(selectedDate); // Add to selection
                     } else {
@@ -226,14 +226,17 @@
             return this.each(function() {
                 const $input = $(this);
                 // Try to parse the initial date from input value if it's set and valid, otherwise use settings.initialDate
+
+                let inputDateStrings = $input.val().trim().split(/\s*,\s+/);
                 let initialDates = parseDates($input.val());
                 let initialDateFromInput;
-                if (initialDates.length > 0) {
-                    initialDateFromInput = new Date(initialDates[0]);
+
+                if (inputDateStrings.length > 0 && inputDateStrings[0]) {
+                    initialDateFromInput = new Date(inputDateStrings[0]);
                 }
                 let initialPickerDate = settings.initialDate;
 
-                if ($input.val() && !isNaN(initialDateFromInput.getTime())) {
+                if (initialDateFromInput && !isNaN(initialDateFromInput.getTime())) {
                     // If input has a valid date, use it for the picker's initial month/year view
                     // And also for the initial selection if desired (currently, selection happens on click)
                     initialPickerDate = initialDateFromInput;
@@ -245,7 +248,7 @@
                 }
 
                 const state = {
-                    currentDate: new Date(initialPickerDate.getFullYear(), initialPickerDate.getMonth(), 1), // Start view at 1st of month
+                    currentDate: new Date(initialPickerDate.getUTCFullYear(), initialPickerDate.getUTCMonth(), 1), // Start view at 1st of month
                     selectedDates: initialDates, // Initialize with date from input if valid
                     currentView: 'days', // 'days', 'months', 'years'
                     settings: settings,
@@ -275,12 +278,6 @@
                             handlePopoverAction($input, $(this));
                         });
                     }
-                });
-
-                $input.on('change', function() {
-                    state.selectedDates = parseDates($input.val());
-                    $input.data('datepickerState', state); // Update state with new selected dates
-                    console.log(state.selectedDates); // Debugging output
                 });
 
                 // Close popover if a user clicks outside of it.

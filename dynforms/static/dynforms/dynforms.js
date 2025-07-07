@@ -15,6 +15,7 @@ function clearInputs(selector) {
     $(selector).find(':input').each(function () {
         if ($(this).is('select[multiple]')) {
             destroyMultiSelect(this);
+            $(this).find('option[disabled]').removeAttr('disabled');
             $(this).val([]).trigger('change');
             createMultiSelect(this);
         } else if ($(this).is('select')) {
@@ -22,6 +23,9 @@ function clearInputs(selector) {
             $(this).val('').trigger('change');
         } else if ($(this).is(':checkbox, :radio')) {
             $(this).prop('checked', false);
+        } else if ($(this).is('textarea')) {
+            $(this).val('');
+            $(this).html('');
         } else {
             $(this).val('');
         }

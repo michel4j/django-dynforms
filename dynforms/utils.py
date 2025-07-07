@@ -418,14 +418,14 @@ class FormFieldManager:
     def set_attr(self, name, value):
         self.attrs[name] = value
 
-    def validate_subfields(self, data) -> dict[str, bool]:
+    def missing_subfields(self, data) -> list[str]:
         """
         Validate the subfields of the field type.
         :param data: The data to validate.
-        :return: A dictionary mapping subfield names to boolean values indicating if they are valid.
+        :return: A list of invalid subfield names.
         """
         if not self.type:
-            return {}
+            return []
 
         if (self.is_multi_valued() or self.is_repeatable()) and isinstance(data, list):
             validity = {}
@@ -437,7 +437,7 @@ class FormFieldManager:
             validity = self.type.check_entry(data)
         else:
             validity = {}
-        return validity
+        return [k for k, v in validity.items() if not v]
 
     def get_data(self, context):
         default = self.attrs.get('default', None)

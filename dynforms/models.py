@@ -223,11 +223,9 @@ class FormType(TimeStampedModel):
                     failures[page_no][field_name] = "required"
                 elif field_type.required_subfields:
                     # Check if subfields are valid
-                    subfield_validity = field.validate_subfields(cleaned_value)
-                    if subfield_validity:
-                        missing_text = ', '.join(
-                            subfield.title() for subfield, present in subfield_validity.items() if not present
-                        )
+                    missing_subfields = field.missing_subfields(cleaned_value)
+                    if missing_subfields:
+                        missing_text = ', '.join([f.title() for f in missing_subfields])
                         failures[page_no][field_name] = f"{missing_text} are required"
 
         # Second loop to check other validations

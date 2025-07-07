@@ -421,7 +421,7 @@ class FormField:
         default = self.attrs.get('default', None)
         form = context.get('form')
 
-        if not form:
+        if not form or self.type is None:
             return default
 
         if form.is_bound:

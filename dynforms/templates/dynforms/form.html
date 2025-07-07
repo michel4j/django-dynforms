@@ -136,8 +136,7 @@
         guardDirtyForm('#df-form-instance');
         const $form = $('#df-form-instance');
         $form.formProgress({
-            update: function (percentAll, percentRequired) {
-
+            update: function (percentAll, percentRequired, missing) {
                 const progressBar = $('#df-progress-bar');
                 const progressText = $('#df-progress-text');
                 const submitButton = $('#df-form-instance input[value="submit"]');

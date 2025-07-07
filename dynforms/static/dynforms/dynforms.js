@@ -652,13 +652,14 @@ function guardDirtyForm(selector) {
                     });
 
                 // Calculate the percentage
+                const missingFields = requiredFields.difference(completedFields);
                 const percentAll = (allFields.size > 0) ? (allFields.intersection(completedFields).size / allFields.size) * 100 : 100;
                 const percentRequired = (requiredFields.size > 0) ? (requiredFields.intersection(completedFields).size / requiredFields.size) * 100 : 100;
 
                 // If an update callback is provided in options, call it
                 if (typeof settings.update === 'function') {
                     // Call the update function with 'this' pointing to the form element
-                    settings.update.call($form[0], percentAll, percentRequired);
+                    settings.update.call($form[0], percentAll, percentRequired, missingFields);
                 }
 
                 return percentAll;

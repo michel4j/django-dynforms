@@ -213,12 +213,22 @@ class FormType(TimeStampedModel):
                     failures[page_no][field_name] = str(err)
                     cleaned_value = cleaned_data
 
-                if cleaned_value is not None:
+                if cleaned_value not in [None, '', [], {}]:
                     cleaned_data[field_name] = cleaned_value
 
-            required = "required" in field_spec.get('options', [])
-            if validate and required and not cleaned_data.get(field_name):
-                failures[page_no][field_name] = "required"
+            if field.is_required() and validate:
+                cleaned_value = cleaned_data.get(field_name)
+
+                if cleaned_value in [None, '', [], {}]:
+                    failures[page_no][field_name] = "required"
+                elif field_type.required_subfields:
+                    # Check if subfields are valid
+                    subfield_validity = field.validate_subfields(cleaned_value)
+                    if subfield_validity:
+                        missing_text = ', '.join(
+                            subfield.title() for subfield, present in subfield_validity.items() if not present
+                        )
+                        failures[page_no][field_name] = f"{missing_text} are required"
 
         # Second loop to check other validations
         query_data = Queryable(cleaned_data)

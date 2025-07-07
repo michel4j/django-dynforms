@@ -180,13 +180,18 @@ class FieldType(object, metaclass=FieldTypeMeta):
         from dynforms.utils import FormFieldManager
         return FormFieldManager(**specs)
 
-    def check_entry(self, row):
+    def check_entry(self, row) -> dict:
+        """
+        Check the subfields of an entry.
+        :param row: the entry row
+        :return: a dictionary mapping the field name to a boolean indicating its presence
+        """
         if not isinstance(row, dict):
             return {}
-        validity = {
-            key: bool(row.get(key, '')) for key in self.required_subfields
+        return {
+            key: row.get(key) not in ['', {}, None, []]
+            for key in self.required_subfields
         }
-        return validity
 
     def clean(self, data: Any) -> Any:
         """

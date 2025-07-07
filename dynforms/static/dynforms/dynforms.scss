@@ -284,10 +284,6 @@ input[type=number] {
   font-weight: 500;
   margin-top: 1em;
 
-  &.required:after {
-    content: "✱";
-    color: var(--bs-danger);
-  }
 }
 
 .sub-label {
@@ -298,6 +294,10 @@ input[type=number] {
 .control-label, .form-label, .sub-label {
   color: var(--bs-primary-text-emphasis);
   opacity: 0.8;
+  &.required:after {
+    content: "✱";
+    color: var(--bs-danger);
+  }
 }
 
 .field-group-item {

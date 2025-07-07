@@ -7,7 +7,7 @@ from django.utils.encoding import smart_str
 from django.utils.safestring import mark_safe
 
 from dynforms.fields import FieldType
-from dynforms.utils import FormField, FIELD_SEPARATOR
+from dynforms.utils import FormFieldManager, FIELD_SEPARATOR
 
 register = template.Library()
 
@@ -36,7 +36,7 @@ def _get_field_value(context, field):
 
 
 @register.simple_tag(takes_context=True)
-def render_field(context, field: FormField, repeatable: bool = False):
+def render_field(context, field: FormFieldManager, repeatable: bool = False):
     all_data = field.get_data(context)
 
     if field.type:
@@ -69,9 +69,32 @@ def render_field(context, field: FormField, repeatable: bool = False):
                 field.set_attr('other_choice', next(iter(oc_set)))
         repeat_index = i if repeatable else ""
 
-        ctx.update({'field': field.specs(repeatable=repeatable, index=i), 'data': data, 'repeat_index': repeat_index})
+        ctx.update({
+            'field': field.specs(repeatable=repeatable, index=i),
+            'data': data, 'repeat_index': repeat_index
+        })
         rendered += field_type.render(ctx)
     return mark_safe(rendered)
+
+
+@register.simple_tag(takes_context=True)
+def subfield_require(context, field_name: str) -> str:
+    """
+    Returns whether a subfield is required based on the field's options and the field type
+    :param context: The template context.
+    :param field_name: The name of the field to check.
+    :return: 'required' if the subfield is required, otherwise an empty string.
+    """
+    field_specs = context.get('field')
+    if not field_specs:
+        return ''
+    field_type = field_specs.get('type')
+    if not field_type:
+        return ''
+
+    if field_type and 'required' in field_specs.get('options', []) and field_name in field_type.required_subfields:
+        return 'required'
+    return ''
 
 
 @register.filter
@@ -108,7 +131,6 @@ def likert_choices(field, defaults):
         'selected': v in defaults or v == defaults
     } for l, v in choices]
     return choices
-
 
 
 @register.filter

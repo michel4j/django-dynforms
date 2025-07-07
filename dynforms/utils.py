@@ -342,7 +342,7 @@ class Crypt:
                 raise ValueError(value_error)
 
 
-class FormField:
+class FormFieldManager:
     def __init__(self, name=None, field_type=None, label='', instructions='', options=None, index=0, **attrs):
         from .fields import FieldType
         self.name = name
@@ -362,6 +362,7 @@ class FormField:
             'label': self.label,
             'instructions': self.instructions,
             'type': self.type,
+            'manager': self,
             'options': self.options,
             **self.attrs,
         }
@@ -481,13 +482,16 @@ class FormField:
         return self.type.clean(data)
 
 
-class FormPage:
+class FormPageManager:
+    """
+    A manager for a page in a form, which contains multiple fields managers
+    """
     def __init__(self, name='', fields=None, number=1):
         self.number = number
         self.name = name
         fields = fields or []
         self.fields = [
-            FormField(**field, index=i) for i, field in enumerate(fields) if isinstance(field, dict)
+            FormFieldManager(**field, index=i) for i, field in enumerate(fields) if isinstance(field, dict)
         ]
         self.field_indices = {field.name: i for i, field in enumerate(self.fields)}
 

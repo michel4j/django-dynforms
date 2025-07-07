@@ -177,8 +177,8 @@ class FieldType(object, metaclass=FieldTypeMeta):
         """
         Factory to Create a FormField instance for this field type.
         """
-        from dynforms.utils import FormField
-        return FormField(**specs)
+        from dynforms.utils import FormFieldManager
+        return FormFieldManager(**specs)
 
     def check_entry(self, row):
         if not isinstance(row, dict):

@@ -11,7 +11,7 @@ from django.utils.translation import gettext as _
 from django.utils.safestring import mark_safe
 
 from .fields import FieldType, ValidationError
-from .utils import Queryable, build_Q, FormPage, FormField
+from .utils import Queryable, build_Q, FormPageManager, FormFieldManager
 
 
 def default_pages():
@@ -165,7 +165,7 @@ class FormType(TimeStampedModel):
         return warnings
 
     def get_pages(self):
-        return [FormPage(**page, number=(i + 1)) for i, page in enumerate(self.pages)]
+        return [FormPageManager(**page, number=(i + 1)) for i, page in enumerate(self.pages)]
 
     def clean_data(self, data: Any, validate: bool = False) -> Any:
         """

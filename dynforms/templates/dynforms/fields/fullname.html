@@ -1,4 +1,5 @@
 {% load icons %}
+{% load dynforms %}
 <div class="controls {{ repeatable }}" id="{{ field.name }}__controls" data-repeat-name="{{ repeat_name }}__controls">
     <div class="row">
         <div class="col-sm-3 mb-2 {% if 'floating' in field.options %}form-floating{% endif %} ">
@@ -6,11 +7,13 @@
                    data-repeat-name="{{ repeat_name }}__first_name"
                    placeholder="First name"
                    name="{{ field.name }}__first_name"
-                   class="form-control {{ required }}" type="text"
+                   class="form-control {% subfield_require 'first_name'  %}" type="text"
                    value="{{ data.first_name }}"
             >
             {% if 'floating' in field.options or 'labels' in field.options %}
-                <label for="{{ field.name }}__first_name" data-repeat-for="{{ repeat_name }}__first_name">First
+                <label for="{{ field.name }}__first_name"
+                       class="sub-label {% subfield_require 'first_name'  %}"
+                       data-repeat-for="{{ repeat_name }}__first_name">First
                     name</label>
             {% endif %}
         </div>
@@ -19,11 +22,13 @@
                    data-repeat-name="{{ repeat_name }}__last_name"
                    placeholder="Last name"
                    name="{{ field.name }}__last_name"
-                   class="form-control" type="text"
+                   class="form-control {% subfield_require 'last_name'  %}" type="text"
                    value="{{ data.last_name }}"
             >
             {% if 'floating' in field.options or 'labels' in field.options %}
-                <label for="{{ field.name }}__last_name" data-repeat-for="{{ repeat_name }}__last_name">Last name</label>
+                <label for="{{ field.name }}__last_name"
+                       class="sub-label {% subfield_require 'last_name'  %}"
+                       data-repeat-for="{{ repeat_name }}__last_name">Last name</label>
             {% endif %}
         </div>
         <div class="col-sm-4 mb-2 {% if 'floating' in field.options %}form-floating{% endif %} ">
@@ -33,11 +38,13 @@
                        aria-label="Other names"
                        placeholder="Other names"
                        name="{{ field.name }}__other_names"
-                       class="form-control"
+                       class="form-control {% subfield_require 'other_names'  %}"
                        type="text" value="{{ data.other_names }}"
                 >
                 {% if 'floating' in field.options or 'labels' in field.options %}
-                    <label for="{{ field.name }}__other_names" data-repeat-for="{{ repeat_name }}__other_names">Other names</label>
+                    <label for="{{ field.name }}__other_names"
+                           class="sub-label {% subfield_require 'other_names'  %}"
+                           data-repeat-for="{{ repeat_name }}__other_names">Other names</label>
                 {% elif 'repeat' in field.options %}
                     <button type="button" class="btn btn-danger remove-repeat" title="Remove item">
                         {% svg_icon "x" size="sm" %}

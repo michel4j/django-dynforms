@@ -8,7 +8,7 @@
                 <div class="input-group-text">{% svg_icon "email" size="sm" %}</div>
                 <input type="email" name="{{ field.name }}__email"
                        data-repeat-name="{{ repeat_name }}__email"
-                       id="{{ field.name }}__email" class="form-control {{ required }}" aria-label="Email"
+                       id="{{ field.name }}__email" class="form-control {% subfield_require "email"  %}" aria-label="Email"
                        placeholder="Email"
                        value="{{ data.email }}">
             </div>
@@ -18,7 +18,7 @@
                 <div class="input-group-text">{% svg_icon "phone" size="sm" %}</div>
                 <input type="tel" name="{{ field.name }}__phone"
                        data-repeat-name="{{ repeat_name }}__phone"
-                       id="{{ field.name }}__phone" class="form-control{{ required }}" aria-label="Phone"
+                       id="{{ field.name }}__phone" class="form-control {% subfield_require "phone"  %}" aria-label="Phone"
                        placeholder="Phone"
                        value="{{ data.phone }}">
                 {% if "repeat" in field.options %}

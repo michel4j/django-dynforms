@@ -1,25 +1,28 @@
 {% load icons %}
+{% load dynforms %}
 <div class="controls row {{ repeatable }}" id="{{ field.name }}__controls" data-repeat-name="{{ repeat_name }}__controls">
     <div class="field-group-item col-3">
         <input id="{{ field.name }}__first_name" name="{{ field.name }}__first_name"
                data-repeat-name="{{ repeat_name }}__first_name"
-               class="form-control {{ required }}" type="text" value="{{ data.first_name }}"
+               class="form-control {% subfield_require 'first_name'  %}" type="text" value="{{ data.first_name }}"
         >
-        <label for="{{ field.name }}__first_name">First</label>
+        <label for="{{ field.name }}__first_name" class="sub-label {% subfield_require 'first_name'  %}">First</label>
     </div>
     <div class="field-group-item col-4">
         <input id="{{ field.name }}__last_name" name="{{ field.name }}__last_name"
                data-repeat-name="{{ repeat_name }}__last_name"
-               class="form-control" type="text" value="{{ data.last_name }}"
+               class="form-control {% subfield_require 'last_name'  %}" type="text" value="{{ data.last_name }}"
         >
-        <label for="{{ field.name }}__last_name" data-repeat-for="{{ repeat_name }}__last_name">Last</label>
+        <label for="{{ field.name }}__last_name"
+               class="sub-label {% subfield_require 'last_name'  %}"
+               data-repeat-for="{{ repeat_name }}__last_name">Last</label>
     </div>
     <div class="field-group-item col-5">
         <div class="input-group">
             <input id="{{ field.name }}__affiliation"
                    name="{{ field.name }}__affiliation"
                    data-repeat-name="{{ repeat_name }}__affiliation"
-                   class="form-control {{ required }}" type="text"
+                   class="form-control {% subfield_require 'affiliation'  %}" type="text"
                    value="{{ data.affiliation }}"
             >
             {% if "repeat" in field.options %}
@@ -28,6 +31,8 @@
                 </button>
             {% endif %}
         </div>
-        <label for="{{ field.name }}__affiliation" data-repeat-for="{{ repeat_name }}__affiliation">Affiliation/Institution</label>
+        <label for="{{ field.name }}__affiliation"
+               class="sub-label {% subfield_require 'affiliation'  %}"
+               data-repeat-for="{{ repeat_name }}__affiliation">Affiliation/Institution</label>
     </div>
 </div>

@@ -16,7 +16,7 @@ from dynforms.models import FormType
 from . import utils, forms
 from .forms import FieldSettingsForm, FormSettingsForm, RulesForm, DynModelForm, DynForm
 from .models import DynEntry
-from .utils import FormField
+from .utils import FormFieldManager
 
 import yaml
 
@@ -40,7 +40,7 @@ class AddFieldView(*EDIT_MIXINS, TemplateView):
         num = len(form.get_page(page)['fields'])
         field = field_type.get_default(page, num)
         form.add_field(page, pos, field)
-        context['field'] = FormField(**field, index=pos)
+        context['field'] = FormFieldManager(**field, index=pos)
         return context
 
 
@@ -53,7 +53,7 @@ class GetFieldView(*EDIT_MIXINS, TemplateView):
         pos = int(self.kwargs.get('pos'))
         form = FormType.objects.get(pk=self.kwargs.get('pk'))
         field = form.get_field(page, pos)
-        context['field'] = FormField(**field, index=pos)
+        context['field'] = FormFieldManager(**field, index=pos)
         return context
 
 
@@ -188,7 +188,7 @@ class EditFieldView(*EDIT_MIXINS, FormView):
         pos = int(self.kwargs.get('pos'))
         form_obj = FormType.objects.get(pk=self.kwargs.get('pk'))
         field = form_obj.get_field(page, pos)
-        field_obj = FormField(**field, index=pos)
+        field_obj = FormFieldManager(**field, index=pos)
         if field_obj.type:
             field.update(form.cleaned_data)
             form_obj.update_field(page, pos, field)

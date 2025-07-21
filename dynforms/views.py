@@ -119,6 +119,7 @@ RULE_ACTIONS = [
     ("require", "Require if"),
 ]
 
+
 class ModalFormView(AjaxFormMixin, FormView):
     """
     A FormView that returns a JsonResponse if the request is AJAX.

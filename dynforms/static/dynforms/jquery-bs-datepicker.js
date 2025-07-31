@@ -193,8 +193,10 @@
                         state.selectedDates = [selectedDate]; // Single select
                     }
                     updateInputValue($input);
-                    bootstrap.Popover.getInstance($input[0]).hide();
-                    return; // Exit early as popover is hidden
+                    if (!state.settings.multiple) {
+                        bootstrap.Popover.getInstance($input[0]).hide();
+                        return; // Exit early as popover is hidden
+                    }
                 } else if (action === 'select-month') {
                     const month = parseInt($target.data('month'));
                     state.currentDate.setMonth(month);
@@ -280,11 +282,13 @@
                     }
                 });
 
-                // Close popover if a user clicks outside of it.
-                $(document).on('click', function(e) {
-                    const popoverTip = document.getElementById($input.attr('aria-describedby'));
-                    if (popoverTip && !$(popoverTip).is(e.target) && !$.contains(popoverTip, e.target) && !$(e.target).is($input)) {
-                        popover.hide();
+                //Close popover if a user clicks outside of it.
+                $(document).off('click.datepicker').on('click.datepicker', function(e) {
+                    if (!$(e.target).closest('.datepicker-popover').length) {
+                        const popoverInstance = bootstrap.Popover.getInstance($input[0]);
+                        if (popoverInstance) {
+                            popoverInstance.hide();
+                        }
                     }
                 });
             });

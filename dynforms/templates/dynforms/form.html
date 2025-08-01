@@ -137,7 +137,6 @@
         const $form = $('#df-form-instance');
         $form.formProgress({
             update: function (percentAll, percentRequired, missing) {
-                console.log('Missing required fields', missing);
                 const progressBar = $('#df-progress-bar');
                 const progressText = $('#df-progress-text');
                 const submitButton = $('#df-form-instance input[value="submit"]');

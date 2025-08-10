@@ -93735,3 +93735,219 @@
     modified: 2025-03-14 03:08:01.045373+00:00
     type: user
     institution: 210
+- model: dynforms.formtype
+  pk: 1
+  fields:
+    created: 2016-02-03 19:16:06+00:00
+    modified: 2025-07-31 04:42:45.450790+00:00
+    name: Party Survey Form
+    code: test-form
+    description: Just an example playground form for testing
+    header: true
+    help_bar: true
+    wizard: false
+    pages:
+    - name: Personal Information
+      fields:
+      - field_type: multiplephonenumber
+        label: Phone Numbers
+        name: phone
+        instructions: Please enter your primary and secondary phone numbers
+        width: full
+        tags: ''
+        options: []
+      - field_type: date
+        label: Date 004
+        name: date_004
+        instructions: ''
+        width: full
+        tags: ''
+        options: []
+      - field_type: fullname
+        label: Full Name
+        name: full_name
+        instructions: Please enter your full name as it appears on your government
+          issued ID.
+        width: full
+        tags: ''
+        options:
+        - required
+        - labels
+      - field_type: email
+        label: Email Address
+        name: email
+        instructions: Please provide your work email address
+        width: full
+        tags: ''
+        options: []
+        default: ''
+      - field_type: address
+        label: Home Address
+        name: address
+        instructions: Enter your residential address
+        width: full
+        tags: ''
+        options:
+        - required
+        - department
+        - labels
+    - name: RSVP
+      fields:
+      - field_type: nameaffiliation
+        label: Accompanying Guests
+        name: guests
+        instructions: Please list all individuals you will be bringing to the event
+          as guests, and their affiliations.
+        width: full
+        tags: ''
+        options:
+        - repeat
+        max_repeat: null
+      - field_type: richtext
+        label: Prepared Remarks
+        name: remarks
+        size: medium
+        options:
+        - counter
+        instructions: Please summarize the key points of your prepared remarks to
+          be presented at the event
+        width: full
+        tags: ''
+        minimum: null
+        maximum: 500
+        units: words
+        default: ''
+      - field_type: dropdown
+        label: Seating Preferences
+        name: seating
+        choices:
+        - Front
+        - Middle
+        - Back
+        default_choices: []
+        instructions: Please select where you want to sit with your guests.
+        width: full
+        tags: ''
+        options:
+        - multiple
+        values:
+        - First Choice
+        - Second Choice
+        - Third Choice
+        default: []
+    - name: Dietary Requirements
+      fields:
+      - field_type: multiplechoice
+        label: Dinner Preference
+        name: dinner
+        choices:
+        - Sea Food
+        - Beef/Lamb/Pork
+        - Poultry
+        - Tofu
+        - Beans & Lentils
+        - Quinoa
+        default_choices: []
+        instructions: Select the preference for your dinner menu
+        width: half
+        tags: ''
+        options: []
+        values:
+        - seafood
+        - meets
+        - Chicken
+        - Tofu
+        - pulses
+        - quinoa
+        default: []
+      - field_type: checkboxes
+        label: Dietary Restrictions
+        name: restrictions
+        choices:
+        - Lactose
+        - Vegetarian/Vegan
+        - Nut Allergies
+        - Gluten
+        - Halal
+        default_choices: []
+        instructions: Please mark all dietary restrictions that apply
+        width: half
+        tags: ''
+        options:
+        - hide
+        values:
+        - First
+        - Second
+        - Third
+        - Fourth
+        - Fifth
+        default: []
+        rules:
+        - action: show
+          field: dinner
+          subfield: ''
+          operator: exact
+          value: Tofu
+    actions:
+    - - submit
+      - Submit
+    - - save
+      - Save
+- model: dynforms.formtype
+  pk: 3
+  fields:
+    created: 2025-06-06 14:24:10.547628+00:00
+    modified: 2025-08-01 22:12:16.643209+00:00
+    name: Test Data Source
+    code: new-form
+    description: Another form for testing
+    header: true
+    help_bar: false
+    wizard: false
+    pages:
+    - name: Page 1
+      fields:
+      - field_type: dropdown
+        label: Dropdown 000
+        name: dropdown_000
+        choices:
+        - First Choice
+        - Second Choice
+        default_choices: []
+        instructions: ''
+        width: full
+        tags: ''
+        options:
+        - multiple
+        values:
+        - First Choice
+        - Second Choice
+        default: []
+      - field_type: checkboxes
+        label: Checkboxes 001
+        name: checkboxes_001
+        choices:
+        - First Choice
+        - Second Choice
+        default_choices: []
+      - field_type: range
+        label: Range 002
+        name: range_002
+      - field_type: date
+        label: Date 003
+        name: date_003
+        instructions: ''
+        width: full
+        tags: ''
+        options: []
+      - field_type: date
+        label: Date 004
+        name: date_004
+      - field_type: date
+        label: Date 005
+        name: date_005
+    actions:
+    - - save
+      - Save
+    - - submit
+      - Submit

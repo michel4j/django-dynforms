@@ -1,0 +1,25 @@
+{% load icons %}
+<div class="form-group" id="div_id_choices">
+<label class="form-label ">Scores</label>
+{% for choice in form.initial.scores_info %}
+<div class="controls scores-repeatable mb-2">
+    <div class="input-group">
+        <input type="text" value="{{choice.score}}" aria-label="Score" placeholder="Score" title="Score"
+            name="scores"
+            class="form-control">
+
+        <input type="text" value="{{choice.rubric}}" aria-label="Rubric" placeholder="Rubric" title="Rubric"
+            name="rubrics"
+            class="form-control w-75">
+
+        <button type="button" class="btn btn-danger remove-repeat" title="Remove Item">{% svg_icon "x" size="xs" %}</button>
+    </div>
+</div>
+{% endfor %}
+<div class="d-flex flex-row mb-2 repeatable-control">
+    <button type="button" name="add" title="Add Scores"
+            class="btn btn-success ms-auto"
+            data-repeat-add=".scores-repeatable" >{% svg_icon "plus" size="xs" %}
+    </button>
+</div>
+</div>

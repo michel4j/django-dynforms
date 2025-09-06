@@ -49,7 +49,7 @@ class ScoreChoices(StandardMixin, FieldType):
     name = _("Scores")
     icon = "check-circle"
     options = ['required', 'inline', 'hide']
-    settings = ['choices']
+    settings = ['scores']
     choices_type = 'radio'
 
     def clean(self, value):
@@ -262,7 +262,7 @@ class Likert(FancyMixin, FieldType):
     name = _("Likert")
     icon = "list-details"
     options = ['required', 'hide']
-    settings = ['choices']
+    settings = ['choices', 'values']
 
 
 class Throttle(FancyMixin, FieldType):

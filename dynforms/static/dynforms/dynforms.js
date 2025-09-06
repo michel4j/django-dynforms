@@ -105,9 +105,9 @@ function clearInputs(selector) {
                 updateButtons($control, $allRepeats, $removeButtons);
             }
 
-            updateButtons($control, $allRepeats, $removeButtons);
 
             $control.click(function (e) {
+
                 let $targetElement = $allRepeats.last();
                 if (options.maxRepeats && $allRepeats.length >= options.maxRepeats) {
                     dfToasts.error({
@@ -116,6 +116,7 @@ function clearInputs(selector) {
                     });
                     return;
                 }
+
                 $targetElement.find("select[multiple]").each(function () {
                     destroyMultiSelect(this);
                 });

@@ -5,46 +5,28 @@
         <thead>
         <tr class="text-center">
             <th></th>
-            <th>Excellent</th>
-            <th>Good</th>
-            <th>Fair</th>
-            <th>Poor</th>
-            <th>Very Poor</th>
+            {% for value in field.values %}
+            <th>{{ value }}</th>
+            {% endfor %}
             <th>N/A</th>
         </tr>
         </thead>
         <tbody>
         {% for choice in field|likert_choices:data %}
             <tr>
-                <td class="text-left">{{ choice.label }}</td>
+                <td class="text-left">{{ choice.name }}</td>
+                {% for value in field.values %}
                 <td class="text-center">
-                        <input type="radio" class="form-check-input {{ required }}" aria-label="Excellent"
-                               name="{{ field.name }}__{{ choice.value }}" value="5"
-                        />
-                </td>
-                <td class="text-center">
-                    <input type="radio" class="form-check-input {{ required }}" aria-label="Good"
-                           name="{{ field.name }}__{{ choice.value }}" value="4"
+                    <input type="radio" class="form-check-input {{ required }}" aria-label="{{ value }}"
+                           name="{{ field.name }}__{{ choice.name }}" value="{{ value }}"
+                           {% if choice.value == value %}checked{% endif %}
                     />
                 </td>
+                {% endfor %}
                 <td class="text-center">
-                    <input type="radio" class="form-check-input {{ required }}" aria-label="Fair"
-                           name="{{ field.name }}__{{ choice.value }}" value="3"
-                    />
-                </td>
-                <td class="text-center">
-                    <input type="radio" class="form-check-input {{ required }}" aria-label="Poor"
-                           name="{{ field.name }}__{{ choice.value }}" value="2"
-                    />
-                </td>
-                <td class="text-center">
-                    <input type="radio" class="form-check-input {{ required }}" aria-label="Very Poor"
-                           name="{{ field.name }}__{{ choice.value }}" value="1"
-                    />
-                </td>
-                <td class="text-center">
-                    <input type="radio" class="form-check-input {{ required }}" aria-label="Don't Know"
-                           name="{{ field.name }}__{{ choice.value }}"
+                    <input type="radio" class="form-check-input {{ required }}" aria-label="{{ value }}"
+                           name="{{ field.name }}__{{ choice.name }}"
+                           {% if choice.value is None %}checked{% endif %}
                     />
                 </td>
             </tr>

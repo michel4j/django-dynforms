@@ -1,0 +1,20 @@
+{% load icons %}
+<div class="form-group" id="div_id_choices">
+<label class="form-label ">Values</label>
+{% for value in form.initial.values %}
+<div class="controls values-repeatable mb-2">
+    <div class="input-group">
+        <input type="text" value="{{value}}" aria-label="Value" placeholder="Value" title="Value"
+            name="values"
+            class="form-control">
+        <button type="button" class="btn btn-danger remove-repeat" title="Remove Item">{% svg_icon "x" size="xs" %}</button>
+    </div>
+</div>
+{% endfor %}
+<div class="d-flex flex-row mb-2 repeatable-control">
+    <button type="button" name="add" title="Add Values"
+            class="btn btn-success ms-auto"
+            data-repeat-add=".values-repeatable" >{% svg_icon "plus" size="xs" %}
+    </button>
+</div>
+</div>

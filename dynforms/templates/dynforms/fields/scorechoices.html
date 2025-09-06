@@ -6,9 +6,8 @@
                    value="{{ choice.score }}"  {% if choice.checked %}checked="checked"{% endif %} type="radio">
             <label for="{{ field.name }}_{{ forloop.counter }}" class="form-check-label">
                 <span class="badge rounded-pill bg-secondary">
-                    <span>{{ choice.score }}</span> = <span>{{ choice.label }}</span>
-                </span>
-                <span class="media-content">{{ choice.value }}</span>
+                    <span>{{ choice.score }}</span>
+                </span>&nbsp;<span class="media-content">{{ choice.rubric }}</span>
             </label>
         </div>
     {% endfor %}

@@ -12,6 +12,9 @@ DEFAULT_SETTINGS = {
     "width": "full",
     "options": [],
     "choices": ["First Choice", "Second Choice"],
+    "values": ['A', 'B'],
+    "scores": [1, 2, 3],
+    "rubrics": ["Good", "Average", "Poor"],
     "default_choices": [],
 }
 
@@ -223,9 +226,12 @@ class FieldType(object, metaclass=FieldTypeMeta):
         }
         for k in self.settings:
             if k in DEFAULT_SETTINGS:
-                if k == "choices":
+                if k  == "choices":
                     field[k] = DEFAULT_SETTINGS[k]
                     field['default_choices'] = DEFAULT_SETTINGS["default_choices"]
+                elif k == "scores":
+                    field[k] = DEFAULT_SETTINGS[k]
+                    field['rubrics'] = DEFAULT_SETTINGS.get("rubrics", [])
                 else:
                     field[k] = DEFAULT_SETTINGS[k]
         return field

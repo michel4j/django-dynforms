@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from itertools import zip_longest
 from crisp_modals.forms import ModalModelForm, Row, FullWidth, ModalForm
 from crispy_forms.bootstrap import PrependedText, InlineCheckboxes, AppendedText
 from crispy_forms.bootstrap import StrictButton, FormActions
@@ -57,11 +57,16 @@ FIELD_SETTINGS = {
     'units': (forms.ChoiceField, {'label': _("Units"), }),
     'default': (forms.CharField, {'label': _("Default value"), }),
     'choices': (RepeatableCharField, {'label': _("Choices"), 'required': True}),
-    'values': (RepeatableCharField, {'label': _("Values"), 'required': False}),
+    'scores': (RepeatableCharField, {'label': _("Scores"), 'required': True}),
+    'rubrics': (RepeatableCharField, {'label': _("Rubrics"), 'required': True}),
+    'values': (RepeatableCharField, {'label': _("Values"), 'required': True}),
     'default_choices': (RepeatableCharField, {'label': _("Default")}),
 }
 
 CHOICES_TEMPLATE = "{% include 'dynforms/field-choices.html' %}"
+VALUE_CHOICES_TEMPLATE = "{% include 'dynforms/field-value-choices.html' %}"
+VALUES_TEMPLATE = "{% include 'dynforms/field-values.html' %}"
+SCORES_TEMPLATE = "{% include 'dynforms/field-scores.html' %}"
 
 
 class FieldSettingsForm(forms.Form):
@@ -127,23 +132,53 @@ class FieldSettingsForm(forms.Form):
                 entries.append(Div('units', css_class='col-auto'))
             fieldset.append(Div(*entries, css_class="row"))
 
-        if 'choices' in field_type.settings:
+        if 'value-choices' in field_type.settings:
             self.add_custom_field('default_choices')
             self.add_custom_field('choices')
             self.add_custom_field('values')
 
-            choices = list(
-                zip(self.initial.get('choices', []), self.initial.get('values', self.initial.get('choices', [])))
-            )
-            self.initial['choices_info'] = [{
-                'label': i,
-                'value': '' if v is None else v
-            } for i, v in choices]
+            self.initial['choices_info'] = [
+                {
+                    'name': name,
+                    'value': '' if value is None else value
+                }
+                for name, value in zip_longest(
+                    self.initial.get('choices', []),
+                    self.initial.get('values', []),
+                    fillvalue=''
+                )
+            ]
 
             self.initial['choices_type'] = field_type.choices_type
-            fieldset.append(HTML(CHOICES_TEMPLATE))
+            fieldset.append(HTML(VALUE_CHOICES_TEMPLATE))
+        elif 'scores' in field_type.settings:
+            self.add_custom_field('scores')
+            self.add_custom_field('rubrics')
+            self.initial['scores_info'] = [
+                {
+                    'score': score,
+                    'rubric': rubric
+                }
+                for score, rubric in zip_longest(
+                    self.initial.get('scores', []),
+                    self.initial.get('rubrics', []),
+                    fillvalue=''
+                )
+            ]
+            fieldset.append(HTML(SCORES_TEMPLATE))
+        else:
+            # separate choices and values
+            if 'choices' in field_type.settings:
+                self.add_custom_field('default_choices')
+                self.add_custom_field('choices')
+                self.initial['choices_type'] = field_type.choices_type
+                fieldset.append(HTML(CHOICES_TEMPLATE))
 
-        elif 'default' in field_type.settings:
+            if 'values' in field_type.settings:
+                self.add_custom_field('values')
+                fieldset.append(HTML(VALUES_TEMPLATE))
+
+        if 'default' in field_type.settings:
             self.add_custom_field('default')
             fieldset.append('default'),
         fieldset.append('tags')

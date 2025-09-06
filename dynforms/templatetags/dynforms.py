@@ -1,5 +1,6 @@
 
 import random
+from itertools import zip_longest
 
 from django import template
 from django.conf import settings
@@ -99,38 +100,31 @@ def subfield_require(context, field_name: str) -> str:
 
 @register.filter
 def group_choices(field, defaults):
+
     if not defaults:
         defaults = field.get('default', [])
-    if field.get('values') and field.get('choices'):
-        choices = list(zip(field['choices'], field['values']))
-    elif field.get('choices'):
-        choices = list(zip(field['choices'], field['choices']))
-    else:
-        choices = []
-    ch = [{
-        'label': l,
-        'value': l if v is None else v,
-        'selected': v in defaults or v == defaults
-    } for l, v in choices]
-    return ch
+    choices = field.get('choices', [])
+    values = field.get('values', choices)
+    return [{
+        'label': choice,
+        'value': choice,
+        'selected': (choice in defaults) or (value in defaults),
+    } for choice, value in zip(choices, values)]
 
 
 @register.filter
 def likert_choices(field, defaults):
     if not defaults:
-        defaults = field.get('default', [])
-    if field.get('values') and field.get('choices'):
-        choices = list(zip(field['choices'], field['values']))
-    elif field.get('choices'):
-        choices = list(zip(field['choices'], field['choices']))
-    else:
-        choices = []
-    choices = [{
-        'label': l,
-        'value': l if v is None else v,
-        'selected': v in defaults or v == defaults
-    } for l, v in choices]
-    return choices
+        defaults = field.get('default', {})
+    if not isinstance(defaults, dict):
+        defaults = {}
+
+    choices = field.get('choices', [])
+    return [{
+        'name': name,
+        'index': i,
+        'value': defaults.get(name),
+    } for i, name in enumerate(choices)]
 
 
 @register.filter
@@ -145,16 +139,15 @@ def show_sublabels(field):
 
 @register.filter
 def group_scores(field, default):
-    choices = [
+    return [
         {
-            'score': i + 1,
-            'label': l,
-            'value': '' if 'values' not in field else field['values'][i],
-            'checked': default in [(i + 1), str(i + 1)],
-        } for i, l in enumerate(field['choices'])
+            'score': score,
+            'rubric': '' if rubric is None else rubric,
+            'checked': default in [score, str(score)],
+        } for score, rubric in zip_longest(
+            field.get('scores', []), field.get('rubrics', []), fillvalue=''
+        )
     ]
-
-    return choices
 
 
 @register.filter

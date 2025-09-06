@@ -77,14 +77,13 @@
             const countries = new Bloodhound({
                 datumTokenizer: Bloodhound.tokenizers.whitespace,
                 queryTokenizer: Bloodhound.tokenizers.whitespace,
-                local: COUNTRIES
+                local: Object.keys(World.countries)
             });
             const _regions = new Bloodhound({
                 datumTokenizer: Bloodhound.tokenizers.whitespace,
                 queryTokenizer: Bloodhound.tokenizers.whitespace,
-                local: REGIONS["CANADA"]
+                local: World.countries["Canada"]
             });
-
 
             $country.typeahead(null, {
                 source: countries,
@@ -98,7 +97,7 @@
 
             $country.bind('typeahead:selected typeahead:autocompleted', function () {
                 const cntry = $country.val();
-                const cntry_regions = REGIONS[cntry.toUpperCase()];
+                const cntry_regions = World.countries[cntry] || [cntry];
 
 
                 if (cntry && cntry_regions) {
@@ -107,7 +106,7 @@
                         queryTokenizer: Bloodhound.tokenizers.whitespace,
                         local: cntry_regions
                     });
-                    //console.log(cntry_regions);
+
                     $region.typeahead('destroy');
                     $region.typeahead(null, {
                         source: regions,

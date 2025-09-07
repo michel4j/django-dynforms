@@ -60,11 +60,12 @@ FIELD_SETTINGS = {
     'scores': (RepeatableCharField, {'label': _("Scores"), 'required': True}),
     'rubrics': (RepeatableCharField, {'label': _("Rubrics"), 'required': True}),
     'values': (RepeatableCharField, {'label': _("Values"), 'required': True}),
+    'names': (RepeatableCharField, {'label': _("Internal Names"), 'required': True}),
     'default_choices': (RepeatableCharField, {'label': _("Default")}),
 }
 
 CHOICES_TEMPLATE = "{% include 'dynforms/field-choices.html' %}"
-VALUE_CHOICES_TEMPLATE = "{% include 'dynforms/field-value-choices.html' %}"
+NAMED_CHOICES_TEMPLATE = "{% include 'dynforms/field-named-choices.html' %}"
 VALUES_TEMPLATE = "{% include 'dynforms/field-values.html' %}"
 SCORES_TEMPLATE = "{% include 'dynforms/field-scores.html' %}"
 
@@ -132,26 +133,33 @@ class FieldSettingsForm(forms.Form):
                 entries.append(Div('units', css_class='col-auto'))
             fieldset.append(Div(*entries, css_class="row"))
 
-        if 'value-choices' in field_type.settings:
+        if 'named-choices' in field_type.settings:
             self.add_custom_field('default_choices')
             self.add_custom_field('choices')
-            self.add_custom_field('values')
+            self.add_custom_field('names')
 
             self.initial['choices_info'] = [
-                {
-                    'name': name,
-                    'value': '' if value is None else value
-                }
-                for name, value in zip_longest(
+                {'label': label, 'name': name}
+                for label, name in zip_longest(
                     self.initial.get('choices', []),
-                    self.initial.get('values', []),
+                    self.initial.get('names', []),
                     fillvalue=''
                 )
             ]
+            fieldset.append(HTML(NAMED_CHOICES_TEMPLATE))
+        else:
+            # separate choices and values
+            if 'choices' in field_type.settings:
+                self.add_custom_field('default_choices')
+                self.add_custom_field('choices')
+                self.initial['choices_type'] = field_type.choices_type
+                fieldset.append(HTML(CHOICES_TEMPLATE))
 
-            self.initial['choices_type'] = field_type.choices_type
-            fieldset.append(HTML(VALUE_CHOICES_TEMPLATE))
-        elif 'scores' in field_type.settings:
+            if 'values' in field_type.settings:
+                self.add_custom_field('values')
+                fieldset.append(HTML(VALUES_TEMPLATE))
+
+        if 'scores' in field_type.settings:
             self.add_custom_field('scores')
             self.add_custom_field('rubrics')
             self.initial['scores_info'] = [
@@ -166,17 +174,6 @@ class FieldSettingsForm(forms.Form):
                 )
             ]
             fieldset.append(HTML(SCORES_TEMPLATE))
-        else:
-            # separate choices and values
-            if 'choices' in field_type.settings:
-                self.add_custom_field('default_choices')
-                self.add_custom_field('choices')
-                self.initial['choices_type'] = field_type.choices_type
-                fieldset.append(HTML(CHOICES_TEMPLATE))
-
-            if 'values' in field_type.settings:
-                self.add_custom_field('values')
-                fieldset.append(HTML(VALUES_TEMPLATE))
 
         if 'default' in field_type.settings:
             self.add_custom_field('default')

@@ -1,6 +1,6 @@
 from collections import OrderedDict
 from datetime import datetime, timedelta
-from typing import Any
+from typing import Any, Callable
 
 from dateutil import parser
 from django.core.exceptions import ValidationError
@@ -262,7 +262,43 @@ class Likert(FancyMixin, FieldType):
     name = _("Likert")
     icon = "list-details"
     options = ['required', 'hide']
-    settings = ['choices', 'values']
+    settings = ['choices', 'scores']
+    subfields = ['name', 'value']
+
+    def is_multi_valued(self, subfield: str = None) -> bool:
+        if subfield:
+            return False
+        return True
+
+    @staticmethod
+    def clean_name(value):
+        if isinstance(value, list) and len(value) == 1:
+            return str(value[0].strip())
+        elif isinstance(value, str):
+            return str(value.strip())
+        return ''
+
+    @staticmethod
+    def clean_value(value):
+        if isinstance(value, list) and len(value) == 1:
+            try:
+                value = int(value[0])
+            except (ValueError, TypeError):
+                value = None
+        elif isinstance(value, str):
+            try:
+                value = int(value)
+            except (ValueError, TypeError):
+                value = None
+        elif not isinstance(value, int):
+            value = None
+        return value
+
+    def clean(self, value):
+        if isinstance(value, list):
+            return [v for v in value if 'name' in v and 'value' in v and v['value'] is not None]
+        else:
+            return []
 
 
 class Throttle(FancyMixin, FieldType):

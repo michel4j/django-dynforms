@@ -46,10 +46,8 @@
 <!-- Footer -->
 <div id="df-footer" class="border-top bg-secondary-subtle d-flex align-items-center">
     <div id="df-footer-content" class="d-flex flex-row align-items-center justify-content-start w-100 gap-2">
-        <button type="button" id="test-form"
-                onclick="window.location.href='{% url 'dynforms-run' pk=form_type.pk %}'"
-                class="btn btn-success">Test
-        </button>
+        <a href="{% url 'dynforms-run' pk=form_type.pk %}" role="button"
+           id="test-form" class="btn btn-success" target="_blank">Test</a>
         <button type="button" id="check-form"
                 class="btn btn-primary">Check
         </button>

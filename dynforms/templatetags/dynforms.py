@@ -113,18 +113,29 @@ def group_choices(field, defaults):
 
 
 @register.filter
-def likert_choices(field, defaults):
-    if not defaults:
-        defaults = field.get('default', {})
-    if not isinstance(defaults, dict):
-        defaults = {}
+def likert_choices(field, data):
+    if not data:
+        data = field.get('default', [])
 
+    defaults = {item.get('name', ''): item.get('value') for item in data}
     choices = field.get('choices', [])
+
     return [{
         'name': name,
         'index': i,
         'value': defaults.get(name),
     } for i, name in enumerate(choices)]
+
+
+@register.filter
+def likert_scores(field):
+
+    scores = field.get('scores', [])
+    rubrics = field.get('rubrics', [])
+    return [{
+        'value': int(score),
+        'rubric': rubric,
+    } for score, rubric in zip(scores, rubrics)]
 
 
 @register.filter

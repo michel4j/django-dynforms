@@ -1,0 +1,45 @@
+{% load icons %}
+<div class="form-group" id="div_id_choices">
+<label class="form-label ">Choices</label>
+{% for choice in form.initial.choices_info %}
+<div class="controls value-choices-repeatable mb-2">
+    <div class="input-group">
+        <input type="text" value="{{choice.label}}" aria-label="Label" placeholder="Label" title="Label"
+            name="choices"
+            class="form-control">
+        <input type="text" value="{{choice.name}}" aria-label="Name" placeholder="Name" title="Name"
+            name="names"
+            class="form-control">
+        <button type="button" class="btn btn-danger remove-repeat" title="Remove Item">{% svg_icon "x" size="xs" %}</button>
+    </div>
+</div>
+{% endfor %}
+<div class="d-flex flex-row mb-2 repeatable-control">
+    <button type="button" name="add" title="Add Choices"
+            class="btn btn-success ms-auto"
+            data-repeat-add=".value-choices-repeatable" >{% svg_icon "plus" size="xs" %}
+    </button>
+</div>
+<script>
+    $(document).ready(function () {
+        const srcField = $('[name="choices"]');
+        const slugify = (text) => {
+            return text.toString().toLowerCase().trim()
+                .replace(/\s+/g, '_')           // Replace spaces with -
+                .replace(/&/g, '_')         // Replace & with 'and'
+                .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+                .replace(/-+/g, '_')            // Replace multiple - with single -
+                .replace(/^-+/, '')             // Trim - from start of text
+                .replace(/-+$/, '');            // Trim - from end of text
+        };
+        $(document).on('change', 'input[name="choices"]', function () {
+            const srcValue = $(this).val();
+            const slugField = $(this).siblings('[name="names"]');
+            const slugValue = slugField.val();
+            if ((srcValue) && (slugValue === "")) {
+                slugField.val(slugify(srcValue));
+            }
+        });
+    });
+</script>
+</div>

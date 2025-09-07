@@ -12,6 +12,7 @@ DEFAULT_SETTINGS = {
     "width": "full",
     "options": [],
     "choices": ["First Choice", "Second Choice"],
+    'names': ['first_choice', 'second_choice'],
     "values": ['A', 'B'],
     "scores": [1, 2, 3],
     "rubrics": ["Good", "Average", "Poor"],

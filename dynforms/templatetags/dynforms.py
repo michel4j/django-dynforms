@@ -118,11 +118,13 @@ def likert_choices(field, data):
         data = field.get('default', [])
 
     defaults = {item.get('name', ''): item.get('value') for item in data}
+    labels = {item.get('name', ''): item.get('label', '') for item in data}
     choices = field.get('choices', [])
 
     return [{
         'name': name,
         'index': i,
+        'label': labels.get(name, ''),
         'value': defaults.get(name),
     } for i, name in enumerate(choices)]
 

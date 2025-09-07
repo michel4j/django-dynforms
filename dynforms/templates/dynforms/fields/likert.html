@@ -17,18 +17,27 @@
             <tr>
                 <td class="text-left">
                     {{ choice.name }}
-                    <input type="hidden" name="{{ field.name }}__{{ choice.index }}__name" value="{{ choice.name }}"/>
+                    <input type="hidden" name="{{ field.name }}__{{ choice.index }}__name"
+                           value="{{ choice.name }}"
+                    />
+                    <input type="hidden" name="{{ field.name }}__{{ choice.index }}__label"
+                           value="{{ choice.label }}" id="{{ field.name }}-{{ choice.index }}-label"
+                    />
                 </td>
                 {% for score in scores %}
                 <td class="text-center">
-                    <input type="radio" class="form-check-input {{ required }}" aria-label="{{ score.rubric }}"
+                    <input type="radio" class="form-check-input {{ required }} label-src" aria-label="{{ score.rubric }}"
+                           data-label-field="#{{ field.name }}-{{ choice.index }}-label"
+                           data-label-value="{{ score.rubric }}"
                            name="{{ field.name }}__{{ choice.index }}__value" value="{{ score.value }}"
                            {% if choice.value == score.value %}checked{% endif %}
                     />
                 </td>
                 {% endfor %}
                 <td class="text-center">
-                    <input type="radio" class="form-check-input" {{ required }} aria-label="N/A"
+                    <input type="radio" class="form-check-input label-src" {{ required }} aria-label="N/A"
+                           data-label-field="#{{ field.name }}-{{ choice.index }}-label"
+                           data-label-value="N/A"
                            name="{{ field.name }}__{{ choice.index }}__value"
                     />
                 </td>
@@ -37,4 +46,15 @@
         {% endwith %}
         </tbody>
     </table>
+    <script>
+        // set the label from the rubric when the value changes
+        $(document).ready(function(){
+            $(document).on("change", '#{{ field.name }}__controls input.label-src', function() {
+                const $labelField = $($(this).data('label-field'));
+                if ($(this).is(':checked') && $labelField.length) {
+                    $labelField.val($(this).data('label-value'));
+                }
+            });
+        });
+    </script>
 </div>

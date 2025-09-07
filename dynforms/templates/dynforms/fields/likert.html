@@ -15,7 +15,7 @@
         {% with field|likert_scores as scores %}
         {% for choice in field|likert_choices:data %}
             <tr>
-                <td class="text-left">
+                <td class="text-left text-nowrap">
                     {{ choice.name }}
                     <input type="hidden" name="{{ field.name }}__{{ choice.index }}__name"
                            value="{{ choice.name }}"

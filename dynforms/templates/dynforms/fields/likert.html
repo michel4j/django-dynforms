@@ -1,12 +1,12 @@
 {% load dynforms %}
 <div class="controls" id="{{ field.name }}__controls">
     <div>{{ field.instructions }}</div>
-    <table class="w-100 table table-ruled" style="table-layout: fixed;">
+    <table class="w-100 table table-ruled">
         <thead>
         <tr class="text-center">
             <th></th>
             {% for rubric in field.rubrics %}
-            <th>{{ rubric }}</th>
+            <th class="text-nowrap">{{ rubric }}</th>
             {% endfor %}
             <th>N/A</th>
         </tr>

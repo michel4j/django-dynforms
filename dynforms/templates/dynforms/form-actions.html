@@ -3,7 +3,7 @@
     <div class="col-12" id="div_id_actions">
         <label class="control-label form-label w-100 requiredField">Form Actions</label>
         {% for name, label in form_type.actions %}
-            <div class="controls actions_repeatable mb-2" id="actions_{{ forloop.counter }}">
+            <div class="controls actions-repeatable mb-2" id="actions_{{ forloop.counter }}">
                 <div class="input-group">
                     <input type="text" value="{{ name }}"
                            placeholder="Name" name="action_names"
@@ -15,8 +15,10 @@
                 </div>
             </div>
         {% endfor %}
-        <button data-repeat-add=".actions_repeatable" class="btn btn-success"
-                title="Add Page" name="add" type="button"
+<div class="d-flex flex-row mb-2 repeatable-control">
+    <button title="Add Page" name="add" type="button"
+            data-repeat-add=".actions-repeatable" class="btn btn-success ms-auto"
         >{% svg_icon "plus" size="xs" %}</button>
     </div>
+</div>
 </div>

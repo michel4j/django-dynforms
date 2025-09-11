@@ -103,6 +103,10 @@ def group_choices(field, defaults):
 
     if not defaults:
         defaults = field.get('default', [])
+
+    if not isinstance(defaults, list):
+        defaults = [defaults]
+
     choices = field.get('choices', [])
     values = field.get('values', choices)
     return [{
@@ -116,6 +120,8 @@ def group_choices(field, defaults):
 def likert_choices(field, data):
     if not data:
         data = field.get('default', [])
+    if not isinstance(data, list):
+        data = [data]
 
     defaults = {item.get('name', ''): item.get('value') for item in data}
     labels = {item.get('name', ''): item.get('label', '') for item in data}

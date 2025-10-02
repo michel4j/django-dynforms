@@ -237,7 +237,7 @@ class Equipment(FancyMixin, FieldType):
 class ContactInfo(FullName):
     name = _("Contact")
     icon = "id-badge"
-    options = ['required', 'hide', 'repeat']
+    options = ['required', 'hide', 'repeat', 'labels', 'floating', 'no-label']
     settings = []
     required_subfields = ['email', 'phone']
 
@@ -245,7 +245,7 @@ class ContactInfo(FullName):
 class NameAffiliation(FullName):
     name = _("Name/Affiliation")
     icon = "id-badge"
-    options = ['required', 'hide', 'repeat']
+    options = ['required', 'hide', 'repeat', 'labels', 'floating', 'no-label']
     settings = []
     required_subfields = ['first_name', 'last_name', 'affiliation']
 
@@ -253,7 +253,7 @@ class NameAffiliation(FullName):
 class NameEmail(FullName):
     name = _("Name/Email")
     icon = "id-badge"
-    options = ['required', 'hide', 'repeat']
+    options = ['required', 'hide', 'repeat', 'labels', 'floating', 'no-label']
     settings = []
     required_subfields = ['first_name', 'last_name', 'email']
 

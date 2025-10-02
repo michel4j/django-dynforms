@@ -1,38 +1,58 @@
 {% load icons %}
 {% load dynforms %}
-<div class="controls row {{ repeatable }}" id="{{ field.name }}__controls" data-repeat-name="{{ repeat_name }}__controls">
-    <div class="field-group-item col-3">
-        <input id="{{ field.name }}__first_name" name="{{ field.name }}__first_name"
-               data-repeat-name="{{ repeat_name }}__first_name"
-               class="form-control {% subfield_require 'first_name'  %}" type="text" value="{{ data.first_name }}"
-        >
-        <label for="{{ field.name }}__first_name" class="sub-label {% subfield_require 'first_name'  %}">First</label>
-    </div>
-    <div class="field-group-item col-4">
-        <input id="{{ field.name }}__last_name" name="{{ field.name }}__last_name"
-               data-repeat-name="{{ repeat_name }}__last_name"
-               class="form-control {% subfield_require 'last_name'  %}" type="text" value="{{ data.last_name }}"
-        >
-        <label for="{{ field.name }}__last_name"
-               class="sub-label {% subfield_require 'last_name'  %}"
-               data-repeat-for="{{ repeat_name }}__last_name">Last</label>
-    </div>
-    <div class="field-group-item col-5">
-        <div class="input-group">
-            <input id="{{ field.name }}__affiliation"
-                   name="{{ field.name }}__affiliation"
-                   data-repeat-name="{{ repeat_name }}__affiliation"
-                   class="form-control {% subfield_require 'affiliation'  %}" type="text"
-                   value="{{ data.affiliation }}"
+
+<div class="controls {{ repeatable }}" id="{{ field.name }}__controls" data-repeat-name="{{ repeat_name }}__controls">
+    <div class="row">
+        <div class="col-sm-3 mb-2 {% if 'floating' in field.options %}form-floating{% endif %} ">
+            <input id="{{ field.name }}__first_name" aria-label="First name"
+                   data-repeat-name="{{ repeat_name }}__first_name"
+                   {% if not field.manager.show_sublabels %}placeholder="First name"{% endif %}
+                   name="{{ field.name }}__first_name"
+                   class="form-control {% subfield_require 'first_name'  %}" type="text"
+                   value="{{ data.first_name }}"
             >
-            {% if "repeat" in field.options %}
-                <button type="button" class="btn btn-danger remove-repeat" title="Remove item">
-                    {% svg_icon "x" size="sm" %}
-                </button>
+            {% if field.manager.show_sublabels %}
+                <label for="{{ field.name }}__first_name"
+                       class="sub-label {% subfield_require 'first_name'  %}"
+                       data-repeat-for="{{ repeat_name }}__first_name">First
+                    name</label>
             {% endif %}
         </div>
-        <label for="{{ field.name }}__affiliation"
-               class="sub-label {% subfield_require 'affiliation'  %}"
-               data-repeat-for="{{ repeat_name }}__affiliation">Affiliation/Institution</label>
+        <div class="col-sm-5 mb-2 {% if 'floating' in field.options %}form-floating{% endif %} ">
+            <input id="{{ field.name }}__last_name" aria-label="Last name"
+                   data-repeat-name="{{ repeat_name }}__last_name"
+                   {% if not field.manager.show_sublabels %}placeholder="Last name"{% endif %}
+                   name="{{ field.name }}__last_name"
+                   class="form-control {% subfield_require 'last_name'  %}" type="text"
+                   value="{{ data.last_name }}"
+            >
+            {% if field.manager.show_sublabels %}
+                <label for="{{ field.name }}__last_name"
+                       class="sub-label {% subfield_require 'last_name'  %}"
+                       data-repeat-for="{{ repeat_name }}__last_name">Last name</label>
+            {% endif %}
+        </div>
+        <div class="col mb-2 {% if 'floating' in field.options %}form-floating{% endif %} ">
+            <input id="{{ field.name }}__affiliation"
+                       data-repeat-name="{{ repeat_name }}__affiliation"
+                       aria-label="Affiliation/Institution"
+                       {% if not field.manager.show_sublabels %}placeholder="Affiliation/Institution"{% endif %}
+                       name="{{ field.name }}__affiliation"
+                       class="form-control {% subfield_require 'affiliation'  %}"
+                       type="text" value="{{ data.affiliation }}"
+            >
+            {% if field.manager.show_sublabels %}
+                <label for="{{ field.name }}__affiliation"
+                       class="sub-label {% subfield_require 'affiliation'  %}"
+                       data-repeat-for="{{ repeat_name }}__affiliation">Affiliation/Institution</label>
+            {% endif %}
+        </div>
+        <div class="{% if 'repeat' in field.options %}col-auto mb-2{% endif %}">
+                {% if 'repeat' in field.options %}
+                    <button type="button" class="btn btn-danger remove-repeat" title="Remove item">
+                        {% svg_icon "x" size="sm" %}
+                    </button>
+                {% endif %}
+        </div>
     </div>
 </div>

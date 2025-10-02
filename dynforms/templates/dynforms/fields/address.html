@@ -5,10 +5,10 @@
         {% if 'department' in field.options %}
             <div class="field-group-item col-sm-12 {{ floating }}">
                 <input id="{{ field.name }}__place" aria-label="Institution"
-                       {% if not field|show_sublabels %}placeholder="Institution / Department"{% endif %}
+                       {% if not field.manager.show_sublabels %}placeholder="Institution / Department"{% endif %}
                        name="{{ field.name }}__place" class="form-control {% subfield_require "place"  %}" type="text" value="{{ data.place }}"
                 >
-                {% if field|show_sublabels %}
+                {% if field.manager.show_sublabels %}
                     <label for="{{ field.name }}__place" class="sub-label {% subfield_require "place"  %}">Institution / Department</label>
                 {% endif %}
             </div>
@@ -16,19 +16,19 @@
         <div class="field-group-item col-sm-12 {{ floating }}">
             <input id="{{ field.name }}__street" name="{{ field.name }}__street"
                    aria-label="Street"
-                   {% if not field|show_sublabels %}placeholder="Street"{% endif %}
+                   {% if not field.manager.show_sublabels %}placeholder="Street"{% endif %}
                    class="form-control {% subfield_require "street"  %}" type="text" value="{{ data.street }}"
             >
-            {% if field|show_sublabels %}
+            {% if field.manager.show_sublabels %}
                 <label for="{{ field.name }}__street"  class="sub-label {% subfield_require "street"  %}">Street</label>
             {% endif %}
         </div>
         <div class="field-group-item col-sm-6 {{ floating }}">
             <input id="{{ field.name }}__country" aria-label="Country" name="{{ field.name }}__country"
                    class="form-control {% subfield_require "country"  %}" type="text" value="{{ data.country }}"
-                   {% if  not field|show_sublabels %}placeholder="Country ..."{% endif %}
+                   {% if not field.manager.show_sublabels %}placeholder="Country ..."{% endif %}
             >
-            {% if field|show_sublabels %}
+            {% if field.manager.show_sublabels %}
                 <label for="{{ field.name }}__country" class="sub-label {% subfield_require "country"  %}">Country</label>
             {% endif %}
         </div>
@@ -36,30 +36,30 @@
 
             <input id="{{ field.name }}__region" aria-label="Province/State/Region" name="{{ field.name }}__region"
                    class="form-control {% subfield_require "region"  %}" type="text" value="{{ data.region }}"
-                   {% if  not field|show_sublabels %}placeholder="Province/State/Region ..."{% endif %}
+                   {% if not field.manager.show_sublabels %}placeholder="Province/State/Region ..."{% endif %}
             >
-            {% if field|show_sublabels %}
+            {% if field.manager.show_sublabels %}
                 <label for="{{ field.name }}__region" class="sub-label {% subfield_require "region"  %}">Province / State / Region</label>
             {% endif %}
         </div>
         <div class="field-group-item col-sm-6 {% if 'floating' in field.options %}form-floating{% endif %}">
 
             <input id="{{ field.name }}__city" aria-label="City"
-                   {% if not field|show_sublabels %}placeholder="City"{% endif %}
+                   {% if not field.manager.show_sublabels %}placeholder="City"{% endif %}
                    name="{{ field.name }}__city"
                    class="form-control {% subfield_require ""  %}" type="text" value="{{ data.city }}"
             >
-            {% if field|show_sublabels %}
+            {% if field.manager.show_sublabels %}
                 <label for="{{ field.name }}__city" class="sub-label {% subfield_require "city"  %}">City</label>
             {% endif %}
         </div>
         <div class="field-group-item col-sm-6 {% if 'floating' in field.options %}form-floating{% endif %}">
 
             <input id="{{ field.name }}__code" aria-label="Postal Code"
-                   {% if not field|show_sublabels %}placeholder="Postal Code"{% endif %}
+                   {% if not field.manager.show_sublabels %}placeholder="Postal Code"{% endif %}
                    name="{{ field.name }}__code" class="form-control {% subfield_require "code"  %}" type="text" value="{{ data.code }}"
             >
-            {% if field|show_sublabels %}
+            {% if field.manager.show_sublabels %}
                 <label for="{{ field.name }}__code" class="sub-label {% subfield_require "code"  %}">Postal / Zip Code</label>
             {% endif %}
         </div>

@@ -3,30 +3,42 @@
 
 <div class="controls {{ repeatable }}" id="{{ field.name }}__controls" data-repeat-name="{{ repeat_name }}__controls">
     <div class="row">
-        <div class="field-group-item  col-sm-6 mb-2">
-            <div class="input-group">
-                <div class="input-group-text">{% svg_icon "email" size="sm" %}</div>
-                <input type="email" name="{{ field.name }}__email"
-                       data-repeat-name="{{ repeat_name }}__email"
-                       id="{{ field.name }}__email" class="form-control {% subfield_require "email"  %}" aria-label="Email"
-                       placeholder="Email"
-                       value="{{ data.email }}">
-            </div>
+        <div class="col-sm-6 mb-2 {% if 'floating' in field.options %}form-floating{% endif %} ">
+            <input id="{{ field.name }}__email" aria-label="Email"
+                   data-repeat-name="{{ repeat_name }}__email"
+                   {% if not field.manager.show_sublabels %}placeholder="Email"{% endif %}
+                   name="{{ field.name }}__email"
+                   class="form-control {% subfield_require 'email'  %}" type="text"
+                   value="{{ data.email }}"
+            >
+            {% if field.manager.show_sublabels %}
+                <label for="{{ field.name }}__email"
+                       class="sub-label {% subfield_require 'email'  %}"
+                       data-repeat-for="{{ repeat_name }}__email"
+                >Email</label>
+            {% endif %}
         </div>
-        <div class="field-group-item  col-sm-6 mb-2">
-            <div class="input-group ">
-                <div class="input-group-text">{% svg_icon "phone" size="sm" %}</div>
-                <input type="tel" name="{{ field.name }}__phone"
-                       data-repeat-name="{{ repeat_name }}__phone"
-                       id="{{ field.name }}__phone" class="form-control {% subfield_require "phone"  %}" aria-label="Phone"
-                       placeholder="Phone"
-                       value="{{ data.phone }}">
-                {% if "repeat" in field.options %}
+        <div class="col mb-2 {% if 'floating' in field.options %}form-floating{% endif %} ">
+            <input id="{{ field.name }}__phone" aria-label="Phone"
+                   data-repeat-name="{{ repeat_name }}__phone"
+                   {% if not field.manager.show_sublabels %}placeholder="Phone"{% endif %}
+                   name="{{ field.name }}__phone"
+                   class="form-control {% subfield_require 'phone'  %}" type="text"
+                   value="{{ data.phone }}"
+            >
+            {% if field.manager.show_sublabels %}
+                <label for="{{ field.name }}__phone"
+                       class="sub-label {% subfield_require 'phone'  %}"
+                       data-repeat-for="{{ repeat_name }}__phone"
+                >Phone</label>
+            {% endif %}
+        </div>
+        <div class="{% if 'repeat' in field.options %}col-auto mb-2{% endif %}">
+                {% if 'repeat' in field.options %}
                     <button type="button" class="btn btn-danger remove-repeat" title="Remove item">
                         {% svg_icon "x" size="sm" %}
                     </button>
                 {% endif %}
-            </div>
         </div>
     </div>
 </div>

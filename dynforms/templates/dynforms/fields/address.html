@@ -70,18 +70,24 @@
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="{% static 'dynforms/countries.min.js' %}" charset="UTF-8"></script>
     <script type="text/javascript">
+
         $(document).ready(function () {
             const $country = $('#{{field.name}}__country');
             const $region = $('#{{field.name}}__region');
 
+            const queryTokenizer = function (q) {
+                const normalized = q.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                return Bloodhound.tokenizers.whitespace(normalized);
+            };
+
             const countries = new Bloodhound({
-                datumTokenizer: Bloodhound.tokenizers.whitespace,
-                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                datumTokenizer: queryTokenizer,
+                queryTokenizer: queryTokenizer,
                 local: Object.keys(World.countries)
             });
             const _regions = new Bloodhound({
-                datumTokenizer: Bloodhound.tokenizers.whitespace,
-                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                datumTokenizer: queryTokenizer,
+                queryTokenizer: queryTokenizer,
                 local: World.countries["Canada"]
             });
 
@@ -102,8 +108,8 @@
 
                 if (cntry && cntry_regions) {
                     const regions = new Bloodhound({
-                        datumTokenizer: Bloodhound.tokenizers.whitespace,
-                        queryTokenizer: Bloodhound.tokenizers.whitespace,
+                        datumTokenizer: queryTokenizer,
+                        queryTokenizer: queryTokenizer,
                         local: cntry_regions
                     });
 

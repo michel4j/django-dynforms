@@ -1,4 +1,6 @@
-from crisp_modals.views import ModalUpdateView, ModalDeleteView, ModalCreateView, AjaxFormMixin
+import re
+
+from crisp_modals.views import ModalUpdateView, ModalDeleteView, ModalCreateView, AjaxFormMixin, ModalConfirmView
 from django.conf import settings
 from django.contrib.messages.views import SuccessMessageMixin
 from django.forms.models import model_to_dict
@@ -6,6 +8,7 @@ from django.http import JsonResponse, HttpResponseRedirect, Http404
 from django.template.response import TemplateResponse
 from django.urls import reverse_lazy, reverse
 from django.utils.module_loading import import_string
+from django.utils.safestring import mark_safe
 from django.views import View
 from django.views.generic import TemplateView, detail
 from django.views.generic import edit
@@ -101,15 +104,32 @@ class PageFieldView(*VIEW_MIXINS, View):
         return JsonResponse({})
 
 
-class DeleteFieldView(*EDIT_MIXINS, View):
-    template_name = "dynforms/edit-settings.html"
+class DeleteFieldView(*EDIT_MIXINS, ModalConfirmView):
+    model = FormType
+    size = 'sm'
 
-    def post(self, request, **kwargs):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         page = int(self.kwargs.get('page'))
         pos = int(self.kwargs.get('pos'))
-        form = FormType.objects.get(pk=self.kwargs.get('pk'))
-        form.remove_field(page, pos)
-        return TemplateResponse(request, self.template_name, {})
+        self.object = FormType.objects.get(pk=self.kwargs.get('pk'))
+        field = self.object.get_field(page, pos)
+
+        context['title'] = "Delete Field?"
+        context['message'] = mark_safe(
+            f"Are you sure you want to delete the field <strong>'{field['name']}'</strong>?"
+        )
+        return context
+
+    def confirmed(self, *args, **kwargs):
+        pos = int(self.kwargs.get('pos'))
+        page = int(self.kwargs.get('page'))
+        field = self.object.get_field(page, pos)
+        self.object.remove_field(page, pos)
+        return JsonResponse({
+            'message': 'Field removed',
+            'url': "",
+        })
 
 
 RULE_ACTIONS = [
@@ -234,17 +254,77 @@ class FormBuilder(*EDIT_MIXINS, UpdateView):
         return self.request.get_full_path()
 
 
-class DeletePageView(*EDIT_MIXINS, View):
+class DeletePageView(*EDIT_MIXINS, ModalConfirmView):
+    model = FormType
 
-    def post(self, request, **kwargs):
-        page = int(self.kwargs.get('page'))
-        form_type = FormType.objects.get(pk=self.kwargs.get('pk'))
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        number = int(self.kwargs.get('page'))
+        self.object = FormType.objects.get(pk=self.kwargs.get('pk'))
+        page = self.object.get_page(number)
+        if not page:
+            page_title = "Untitled"
+        else:
+            page_title = page.get('name', 'Untitled')
+        context['title'] = "Delete page?"
+        context['message'] = mark_safe(
+            f"Are you sure you want to delete the Page {number + 1}: <strong>{page_title}</strong>?"
+        )
+        return context
+
+    def confirmed(self, *args, **kwargs):
+        page_number = int(self.kwargs.get('page'))
         try:
-            form_type.remove_page(page)
+            self.object.remove_page(page_number)
         except ValueError as e:
-            return JsonResponse({'error': str(e)}, status=400)
+            return JsonResponse({
+                'error': str(e)},
+                status=400
+            )
+        else:
+            return JsonResponse({
+                'message': 'Page deleted',
+                'url': "",
+            })
 
-        return JsonResponse({})
+
+class CloneFormType(*EDIT_MIXINS, ModalConfirmView):
+    model = FormType
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        self.object = FormType.objects.get(pk=self.kwargs.get('pk'))
+
+        context['title'] = "Clone Form?"
+        context['message'] = mark_safe(
+            f"Are you sure you want to clone the Form <strong>{self.object}?</strong>"
+            f"<p>This will create a copy of the form for editing"
+            f"titled <strong>'{self.object.name} (copy)'.</strong></p>"
+        )
+        return context
+
+    def confirmed(self, *args, **kwargs):
+        clone = FormType.objects.get(pk=self.kwargs.get('pk'))
+        clone.pk = None
+        clone.name = f"{clone.name} (copy)"
+        if m := re.match(r'.+-(\d+)$', clone.code):
+            number = int(m.group(1)) + 1
+            clone.code = re.sub(r'-(\d+)$', f'-{number}', clone.code)
+        else:
+            clone.code = f'{clone.code}-1'
+
+        try:
+            clone.save()
+        except ValueError as e:
+            return JsonResponse({
+                'error': str(e)},
+                status=400
+            )
+        else:
+            return JsonResponse({
+                'message': 'Form Cloned',
+                'url': reverse('dynforms-builder', kwargs={'pk': clone.pk}),
+            })
 
 
 class CreateFormType(SuccessMessageMixin, *EDIT_MIXINS, ModalCreateView):

@@ -1,6 +1,6 @@
 from datetime import datetime
 from itertools import zip_longest
-from crisp_modals.forms import ModalModelForm, Row, FullWidth, ModalForm
+from crisp_modals.forms import ModalModelForm, Row, FullWidth, ModalForm, BodyHelper, FooterHelper
 from crispy_forms.bootstrap import PrependedText, InlineCheckboxes, AppendedText
 from crispy_forms.bootstrap import StrictButton, FormActions
 from crispy_forms.helper import FormHelper
@@ -75,15 +75,37 @@ class FieldSettingsForm(forms.Form):
         self.field_type = kwargs.pop('field_type')
         action_url = kwargs.pop('action_url')
         super().__init__(*args, **kwargs)
-        self.helper = FormHelper(self)
-        self.helper.form_class = 'df-menu-form'
-        self.helper.form_action = action_url
+        self.body = BodyHelper(self)
+        self.body.form_class = 'df-menu-form'
+        self.body.form_action = action_url
         if self.field_type is not None:
-            self.helper.layout = Layout(
+            self.body.layout = Layout(
                 self.create_layout(self.field_type)
             )
         else:
-            self.helper.layout = self.create_layout()
+            self.body.layout = self.create_layout()
+
+        self.footer = FooterHelper(self)
+        self.footer.clear()
+        if self.initial.get('rules', []):
+            rule_html = "Rules <span class='badge bg-info'>%d</span>" % (len(self.initial['rules']))
+        else:
+            rule_html = "Rules"
+
+        self.footer.append(
+            Div(
+                StrictButton(
+                    'Apply', name='apply-field', id='apply-field', value="apply-field",
+                    css_class="btn btn-primary"
+                ),
+                StrictButton(rule_html, css_class='btn btn-secondary', id='edit-rules', value="edit-rules"),
+                StrictButton(
+                    'Delete', name='delete-field', value="delete-field", id="delete-field",
+                    css_class="btn btn-danger ms-auto"
+                ),
+                css_class="col-12 text-condensed d-flex flex-row gap-2"
+            )
+        )
 
     def clean(self):
         if self.field_type is None:
@@ -210,30 +232,6 @@ class FieldSettingsForm(forms.Form):
                     title="This is the internal reference name for the field. Change with caution!"
                 ),
             )
-
-        if self.initial.get('rules', []):
-            rule_html = "Rules <span class='badge bg-info'>%d</span>" % (len(self.initial['rules']))
-        else:
-            rule_html = "Rules"
-
-        fieldset.append(
-            FormActions(
-                HTML('<hr class="mt-5"/>'),
-                Div(
-                    StrictButton(
-                        'Apply', name='apply-field', id='apply-field', value="apply-field",
-                        css_class="btn btn-primary"
-                    ),
-                    StrictButton(rule_html, css_class='btn btn-secondary', id='edit-rules',
-                                 value="edit-rules"),
-                    StrictButton(
-                        'Delete', name='delete-field', value="delete-field", id="delete-field",
-                        css_class="btn btn-danger pull-right"
-                    ),
-                    css_class="col-12 text-condensed d-flex flex-row justify-content-between"
-                )
-            )
-        )
         return fieldset
 
 
@@ -267,10 +265,13 @@ class FormSettingsForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.helper = FormHelper(self)
-        self.helper.form_class = 'df-menu-form'
+        self.body = BodyHelper(self)
+        self.footer = FooterHelper(self)
+        self.footer.clear()
+        self.body.form_class = 'df-menu-form'
         delete_url = reverse_lazy('dynforms-delete-type', kwargs={'pk': self.instance.pk})
-        self.helper.layout = Layout(
+        clone_url = reverse_lazy('dynforms-clone-type', kwargs={'pk': self.instance.pk})
+        self.body.append(
             Div(
                 Div('code', css_class='col-12'),
                 Div("name", css_class='col-12'),
@@ -282,17 +283,21 @@ class FormSettingsForm(forms.ModelForm):
             ),
             HTML(PAGES_TEMPLATE),
             HTML(ACTIONS_TEMPLATE),
-            FormActions(
-                HTML('<hr class="hr-xs mt-5"/>'),
-                Div(
-                    Submit('apply-form', 'Apply', css_class="btn btn-primary"),
-                    HTML(
-                        f'<a class="btn btn-danger ms-auto" title="Delete Form" '
-                        f'data-modal-url="{delete_url}">Delete</a>'
-                    ),
-                    css_class="d-flex flex-row"
-                )
-            ),
+        )
+        self.footer.append(
+            Div(
+                Submit('apply-form', 'Apply', css_class="btn btn-primary"),
+                HTML(
+                    f'<a class="btn btn-secondary" title="Clone Form" data-modal-url="{clone_url}">'
+                    f'Clone'
+                    f'</a>'
+                ),
+                HTML(
+                    f'<a class="btn btn-danger ms-auto" title="Delete Form" '
+                    f'data-modal-url="{delete_url}">Delete</a>'
+                ),
+                css_class="d-flex flex-row gap-2"
+            )
         )
 
     def clean(self):

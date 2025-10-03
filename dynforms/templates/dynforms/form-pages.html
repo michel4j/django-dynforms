@@ -3,14 +3,20 @@
     <div class="col-12" id="div_id_page_names">
         <label class="control-label form-label w-100 requiredField">Pages<span class="asteriskField">*</span></label>
         {% for page_name in form.initial.page_names %}
-            <div class="controls pages-repeatable mb-2" id="page_names_{{ forloop.counter }}">
+            <div class="controls pages-repeatable mb-2">
                 <div class="input-group">
                     <span class="input-group-text"><span class="repeat-html-index">{{ forloop.counter }}</span></span>
                     <input type="text" value="{{ page_name }}"
+                           aria-label="Page Title"
                            placeholder="page title" name="page_names"
                            class="repeat form-control">
-                    <button data-page-number="{{ forloop.counter }}" type="button"
-                            class="btn btn-danger delete-page">{% svg_icon "x" size="xs" %}</button>
+                    <button data-page-number="{{ forloop.counter }}"
+                            data-modal-url="{% url 'dynforms-del-page' pk=form_type.pk page=forloop.counter0 %}"
+                            data-repeat-index="{{ forloop.counter0 }}"
+                            type="button"
+                            class="btn btn-danger delete-page remove-command"
+                    >{% svg_icon "x" size="xs" %}
+                    </button>
                 </div>
             </div>
         {% endfor %}

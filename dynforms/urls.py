@@ -13,6 +13,7 @@ urlpatterns = [
     path('<int:pk>/check/', views.CheckFormAPI.as_view(), name='dynforms-check'),
     path('<int:pk>/edit/', views.EditTemplate.as_view(), name='dynforms-edit-template'),
     path('<int:pk>/delete/', views.DeleteFormType.as_view(), name='dynforms-delete-type'),
+    path('<int:pk>/clone/', views.CloneFormType.as_view(), name='dynforms-clone-type'),
 
 
     # field urls

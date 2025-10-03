@@ -1,10 +1,19 @@
 {% load crispy_forms_tags %}
 {% load icons %}
 
-<div class="container-fluid">
 {% if form %}
-	{% crispy form form.helper %}
+<form class="{{ form.body.form_class }} h-100" action="{{ form.body.form_action }}" method="{{ form.body.method }}">
+    <div class="settings-form d-flex flex-column align-items-stretch justify-content-start h-100">
+        <div class="settings-body">
+            {% crispy form form.body %}
+        </div>
+        <div class="settings-footer mt-auto">
+            {% crispy form form.footer %}
+        </div>
+    </div>
+</form>
 {% else %}
+    <div class="container-fluid p-3">
 		<div class="alert alert-info">
 		    <div class="panel-body">
 		    <h4>No Field Selected</h4>
@@ -12,5 +21,5 @@
 		    <p>Please select a field on the form preview to edit its settings.</p>
 		    </div>
 	    </div>
+     </div>
 {% endif %}
-</div>

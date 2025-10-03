@@ -71,10 +71,10 @@ function clearInputs(selector) {
             }
 
             function updateRepeat($section, index) {
-                $section.find('.repeat-html-index, .repeat-html-count0').each(function () {
+                $section.find('.repeat-html-count0').each(function () {
                     $(this).html(index);
                 });
-                $section.find('.repeat-html-count').each(function () {
+                $section.find('.repeat-html-count, .repeat-html-index').each(function () {
                     $(this).html(index + 1);
                 });
                 $section.find('.repeat-value-index').each(function () {
@@ -97,12 +97,18 @@ function clearInputs(selector) {
                         $(this).attr("for", name);
                     }
                 });
+
                 if ($section.is('[data-repeat-name]')) {
                     $section.attr('id', $section.data("repeat-name").replace(/\?/i, index))
                 }
 
                 $allRepeats = $control.closest('.repeatable-control').siblings(repeatSelector);
                 updateButtons($control, $allRepeats, $removeButtons);
+
+                // trigger update event so other components can update themselves
+                $section.find('.remove-repeat, .remove-command').each(function () {
+                    $(this).trigger('dynforms.repeatable.update', []);
+                });
             }
 
 
@@ -185,11 +191,12 @@ function setupField() {
     if ($(this).is(".selected")) {
         return;
     }
-    let prev_field = $('.df-field.selected');
-    let active_field = $(this);
-    let active_page = $('.df-page.active');
-    let rules_url = `${document.URL}${active_page.index()}/rules/${active_field.data('field-pos')}/`;
-    let put_url = `${document.URL}${active_page.index()}/put/${active_field.data('field-pos')}/`;
+    const prev_field = $('.df-field.selected');
+    const active_field = $(this);
+    const active_page = $('.df-page.active');
+    const rules_url = `${document.URL}${active_page.index()}/rules/${active_field.data('field-pos')}/`;
+    const put_url = `${document.URL}${active_page.index()}/put/${active_field.data('field-pos')}/`;
+    const del_url = `${document.URL}${active_page.index()}/del/${active_field.data('field-pos')}/`;
 
     // remove selected class from all fields
     prev_field.toggleClass("selected", false);
@@ -202,6 +209,7 @@ function setupField() {
     $("#field-settings").load(put_url, function () {
         setupMenuForm("#field-settings .df-menu-form");
         $('#field-settings #edit-rules').attr('data-modal-url', rules_url);
+        $('#field-settings #delete-field').attr('data-modal-url', del_url);
     });
 }
 
@@ -210,7 +218,6 @@ function setupMenuForm(form_id) {
 
     // Setup Repeatable Fields
     $(`${form_id} button[data-repeat-add]`).repeatable({clearIfLast: false});
-
 
     // handle applying field settings
     function submitHandler(event) {
@@ -368,68 +375,13 @@ function doBuilderLoad() {
         $('.df-field').click(setupField);
         setupMenuForm("#form-settings .df-menu-form");
         setupMenuForm("#field-settings .df-menu-form");
-
-        $(document).on('click', "button.delete-page", function (e) {
-            let page_number = $(this).data('page-number');
-            e.preventDefault();
-            $.ajax(`${document.URL}${page_number}/del/`, {
-                type: 'post',
-                data: {
-                    'csrfmiddlewaretoken': $('#df-builder').data('csrf-token'),
-                },
-                success: function (result) {
-                    dfToasts.success({
-                        message: `Page ${page_number} Deleted!`
-                    });
-                    window.location.reload();
-                },
-                error: function (xhr, status, error) {
-                    const message = xhr.responseJSON;
-                    if (message && message.error) {
-                        dfToasts.error({
-                            message: message.error,
-                            title: "Error deleting page!"
-                        });
-                    }
-                }
-            });
+        $(document).on('dynforms.repeatable.update', 'button.remove-command', function(){
+            const pageIndex = $(this).data('repeat-index');
+            $(this).attr('data-page-number', pageIndex);
+            $(this).attr('data-modal-url', `${document.URL}${pageIndex}/del/`);
         });
 
         $formPreview.addClass("loaded");
-
-        // handle deleting fields
-        $(document).on('click', '#field-settings #delete-field', function (e) {
-            e.preventDefault();
-            // handle deleting fields
-            const active_field = $('.df-field.selected');
-            const active_page = $('.df-page.active');
-            const page_fields = $('.df-page.active > .df-container .df-field');
-            let del_url = `${document.URL}${active_page.index()}/del/${active_field.index()}/`;
-
-            $.ajax(del_url, {
-                type: 'POST',
-                data: {
-                    'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val(),
-                },
-                success: function (response) {
-                    dfToasts.success({
-                        message: `Field: ${active_field.data('field-type')} deleted!`
-                    });
-                    active_field.remove();
-                    // renumber all fields on active page
-                    page_fields.each(function () {
-                        $(this).data('field-pos', $(this).index());
-                    });
-                    $("#field-settings").html(response);
-                },
-                error: function (xhr, status, error) {
-                    dfToasts.error({
-                        message: error,
-                        title: "Error deleting field!"
-                    });
-                }
-            });
-        });
 
         // Move field to next page
         $(document).on('click', "#field-settings #move-next", function (e) {
@@ -554,7 +506,6 @@ function guardDirtyForm(selector) {
 
     $formInstance.on('change', ':input', monitorChanges);
     $formInstance.on('click', '[data-repeat-add], .remove-repeat', monitorChanges);
-
     $formInstance.submit(function () {
         $(this).removeAttr('data-df-dirty'); // No warning when saving dirty form
         $("input[disabled]").removeAttr("disabled");

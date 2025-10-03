@@ -86,14 +86,15 @@ class FormType(TimeStampedModel):
     def remove_page(self, page: int):
         """
         Remove a page from the form type.
-        :param page: The index of the page to remove (1-based).
+        :param page: The index of the page to remove (0-based).
         """
-        pg = page - 1
-        if len(self.pages[pg]['fields']) == 0:
-            self.pages.pop(pg)
+        if page >= len(self.pages):
+            return
+        if len(self.pages[page]['fields']) == 0:
+            self.pages.pop(page)
             self.save()
         else:
-            raise ValueError(f"Cannot remove page {page} as it contains fields. Please remove fields first.")
+            raise ValueError(f"Cannot remove page {page + 1} as it contains fields. Please remove fields first.")
 
     def get_page(self, page):
         if page < len(self.pages):
